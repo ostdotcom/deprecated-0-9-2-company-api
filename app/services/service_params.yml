@@ -1,0 +1,7 @@
+'FullClassNameOfService':
+  :mandatory:
+    - :p1
+    - :p2
+  :optional:
+    - :p3
+    - :p4
