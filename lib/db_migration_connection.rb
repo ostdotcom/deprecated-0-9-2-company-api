@@ -1,6 +1,10 @@
 class DbMigrationConnection < ActiveRecord::Migration[5.1]
 
-  def run_migration_for_db(config_key, &block)
+  def run_migration_for_db(model_klass, &block)
+    return unless model_klass.applicable_sub_environments.include?(GlobalConstant::Base.sub_env)
+
+    config_key = model_klass.config_key
+
     template = ERB.new File.new("#{Rails.root}/config/database.yml").read
     config = (YAML.load(template.result(binding)))[config_key]
     db_name = config["database"]
@@ -11,6 +15,7 @@ class DbMigrationConnection < ActiveRecord::Migration[5.1]
     execute "USE " + db_name
     yield if block.present?
     @connection = ApplicationRecord.establish_connection(Rails.env.to_sym).connection
+
   end
 
 end

@@ -3,6 +3,10 @@ module GlobalConstant
 
   class Base
 
+    def self.sub_env
+      @sub_env ||= fetch_config.fetch('sub_env')
+    end
+
     def self.memcache_config
       @memcache_config ||= fetch_config.fetch('memcached', {}).with_indifferent_access
     end

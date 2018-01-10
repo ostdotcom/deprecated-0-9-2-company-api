@@ -8,26 +8,26 @@ end
 
 # Bundle edge Rails instead: gem 'rails', github: 'rails/rails'
 gem 'rails', '~> 5.1.4'
-gem 'mysql2'
-gem 'oj'
-gem 'rake'
+gem 'mysql2', '0.4.9'
+gem 'oj', '3.3.8'
+gem 'rake', '12.3.0'
 
 #TODO - check this gem's use
-gem 'maxminddb'
+gem 'maxminddb', '0.1.15'
 
-gem 'dalli'
+gem 'dalli', '2.7.6'
 
-gem 'sanitize'
-gem 'exception_notification'
+gem 'sanitize', '4.5.0'
+gem 'exception_notification', '4.2.2'
 
 #TODO - check this gem's use
-gem 'hkdf'
+gem 'hkdf', '0.3.0'
 
-gem 'aws-sdk-kms'
-gem 'aws-sdk-s3'
+gem 'aws-sdk-kms', '1.4.0'
+gem 'aws-sdk-s3', '1.8.0'
 
-gem 'sidekiq'
-gem 'redis-namespace'
+gem 'sidekiq', '5.0.5'
+gem 'redis-namespace', '1.6.0'
 
 #TODO - why is listen needed
 gem 'listen', '>= 3.0.5', '< 3.2'

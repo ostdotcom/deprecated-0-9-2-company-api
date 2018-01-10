@@ -11,8 +11,8 @@ default: &default
 
 <%= Rails.env%>:
   <<: *default
-  database: company_users_<%= Rails.env%>
+  database: company_<%= GlobalConstant::Base.sub_env%>_<%= Rails.env%>
 
-company_clients_<%= Rails.env%>:
+company_client_<%= Rails.env%>:
   <<: *default
-  database: company_clients_<%= Rails.env%>
+  database: company_client_<%= Rails.env%>
