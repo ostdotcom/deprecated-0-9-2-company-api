@@ -1,0 +1,2 @@
+class Client < EstablishCompanyClientDbConnection
+end

@@ -1,0 +1,2 @@
+class ClientToken < EstablishCompanyClientEconomyDbConnection
+end
