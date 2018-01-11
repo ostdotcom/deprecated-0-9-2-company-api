@@ -6,7 +6,7 @@ module GlobalConstant
     class << self
 
       def user_cookie_name
-        'cmu'
+        'ca'
       end
 
       def user_expiry

@@ -7,11 +7,7 @@ module UserManagement
 
       @email = @params[:email]
       @password = @params[:password]
-      @browser_user_agent = @params[:browser_user_agent]
-      @ip_address = @params[:ip_address]
-      @geoip_country = @params[:geoip_country]
-
-      @utm_params = @params[:utm_params]
+      @is_client_manager = @params[:is_client_manager]
 
       @login_salt_hash = nil
       @user_secret = nil
@@ -23,7 +19,7 @@ module UserManagement
       r = validate_and_sanitize
       return r unless r.success?
 
-      r = check_if_email_already_registered
+      r = find_or_init_user
       return r unless r.success?
 
       r = generate_login_salt
@@ -68,8 +64,8 @@ module UserManagement
       success
     end
 
-    def check_if_email_already_registered
-      user = User.where(email: @email).first
+    def find_or_init_user
+      @user = User.where(email: @email).first
 
       return error_with_data(
           'um_su_2',
@@ -77,8 +73,17 @@ module UserManagement
           '',
           GlobalConstant::ErrorAction.default,
           {},
-          {email: 'Email address is already registered'}
-      ) if user.present?
+          {email: 'Email address is already registered.'}
+      ) if @user.present? && @user.send("#{GlobalConstant::User.is_client_manager_property}?")
+
+      init_user_obj unless @user.present?
+
+      @user.send("set_#{GlobalConstant::User.is_client_manager_property}")
+
+      if @user.new_record? || @user.changed?
+        user
+      end
+
 
       success
     end
@@ -92,13 +97,13 @@ module UserManagement
       success
     end
 
-    def create_user
+    def init_user_obj
       # first insert into user_secrets and use it's id in users table
       @user_secret = UserSecret.create!(login_salt: @login_salt_hash[:ciphertext_blob])
 
       password_e = User.get_encrypted_password(@password, @login_salt_hash[:plaintext])
 
-      @user = User.create!(
+      @user = User.new(
           email: @email,
           password: password_e,
           user_secret_id: @user_secret.id,
