@@ -1,2 +1,8 @@
 constants:
   sub_env: <%= ENV['CA_SUB_ENV']%>
+  recaptcha:
+    site_key: <%= ENV['CA_RECAPTCHA_SITE_KEY'] %>
+    secret_key: <%= ENV['CA_RECAPTCHA_SECRET'] %>
+
+memcached:
+  instances: <%= ENV['CA_MEMCACHED_INSTANCES'] %>

@@ -1,3 +1,21 @@
+'UserManagement::SignUp':
+  :mandatory:
+    - :email
+    - :password
+  :optional:
+    - :browser_user_agent
+    - :ip_address
+    - :utm_params
+    - :geoip_country
+
+'UserManagement::Login':
+  :mandatory:
+    - :email
+    - :password
+  :optional:
+    - :browser_user_agent
+    - :ip_address
+
 'FullClassNameOfService':
   :mandatory:
     - :p1
