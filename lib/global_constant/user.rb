@@ -15,49 +15,19 @@ module GlobalConstant
         'inactive'
       end
 
-      def deactived_status
-        'deactived'
+      def blocked_status
+        'blocked'
       end
 
       ### Status End ###
 
-      ### Property start ###
+      ### Properties start ###
 
-      def token_sale_kyc_submitted_property
-        'token_sale_kyc_submitted'
+      def is_client_manager_property
+        'is_client_manager'
       end
 
-      def token_sale_bt_done_property
-        'token_sale_bt_done'
-      end
-
-      def token_sale_double_optin_mail_sent_property
-        'token_sale_kyc_double_optin_mail_sent'
-      end
-
-      def token_sale_double_optin_done_property
-        'token_sale_kyc_optin_done'
-      end
-
-      ### Property stop ###
-
-      ### Token sale state related pages ####
-
-      def get_token_sale_state_page_names(key)
-        _page = token_sale_state_page_names[key.to_sym]
-        fail "Token sale state (#{key}) related page not defined." if _page.blank?
-        return _page
-      end
-
-      def token_sale_state_page_names
-        @token_sale_state_page_names ||= {
-            profile_page: 'profile_page',
-            verification_page: 'verification_page',
-            kyc_page: 'kyc_page'
-        }
-      end
-
-      ### Token sale state related pages ####
+      ### Properties stop ###
 
     end
 
