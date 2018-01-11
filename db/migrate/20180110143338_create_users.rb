@@ -1,7 +1,8 @@
 class CreateUsers < DbMigrationConnection
+
   def change
 
-    run_migration_for_db(EstablishCompanyUsersDbConnection) do
+    run_migration_for_db(EstablishCompanyUserDbConnection) do
 
       create_table :users do |t|
         t.column :email, :string, null: false
@@ -13,5 +14,7 @@ class CreateUsers < DbMigrationConnection
       end
 
     end
+
   end
+
 end

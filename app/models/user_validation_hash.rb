@@ -1,2 +1,2 @@
-class UserValidationHash < EstablishCompanyUsersDbConnection
+class UserValidationHash < EstablishCompanyUserDbConnection
 end

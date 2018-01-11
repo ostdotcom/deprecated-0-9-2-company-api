@@ -2,7 +2,6 @@ class EstablishCompanyClientEconomyDbConnection < ApplicationRecord
   self.abstract_class = true
 
   def self.config_key
-    "company_client_#{Rails.env}"
     "company_client_economy_#{GlobalConstant::Base.sub_env}_#{Rails.env}"
   end
 

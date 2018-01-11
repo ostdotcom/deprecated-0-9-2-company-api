@@ -1,7 +1,8 @@
 class CreateUserValidationHashes < DbMigrationConnection
+
   def change
 
-    run_migration_for_db(EstablishCompanyUsersDbConnection) do
+    run_migration_for_db(EstablishCompanyUserDbConnection) do
 
       create_table :user_validation_hashes do |t|
         t.column :user_id, :integer, null: false
@@ -13,5 +14,7 @@ class CreateUserValidationHashes < DbMigrationConnection
       end
 
     end
+
   end
+
 end

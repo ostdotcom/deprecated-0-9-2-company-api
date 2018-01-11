@@ -1,4 +1,5 @@
 class CreateClientManagers < DbMigrationConnection
+
   def change
 
     run_migration_for_db(EstablishCompanyClientDbConnection) do
@@ -11,5 +12,7 @@ class CreateClientManagers < DbMigrationConnection
       end
 
     end
+
   end
+
 end

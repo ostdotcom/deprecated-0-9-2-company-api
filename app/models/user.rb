@@ -1,2 +1,2 @@
-class User < EstablishCompanyUsersDbConnection
+class User < EstablishCompanyUserDbConnection
 end

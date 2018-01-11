@@ -1,5 +1,7 @@
 class CreateClientTokens < DbMigrationConnection
+
   def change
+
     run_migration_for_db(EstablishCompanyClientEconomyDbConnection) do
 
       create_table :client_tokens do |t|
@@ -16,5 +18,7 @@ class CreateClientTokens < DbMigrationConnection
       end
 
     end
+
   end
+
 end

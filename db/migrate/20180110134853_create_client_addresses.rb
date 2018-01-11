@@ -1,4 +1,5 @@
 class CreateClientAddresses < DbMigrationConnection
+
   def change
 
     run_migration_for_db(EstablishCompanyClientEconomyDbConnection) do
@@ -12,5 +13,7 @@ class CreateClientAddresses < DbMigrationConnection
       end
 
     end
+
   end
+
 end

@@ -1,8 +1,8 @@
-class EstablishCompanyUsersDbConnection < ApplicationRecord
+class EstablishCompanyUserDbConnection < ApplicationRecord
   self.abstract_class = true
 
   def self.config_key
-    "company_users_#{Rails.env}"
+    "company_user_#{Rails.env}"
   end
 
   def self.applicable_sub_environments
