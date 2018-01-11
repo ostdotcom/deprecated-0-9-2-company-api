@@ -1,8 +1,8 @@
 class Client < EstablishCompanyClientDbConnection
 
   enum status: {
-    GlobalConstant::User.active_status => 1,
-    GlobalConstant::User.inactive_status => 2
+    GlobalConstant::Client.active_status => 1,
+    GlobalConstant::Client.inactive_status => 2
   }
 
 end
