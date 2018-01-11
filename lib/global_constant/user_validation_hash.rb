@@ -19,6 +19,10 @@ module GlobalConstant
         'inactive'
       end
 
+      def used_status
+        'used'
+      end
+
       ### Status End ###
 
 
@@ -33,6 +37,18 @@ module GlobalConstant
       end
 
       ### Kind End ###
+
+      ########## expiry intervals ###########
+
+      def reset_token_expiry_interval
+        30.minutes
+      end
+
+      def double_opt_in_expiry_interval
+        15.days
+      end
+
+      ########## Kinds ###########
 
     end
 
