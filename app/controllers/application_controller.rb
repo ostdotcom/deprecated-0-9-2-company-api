@@ -1,10 +1,5 @@
 class ApplicationController < ActionController::API
 
-  include ActionController::RequestForgeryProtection
-  protect_from_forgery with: :exception
-
-  include CsrfTokenConcern
-
   [
       ActionController::Cookies
   ].each do |mdl|

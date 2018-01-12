@@ -1,12 +1,27 @@
 constants:
   sub_env: <%= ENV['CA_SUB_ENV']%>
+
+  kms:
+    login:
+      arn: <%= ENV['CA_LOGIN_KMS_ARN']%>
+      id: <%= ENV['CA_LOGIN_KMS_ID']%>
+    info:
+      arn: <%= ENV['CA_INFO_KMS_ARN']%>
+      id: <%= ENV['CA_INFO_KMS_ID']%>
+
+  aws:
+    region: <%= ENV['CA_DEFAULT_AWS_REGION']%>
+    user:
+      access_key: <%= ENV['CA_USER_AWS_ACCESS_KEY']%>
+      secret_key: <%= ENV['CA_USER_AWS_SECRET_KEY']%>
+
   recaptcha:
     site_key: <%= ENV['CA_RECAPTCHA_SITE_KEY'] %>
     secret_key: <%= ENV['CA_RECAPTCHA_SECRET'] %>
 
   secret_encryptor:
-      cookie_secret_key: <%= ENV['STA_COOKIE_SECRET_KEY'] %>
-      email_tokens_decriptor_key: <%= ENV['STA_EMAIL_TOKENS_DECRIPTOR_KEY'] %>
+    cookie_secret_key: <%= ENV['CA_COOKIE_SECRET_KEY'] %>
+    email_tokens_decriptor_key: <%= ENV['CA_EMAIL_TOKENS_DECRIPTOR_KEY'] %>
 
-memcached:
-  instances: <%= ENV['CA_MEMCACHED_INSTANCES'] %>
+  memcached:
+    instances: <%= ENV['CA_MEMCACHED_INSTANCES'] %>

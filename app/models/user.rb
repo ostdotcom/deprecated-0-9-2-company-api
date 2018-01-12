@@ -33,17 +33,6 @@ class User < EstablishCompanyUserDbConnection
     end
   end
 
-  # Get encrypted password
-  #
-  # * Author: Pankaj
-  # * Date: 11/08/2017
-  # * Reviewed By:
-  #
-  # @param [String] password
-  # @param [String] salt
-  #
-  # @return [String] MD5 Encrypted password
-  #
   def self.get_encrypted_password(password, salt)
     begin
       Digest::MD5.hexdigest("#{password}::#{salt}")
@@ -52,6 +41,22 @@ class User < EstablishCompanyUserDbConnection
       s = salt.to_s.force_encoding("UTF-8")
       Digest::MD5.hexdigest("#{p}::#{s}")
     end
+  end
+
+  def self.get_cookie_value(user_id, password, browser_user_agent = '')
+    current_ts = Time.now.to_i
+    token_e = get_cookie_token(user_id, password, browser_user_agent, current_ts)
+    "#{user_id}:#{current_ts}:#{token_e}"
+  end
+
+  def self.get_cookie_token(user_id, password, browser_user_agent, current_ts)
+    string_to_sign = "#{user_id}:#{password}:#{browser_user_agent}:#{current_ts}"
+    key="#{user_id}:#{current_ts}:#{browser_user_agent}:#{password[-12..-1]}:#{GlobalConstant::SecretEncryptor.cookie_key}"
+    sha256_params = {
+      string: string_to_sign,
+      salt: key
+    }
+    Sha256.new(sha256_params).perform
   end
 
 end

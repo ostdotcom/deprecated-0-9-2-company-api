@@ -1,9 +1,9 @@
 class WebController < ApplicationController
 
-  include ActionController::RequestForgeryProtection
-  protect_from_forgery with: :exception
+  #include ActionController::RequestForgeryProtection
+  #protect_from_forgery with: :exception
 
-  include CsrfTokenConcern
+  #include CsrfTokenConcern
 
   [
       ActionController::Cookies

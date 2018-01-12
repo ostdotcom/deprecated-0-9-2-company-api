@@ -2,6 +2,8 @@
   :mandatory:
     - :email
     - :password
+    - :is_client_manager
+    - :client_creation_needed
   :optional:
 
 'UserManagement::Login':
