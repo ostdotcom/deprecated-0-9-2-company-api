@@ -204,6 +204,9 @@ module UserManagement
 
       client.save!
 
+      @user.default_client_id = client.id
+      @user.save!
+
       @client_id = client.id
     end
 
