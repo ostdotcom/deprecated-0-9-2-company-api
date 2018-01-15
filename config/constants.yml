@@ -1,5 +1,6 @@
 constants:
   sub_env: <%= ENV['CA_SUB_ENV']%>
+  postman_testing: <%= ENV['CA_POSTMAN_TESTING'] %>
 
   kms:
     login:

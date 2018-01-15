@@ -1,9 +1,10 @@
 class WebController < ApplicationController
 
-  #include ActionController::RequestForgeryProtection
-  #protect_from_forgery with: :exception
-
-  #include CsrfTokenConcern
+  unless GlobalConstant::Base.postman_testing?
+    include ActionController::RequestForgeryProtection
+    protect_from_forgery with: :exception
+    include CsrfTokenConcern
+  end
 
   [
       ActionController::Cookies

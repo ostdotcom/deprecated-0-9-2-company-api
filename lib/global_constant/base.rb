@@ -67,6 +67,10 @@ module GlobalConstant
       Rails.env
     end
 
+    def self.postman_testing?
+      Rails.env.development? && ENV['CA_POSTMAN_TESTING']=='1'
+    end
+
     private
 
     def self.fetch_config
