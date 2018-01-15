@@ -7,6 +7,12 @@ class Client::LoginController < Client::BaseController
 
   # before_action :verify_recaptcha, only: [:sign_up, :login]
 
+  # Sign up
+  #
+  # * Author: Alpesh
+  # * Date: 15/01/2018
+  # * Reviewed By:
+  #
   def sign_up
     service_response = UserManagement::SignUp.new(params).perform
 
@@ -23,13 +29,14 @@ class Client::LoginController < Client::BaseController
     render_api_response(service_response)
   end
 
+  # Login
+  #
+  # * Author: Alpesh
+  # * Date: 15/01/2018
+  # * Reviewed By:
+  #
   def login
-    service_response = UserManagement::Login.new(
-      params.merge(
-        browser_user_agent: http_user_agent,
-        ip_address: ip_address
-      )
-    ).perform
+    service_response = UserManagement::Login.new(params).perform
 
     if service_response.success?
       # NOTE: delete cookie value from data

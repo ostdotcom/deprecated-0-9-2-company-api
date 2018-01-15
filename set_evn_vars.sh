@@ -18,5 +18,7 @@ export CA_INFO_KMS_ID='eab8148d-fd9f-451d-9eb9-16c115645635'
 
 export CA_DEFAULT_AWS_REGION="us-east-1"
 
+export SECRET_KEY_BASE='yo123'
+
 export CA_COOKIE_SECRET_KEY=''
 export CA_EMAIL_TOKENS_DECRIPTOR_KEY=''

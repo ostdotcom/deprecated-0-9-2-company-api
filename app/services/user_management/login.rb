@@ -2,19 +2,35 @@ module UserManagement
 
   class Login < ServicesBase
 
+    # Initialize
+    #
+    # * Author: Alpesh
+    # * Date: 15/01/2018
+    # * Reviewed By:
+    #
+    # @param [String] email (mandatory) - the email of the user which is to be signed up
+    # @param [String] password (mandatory) - user password
+    #
+    # @return [UserManagement::Login]
+    #
     def initialize(params)
       super
 
       @email = @params[:email]
       @password = @params[:password]
-      @browser_user_agent = @params[:browser_user_agent]
-      @ip_address = @params[:ip_address]
 
-      @user_secret = nil
       @user = nil
       @login_salt_d = nil
     end
 
+    # Perform
+    #
+    # * Author: Alpesh
+    # * Date: 15/01/2018
+    # * Reviewed By:
+    #
+    # @return [Result::Base]
+    #
     def perform
 
       r = validate
@@ -29,38 +45,45 @@ module UserManagement
       r = validate_password
       return r unless r.success?
 
-      enqueue_job
-
       set_cookie_value
 
     end
 
     private
 
+    # Fetch user
+    #
+    # * Author: Alpesh
+    # * Date: 15/01/2018
+    # * Reviewed By:
+    #
+    # Sets @user
+    #
+    # @return [Result::Base]
+    #
     def fetch_user
       @user = User.where(email: @email).first
-      return unauthorized_access_response('um_l_1') unless @user.present? && @user.password.present? &&
-          (@user.status == GlobalConstant::User.active_status)
 
-      return error_with_data(
-          'um_l_4',
-          'The token sale ended, this account was not activated during the sale.',
-          'The token sale ended, this account was not activated during the sale.',
-          GlobalConstant::ErrorAction.default,
-          {},
-          {}
-      ) if GlobalConstant::TokenSale.is_general_sale_ended? && !@user.send("#{GlobalConstant::User.token_sale_double_optin_done_property}?")
-
-
-
-      @user_secret = UserSecret.where(id: @user.user_secret_id).first
-      return unauthorized_access_response('um_l_2') unless @user_secret.present?
+      return unauthorized_access_response('um_l_1') if !@user.present? ||
+        !@user.password.present? ||
+        (@user.status != GlobalConstant::User.active_status) ||
+        !@user.login_salt.present?
 
       success
     end
 
+    # Decrypt login salt
+    #
+    # * Author: Alpesh
+    # * Date: 15/01/2018
+    # * Reviewed By:
+    #
+    # Sets @login_salt_d
+    #
+    # @return [Result::Base]
+    #
     def decrypt_login_salt
-      r = Aws::Kms.new('login','user').decrypt(@user_secret.login_salt)
+      r = Aws::Kms.new('login','user').decrypt(@user.login_salt)
       return r unless r.success?
 
       @login_salt_d = r.data[:plaintext]
@@ -68,36 +91,44 @@ module UserManagement
       success
     end
 
+    # Validate password
+    #
+    # * Author: Alpesh
+    # * Date: 15/01/2018
+    # * Reviewed By:
+    #
+    # @return [Result::Base]
+    #
     def validate_password
 
       evaluated_password_e = User.get_encrypted_password(@password, @login_salt_d)
-      return unauthorized_access_response('um_l_3') unless (evaluated_password_e == @user.password)
+      return unauthorized_access_response('um_l_2') unless (evaluated_password_e == @user.password)
 
       success
     end
 
-    def enqueue_job
-      BgJob.enqueue(
-          UserActivityLogJob,
-          {
-              user_id: @user.id,
-              action:   GlobalConstant::UserActivityLog.login_action,
-              action_timestamp: Time.now.to_i,
-              extra_data: {
-                  browser_user_agent: @browser_user_agent,
-                  ip_address: @ip_address
-              }
-
-          }
-      )
-    end
-
+    # Set cookie value
+    #
+    # * Author: Alpesh
+    # * Date: 15/01/2018
+    # * Reviewed By:
+    #
+    # @return [Result::Base]
+    #
     def set_cookie_value
-      cookie_value = User.get_cookie_value(@user.id, @user.password, @browser_user_agent)
+      cookie_value = User.get_cookie_value(@user.id, @user.password)
 
-      success_with_data(cookie_value: cookie_value, user_token_sale_state: @user.get_token_sale_state_page_name)
+      success_with_data(cookie_value: cookie_value)
     end
 
+    # Unauthorized access response
+    #
+    # * Author: Alpesh
+    # * Date: 15/01/2018
+    # * Reviewed By:
+    #
+    # @return [Result::Base]
+    #
     def unauthorized_access_response(err, display_text = 'Incorrect login details.')
       error_with_data(
         err,
