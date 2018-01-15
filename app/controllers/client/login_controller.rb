@@ -1,5 +1,7 @@
 class Client::LoginController < Client::BaseController
 
+  before_action :verify_recaptcha, only: [:sign_up, :login]
+
   before_action :authenticate_request, except: [
     :sign_up,
     :login
