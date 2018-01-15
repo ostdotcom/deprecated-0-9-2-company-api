@@ -18,6 +18,7 @@ module UserManagement
       @cookie_value = @params[:cookie_value]
 
       @user_id = nil
+      @client_id = nil
       @created_ts = nil
       @token = nil
 
@@ -47,6 +48,7 @@ module UserManagement
 
       success_with_data(
           user_id: @user_id,
+          client_id: @client_id,
           extended_cookie_value: @extended_cookie_value
       )
 
@@ -60,21 +62,24 @@ module UserManagement
     # * Date: 15/01/2018
     # * Reviewed By:
     #
-    # Sets @user_id, @created_ts, @token
+    # Sets @user_id, @client_id, @created_ts, @token
     #
     # @return [Result::Base]
     #
     def set_parts
       parts = @cookie_value.split(':')
-      return unauthorized_access_response('um_vc_1') unless parts.length == 3
+      return unauthorized_access_response('um_vc_1') unless parts.length == 4
 
       @user_id = parts[0].to_i
       return unauthorized_access_response('um_vc_2') unless @user_id > 0
 
-      @created_ts = parts[1].to_i
-      return unauthorized_access_response('um_vc_3') unless (@created_ts + GlobalConstant::Cookie.user_expiry.to_i) >= Time.now.to_i
+      @client_id = parts[1].to_i
+      return unauthorized_access_response('um_vc_3') unless @client_id >= 0
 
-      @token = parts[2]
+      @created_ts = parts[2].to_i
+      return unauthorized_access_response('um_vc_4') unless (@created_ts + GlobalConstant::Cookie.user_expiry.to_i) >= Time.now.to_i
+
+      @token = parts[3]
 
       success
     end
@@ -91,11 +96,21 @@ module UserManagement
     #
     def validate_token
       @user = User.get_from_memcache(@user_id)
-      return unauthorized_access_response('um_vc_4') unless @user.present? && @user.password.present? &&
+      return unauthorized_access_response('um_vc_5') unless @user.present? && @user.password.present? &&
           (@user[:status] == GlobalConstant::User.active_status)
 
-      evaluated_token = User.get_cookie_token(@user_id, @user[:password], '', @created_ts)
-      return unauthorized_access_response('um_vc_5') unless (evaluated_token == @token)
+      # if @client_id != default_client_id
+      # check for client id to be existing in client managers table
+      if @client_id != @user.default_client_id
+        return unauthorized_access_response('um_vc_6') unless ClientManager.where(
+          client_id: @client_id,
+          user_id: @user_id,
+          status: GlobalConstant::ClientManager.active_status
+        ).first.present?
+      end
+
+      evaluated_token = User.get_cookie_token(@user_id, @client_id, @user[:password], '', @created_ts)
+      return unauthorized_access_response('um_vc_7') unless (evaluated_token == @token)
 
       success
     end
@@ -110,7 +125,7 @@ module UserManagement
     #
     def set_extended_cookie_value
       #return if (@created_ts + 29.days.to_i) >= Time.now.to_i
-      @extended_cookie_value = User.get_cookie_value(@user_id, @user[:password])
+      @extended_cookie_value = User.get_cookie_value(@user_id, @client_id, @user[:password])
     end
 
     # Unauthorized access response

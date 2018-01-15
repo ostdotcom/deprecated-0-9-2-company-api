@@ -43,13 +43,13 @@ class User < EstablishCompanyUserDbConnection
     end
   end
 
-  def self.get_cookie_value(user_id, password, browser_user_agent = '')
+  def self.get_cookie_value(user_id, default_client_id, password, browser_user_agent = '')
     current_ts = Time.now.to_i
-    token_e = get_cookie_token(user_id, password, browser_user_agent, current_ts)
-    "#{user_id}:#{current_ts}:#{token_e}"
+    token_e = get_cookie_token(user_id, default_client_id, password, browser_user_agent, current_ts)
+    "#{user_id}:#{default_client_id}:#{current_ts}:#{token_e}"
   end
 
-  def self.get_cookie_token(user_id, password, browser_user_agent, current_ts)
+  def self.get_cookie_token(user_id, client_id, password, browser_user_agent, current_ts)
     string_to_sign = "#{user_id}:#{password}:#{browser_user_agent}:#{current_ts}"
     key="#{user_id}:#{current_ts}:#{browser_user_agent}:#{password[-12..-1]}:#{GlobalConstant::SecretEncryptor.cookie_key}"
     sha256_params = {

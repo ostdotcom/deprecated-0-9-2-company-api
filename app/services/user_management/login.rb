@@ -116,7 +116,7 @@ module UserManagement
     # @return [Result::Base]
     #
     def set_cookie_value
-      cookie_value = User.get_cookie_value(@user.id, @user.password)
+      cookie_value = User.get_cookie_value(@user.id, @user.default_client_id, @user.password)
 
       success_with_data(cookie_value: cookie_value)
     end

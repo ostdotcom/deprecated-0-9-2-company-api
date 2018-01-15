@@ -239,6 +239,7 @@ module UserManagement
     def set_cookie_value
       @cookie_value = User.get_cookie_value(
         @user.id,
+        @user.default_client_id,
         @user.password
       )
 

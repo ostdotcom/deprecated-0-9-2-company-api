@@ -1,6 +1,8 @@
 class Client::LoginController < Client::BaseController
 
-  before_action :verify_recaptcha, only: [:sign_up, :login]
+  unless GlobalConstant::Base.postman_testing?
+    before_action :verify_recaptcha, only: [:sign_up, :login]
+  end
 
   before_action :authenticate_request, except: [
     :sign_up,
