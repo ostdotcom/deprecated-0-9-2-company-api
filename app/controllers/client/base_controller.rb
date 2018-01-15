@@ -4,8 +4,7 @@ class Client::BaseController < WebController
 
   def authenticate_request
     service_response = UserManagement::VerifyCookie.new(
-        cookie_value: cookies[GlobalConstant::Cookie.user_cookie_name.to_sym],
-        browser_user_agent: http_user_agent
+        cookie_value: cookies[GlobalConstant::Cookie.user_cookie_name.to_sym]
     ).perform
 
     if service_response.success?

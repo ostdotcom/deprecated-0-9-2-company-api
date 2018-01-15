@@ -12,6 +12,11 @@
     - :password
   :optional:
 
+'UserManagement::VerifyCookie':
+  :mandatory:
+    - :cookie_value
+  :optional:
+
 'UserManagement::SendResetPasswordLink':
   :mandatory:
     - :email

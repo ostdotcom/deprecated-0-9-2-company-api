@@ -1,0 +1,122 @@
+{
+	"id": "ae467a39-92f8-f023-d91b-3b08249dd607",
+	"name": "company-api",
+	"description": "",
+	"order": [],
+	"folders": [
+		{
+			"name": "login",
+			"description": "",
+			"collectionId": "ae467a39-92f8-f023-d91b-3b08249dd607",
+			"order": [
+				"e3599a5e-5cfe-af39-5c0a-309ddd8e911d",
+				"79048955-8683-3600-9866-d710449b2536"
+			],
+			"owner": "323776",
+			"folders_order": [],
+			"id": "440a26e1-98de-b07c-cb8f-537b5314f4d4"
+		}
+	],
+	"folders_order": [
+		"440a26e1-98de-b07c-cb8f-537b5314f4d4"
+	],
+	"timestamp": 1515746035733,
+	"owner": "323776",
+	"public": false,
+	"events": [],
+	"variables": [],
+	"auth": null,
+	"requests": [
+		{
+			"id": "79048955-8683-3600-9866-d710449b2536",
+			"headers": "",
+			"headerData": [],
+			"url": "{{login_api_url}}/client/login",
+			"folder": "440a26e1-98de-b07c-cb8f-537b5314f4d4",
+			"queryParams": [],
+			"events": [],
+			"pathVariables": {},
+			"pathVariableData": [],
+			"method": "POST",
+			"data": [
+				{
+					"key": "email",
+					"value": "kedar@pepo.com",
+					"description": "",
+					"type": "text",
+					"enabled": true
+				},
+				{
+					"key": "password",
+					"value": "12345678",
+					"description": "",
+					"type": "text",
+					"enabled": true
+				}
+			],
+			"dataMode": "params",
+			"version": 2,
+			"auth": null,
+			"time": 1516022999443,
+			"name": "login",
+			"description": "",
+			"collectionId": "ae467a39-92f8-f023-d91b-3b08249dd607",
+			"responses": [],
+			"currentHelper": null,
+			"helperAttributes": null
+		},
+		{
+			"id": "e3599a5e-5cfe-af39-5c0a-309ddd8e911d",
+			"headers": "",
+			"headerData": [],
+			"url": "{{login_api_url}}/client/sign-up",
+			"queryParams": [],
+			"pathVariables": {},
+			"pathVariableData": [],
+			"method": "POST",
+			"collectionId": "ae467a39-92f8-f023-d91b-3b08249dd607",
+			"data": [
+				{
+					"key": "email",
+					"value": "kedar@pepo.com",
+					"description": "",
+					"type": "text",
+					"enabled": true
+				},
+				{
+					"key": "password",
+					"value": "12345678",
+					"description": "",
+					"type": "text",
+					"enabled": true
+				},
+				{
+					"key": "is_client_manager",
+					"value": "1",
+					"description": "",
+					"type": "text",
+					"enabled": true
+				},
+				{
+					"key": "client_creation_needed",
+					"value": "1",
+					"description": "",
+					"type": "text",
+					"enabled": true
+				}
+			],
+			"dataMode": "params",
+			"name": "sign-up",
+			"description": "",
+			"descriptionFormat": "html",
+			"time": 1516008287708,
+			"version": 2,
+			"responses": [],
+			"folder": "440a26e1-98de-b07c-cb8f-537b5314f4d4",
+			"auth": null,
+			"collection_id": "ae467a39-92f8-f023-d91b-3b08249dd607",
+			"currentHelper": null,
+			"helperAttributes": null
+		}
+	]
+}
