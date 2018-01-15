@@ -53,6 +53,11 @@ module UserManagement
 
       set_cookie_value
 
+      # TODO: Move this part in sidekiq
+      create_user_email_service_api_call_hook
+
+      UserManagement::SendDoubleOptInLink.new(email: @email).perform
+
       success_with_data(
         cookie_value: @cookie_value
       )
@@ -282,6 +287,23 @@ module UserManagement
       @info_salt_hash = r.data
 
       success
+    end
+
+    # Create Hook to sync data in Email Service
+    #
+    # * Author: Pankaj
+    # * Date: 12/01/2018
+    # * Reviewed By:
+    #
+    def create_user_email_service_api_call_hook
+
+      Email::HookCreator::AddContact.new(
+          email: @user.email,
+          custom_attributes: {
+              GlobalConstant::PepoCampaigns.user_registered_attribute => GlobalConstant::PepoCampaigns.user_registered_value
+          }
+      ).perform
+
     end
 
   end

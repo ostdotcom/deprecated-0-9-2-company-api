@@ -22,6 +22,11 @@
     - :email
   :optional:
 
+'UserManagement::SendDoubleOptInLink':
+  :mandatory:
+    - :email
+  :optional:
+
 'UserManagement::ResetPassword':
   :mandatory:
     - :r_t
