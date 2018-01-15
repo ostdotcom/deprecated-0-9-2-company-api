@@ -26,3 +26,12 @@ constants:
 
   memcached:
     instances: <%= ENV['CA_MEMCACHED_INSTANCES'] %>
+
+  pepo_campaigns:
+    api:
+      key: <%= ENV['STA_CAMPAIGN_CLIENT_KEY']%>
+      secret: <%= ENV['STA_CAMPAIGN_CLIENT_SECRET']%>
+      base_url: <%= ENV['STA_CAMPAIGN_BASE_URL']%>
+      version: 'v2'
+    list_ids:
+      master_list: <%= ENV['STA_CAMPAIGN_MASTER_LIST']%>
