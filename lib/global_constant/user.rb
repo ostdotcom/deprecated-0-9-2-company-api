@@ -27,6 +27,10 @@ module GlobalConstant
         'is_client_manager'
       end
 
+      def is_user_verified_property
+        'user_verified'
+      end
+
       ### Properties stop ###
 
     end

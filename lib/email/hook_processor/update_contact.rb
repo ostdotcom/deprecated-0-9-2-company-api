@@ -95,8 +95,7 @@ module Email
       # @return [Hash]
       #
       def user_settings_hash
-        # WE DO NOT TOUCH SETTINGS IN UPDATE CONTACT AS OF NOW
-        {}
+        @hook.params[:user_settings] || {}
       end
 
     end

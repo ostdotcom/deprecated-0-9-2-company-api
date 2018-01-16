@@ -12,11 +12,13 @@ module Email
       #
       # @params [Hash] custom_attributes (optional) - attribute which are to be set for this email
       # @params [String] custom_description (optional) - description which would be logged in email service hooks table
+      # @params [Hash] user_Settings (optional) - user settings which has to be updated for this email
       #
       # @return [Email::HookCreator::UpdateContact] returns an object of Email::HookCreator::UpdateContact class
       #
       def initialize(params)
         super
+        @user_settings = params[:user_settings] || {}
       end
 
       # Perform
@@ -78,7 +80,8 @@ module Email
       def handle_event
 
         create_hook(
-          custom_attributes: @custom_attributes
+          custom_attributes: @custom_attributes,
+          user_settings: @user_settings
         )
 
         success

@@ -34,6 +34,11 @@
     - :confirm_password
   :optional:
 
+'UserManagement::DoubleOptIn':
+  :mandatory:
+    - :r_t
+  :optional:
+
 'FullClassNameOfService':
   :mandatory:
     - :p1

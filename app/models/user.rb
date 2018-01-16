@@ -8,7 +8,8 @@ class User < EstablishCompanyUserDbConnection
 
   def self.properties_config
     @u_props ||= {
-      GlobalConstant::User.is_client_manager_property => 1
+      GlobalConstant::User.is_client_manager_property => 1,
+      GlobalConstant::User.is_user_verified_property => 2
     }
   end
 
