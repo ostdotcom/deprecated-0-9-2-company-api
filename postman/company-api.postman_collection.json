@@ -70,51 +70,57 @@
 			"headers": "",
 			"headerData": [],
 			"url": "{{login_api_url}}/client/sign-up",
+			"folder": "440a26e1-98de-b07c-cb8f-537b5314f4d4",
 			"queryParams": [],
+			"events": [],
 			"pathVariables": {},
 			"pathVariableData": [],
 			"method": "POST",
-			"collectionId": "ae467a39-92f8-f023-d91b-3b08249dd607",
 			"data": [
 				{
 					"key": "email",
 					"value": "kedar@pepo.com",
-					"description": "",
+					"description": "mandatory",
 					"type": "text",
 					"enabled": true
 				},
 				{
 					"key": "password",
 					"value": "12345678",
-					"description": "",
+					"description": "mandatory",
 					"type": "text",
 					"enabled": true
 				},
 				{
 					"key": "is_client_manager",
 					"value": "1",
-					"description": "",
+					"description": "optional",
 					"type": "text",
 					"enabled": true
 				},
 				{
 					"key": "client_creation_needed",
 					"value": "1",
-					"description": "",
+					"description": "optional",
+					"type": "text",
+					"enabled": true
+				},
+				{
+					"key": "tos_selected",
+					"value": "1",
+					"description": "mandatory",
 					"type": "text",
 					"enabled": true
 				}
 			],
 			"dataMode": "params",
+			"version": 2,
+			"auth": null,
+			"time": 1516095901478,
 			"name": "sign-up",
 			"description": "",
-			"descriptionFormat": "html",
-			"time": 1516008287708,
-			"version": 2,
+			"collectionId": "ae467a39-92f8-f023-d91b-3b08249dd607",
 			"responses": [],
-			"folder": "440a26e1-98de-b07c-cb8f-537b5314f4d4",
-			"auth": null,
-			"collection_id": "ae467a39-92f8-f023-d91b-3b08249dd607",
 			"currentHelper": null,
 			"helperAttributes": null
 		}

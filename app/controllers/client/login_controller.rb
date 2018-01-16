@@ -18,7 +18,9 @@ class Client::LoginController < Client::BaseController
   # * Reviewed By:
   #
   def sign_up
-    service_response = UserManagement::SignUp.new(params).perform
+    service_response = UserManagement::SignUp.new(
+      params.merge(is_client_manager: 1, client_creation_needed: 1)
+    ).perform
 
     if service_response.success?
       # NOTE: delete cookie value from data
