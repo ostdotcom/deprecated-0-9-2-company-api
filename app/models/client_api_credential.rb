@@ -5,7 +5,7 @@ class ClientApiCredential < EstablishCompanyClientEconomyDbConnection
 
     encryptor_obj = LocalCipher.new(salt)
     r = encryptor_obj.encrypt(api_secret)
-    fail() unless r.success?
+    fail(r) unless r.success?
 
     r.data[:ciphertext_blob]
   end
