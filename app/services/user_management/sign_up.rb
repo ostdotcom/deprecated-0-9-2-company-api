@@ -51,6 +51,8 @@ module UserManagement
 
       create_client_manager
 
+      create_client_api_credentials
+
       set_cookie_value
 
       # TODO: Move this part in sidekiq
@@ -231,6 +233,27 @@ module UserManagement
         user_id: @user.id,
         status: GlobalConstant::ClientManager.active_status
       )
+    end
+
+    # Create client Api credentials
+    #
+    # * Author: Pankaj
+    # * Date: 18/01/2018
+    # * Reviewed By:
+    #
+    #
+    #
+    def create_client_api_credentials
+      return unless @client_creation_needed
+
+      api_credential = ClientApiCredential.new(
+        client_id: @client_id,
+        api_key: ClientApiCredential.generate_random_app_id,
+        api_secret: ClientApiCredential.generate_encrypted_secret_key(@info_salt_hash[:plaintext])
+      )
+
+      api_credential.save!
+
     end
 
     # Set cookie value

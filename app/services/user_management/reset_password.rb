@@ -177,10 +177,10 @@ module UserManagement
     # @return [Result::Base]
     #
     def decrypt_login_salt
-      # r = Aws::Kms.new('login', 'user').decrypt(@user.login_salt)
-      # return r unless r.success?
+      r = Aws::Kms.new('login', 'user').decrypt(@user.login_salt)
+      return r unless r.success?
 
-      @login_salt_d = @user.login_salt#r.data[:plaintext]
+      @login_salt_d = r.data[:plaintext]
 
       success
     end

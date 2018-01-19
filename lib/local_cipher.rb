@@ -4,14 +4,24 @@ class LocalCipher
 
   def initialize(key)
     @key = key
+    @splitter = '--'
   end
 
   def encrypt(plaintext)
     begin
-      ciphertext_blob = client.encrypt_and_sign(plaintext)
+      iv = generate_random_iv
+      client.encrypt
+      client.key = @key
+      client.iv = iv
+
+      encrypted = ''
+      encrypted << client.update(plaintext)
+      encrypted << client.final
+      encryptedString = Base64.encode64(encrypted).gsub(/\n/, '')
+      encryptedString += (@splitter + iv)
 
       success_with_data(
-          ciphertext_blob: ciphertext_blob
+          ciphertext_blob: encryptedString
       )
     rescue Exception => e
       error_with_data('lc_1',
@@ -24,7 +34,16 @@ class LocalCipher
 
   def decrypt(ciphertext_blob)
     begin
-      plaintext = client.decrypt_and_verify(ciphertext_blob)
+
+      arr = ciphertext_blob.split(@splitter)
+      encryptedString = arr[0]
+      iv = arr[1]
+
+      client.decrypt
+      client.key = @key
+      client.iv = iv
+      encryptedString = Base64.urlsafe_decode64(encryptedString)
+      plaintext = client.update(encryptedString) + client.final
 
       success_with_data(
           plaintext: plaintext
@@ -41,7 +60,14 @@ class LocalCipher
   private
 
   def client
-    @client ||= ActiveSupport::MessageEncryptor.new(@key, cipher: 'aes-256-cbc')
+    @client ||= OpenSSL::Cipher.new('aes-256-cbc')
+  end
+
+  def generate_random_iv
+    # This method will give different result everytime.
+    # If you change random method or iv length make sure to test in node-saas as well, because node has IV length restrictions.
+
+    SecureRandom.hex(8)
   end
 
 end
