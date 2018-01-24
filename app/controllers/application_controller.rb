@@ -69,15 +69,4 @@ class ApplicationController < ActionController::API
     cookies.delete(cookie_name.to_sym, domain: :all, secure: !Rails.env.development?, same_site: :strict)
   end
 
-  def set_cookie(cookie_name, value, expires)
-    cookies[cookie_name.to_sym] = {
-        value: value,
-        expires: expires,
-        domain: :all,
-        http_only: true,
-        secure: !Rails.env.development?,
-        same_site: :strict
-    }
-  end
-
 end

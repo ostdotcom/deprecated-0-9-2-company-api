@@ -21,6 +21,16 @@ class WebController < ApplicationController
     cookies.delete(cookie_name.to_sym, domain: :all, secure: !Rails.env.development?, same_site: :strict)
   end
 
+  # Set cookie
+  #
+  # * Author: Kedar
+  # * Date: 24/01/2018
+  # * Reviewed By:
+  #
+  # @params [String] cookie_name (mandatory)
+  # @params [String] value (mandatory)
+  # @params [Time] expires (mandatory)
+  #
   def set_cookie(cookie_name, value, expires)
     cookies[cookie_name.to_sym] = {
         value: value,
@@ -34,10 +44,47 @@ class WebController < ApplicationController
 
   private
 
+  # Authenticate request - verifies cookie
+  #
+  # * Author: Kedar
+  # * Date: 24/01/2018
+  # * Reviewed By:
+  #
   def authenticate_request
-    fail 'Sub-class to implement.'
+    service_response = UserManagement::VerifyCookie.new(
+      cookie_value: cookies[GlobalConstant::Cookie.user_cookie_name.to_sym]
+    ).perform
+
+    if service_response.success?
+      # Update Cookie, if required
+      extended_cookie_value = service_response.data[:extended_cookie_value]
+      set_cookie(
+        GlobalConstant::Cookie.user_cookie_name,
+        extended_cookie_value,
+        GlobalConstant::Cookie.user_expiry.from_now
+      ) if extended_cookie_value.present?
+
+      # Set user id
+      params[:user_id] = service_response.data[:user_id]
+      params[:client_id] = service_response.data[:client_id]
+
+      # Remove sensitive data
+      service_response.data = {}
+    else
+      # Clear cookie
+      delete_cookie(GlobalConstant::Cookie.user_cookie_name)
+      # Set 401 header
+      service_response.http_code = GlobalConstant::ErrorCode.unauthorized_access
+      render_api_response(service_response)
+    end
   end
 
+  # Handle exceptions gracefully
+  #
+  # * Author: Kedar
+  # * Date: 24/01/2018
+  # * Reviewed By:
+  #
   def handle_exceptions_gracefully
 
     begin

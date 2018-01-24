@@ -6,4 +6,8 @@ Rails.application.routes.draw do
     match 'login' => :login, via: :POST
   end
 
+  scope 'api/economy/token', controller: 'economy/token' do
+    match 'create' => :create_token, via: :POST
+  end
+
 end

@@ -39,6 +39,13 @@
     - :r_t
   :optional:
 
+'Economy::CreateToken':
+  :mandatory:
+    - :client_id
+    - :token_name
+    - :token_symbol
+  :optional:
+
 'FullClassNameOfService':
   :mandatory:
     - :p1
