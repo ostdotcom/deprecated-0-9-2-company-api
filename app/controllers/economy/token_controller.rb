@@ -11,4 +11,15 @@ class Economy::TokenController < Economy::BaseController
     render_api_response(service_response)
   end
 
+  # plan token action
+  #
+  # * Author: Kedar
+  # * Date: 24/01/2018
+  # * Reviewed By:
+  #
+  def plan_token
+    service_response = Economy::Plan.new(params).perform
+    render_api_response(service_response)
+  end
+
 end

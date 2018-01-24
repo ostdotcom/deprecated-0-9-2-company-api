@@ -35,7 +35,8 @@ module Economy
       r = validate_and_sanitize
       return r unless r.success?
 
-      create
+      r = create
+      return r unless r.success?
 
       success
 

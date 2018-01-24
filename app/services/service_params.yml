@@ -46,6 +46,15 @@
     - :token_symbol
   :optional:
 
+'Economy::Plan':
+  :mandatory:
+    - :client_id
+    - :token_name
+    - :conversion_rate
+    - :initial_number_of_users
+    - :airdrop_bt_per_user
+  :optional:
+
 'FullClassNameOfService':
   :mandatory:
     - :p1
