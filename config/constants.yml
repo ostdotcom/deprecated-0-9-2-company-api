@@ -2,6 +2,9 @@ constants:
   sub_env: <%= ENV['CA_SUB_ENV']%>
   postman_testing: <%= ENV['CA_POSTMAN_TESTING'] %>
 
+  redis:
+    url: <%= ENV['CA_REDIS_ENDPOINT'] %>
+
   kms:
     login:
       arn: <%= ENV['CA_LOGIN_KMS_ARN']%>

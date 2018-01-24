@@ -2,6 +2,16 @@ class BgJob
 
   extend Sanitizer
 
+  # Enqueue
+  #
+  # * Author: Kedar
+  # * Date: 24/01/2018
+  # * Reviewed By:
+  #
+  # @param [Class] klass (mandatory) - Class of the job to be enqueued
+  # @param [Hash] enqueue_params (mandatory) - Class of the job to be enqueued
+  # @param [Hash] options (optional) - Hash of the extra options - queue, force_run_sync, wait
+  #
   def self.enqueue(klass, enqueue_params, options = {})
     # Set default values to options
     options.reverse_merge!(emails: '',
@@ -39,13 +49,18 @@ class BgJob
         },
         subject: 'Exception in Resque enqueue'
       ).deliver
-
-      # send mail when redis down
-      #w hy raise?? when fallback run sync
-      # raise if !options[:safe] || !options[:fallback_run_sync]
-
   end
 
+  # Perform job synchronously
+  #
+  # * Author: Kedar
+  # * Date: 24/01/2018
+  # * Reviewed By:
+  #
+  # @param [Class] klass (mandatory) - Class of the job to be enqueued
+  # @param [Hash] enqueue_params (mandatory) - Class of the job to be enqueued
+  # @param [String] q_name (mandatory) - queue name
+  #
   def self.perform_job_synchronously(klass, enqueue_params, q_name)
     job = klass.new
     Rails.logger.info("Performing Job (#{job.class}) synchronously")

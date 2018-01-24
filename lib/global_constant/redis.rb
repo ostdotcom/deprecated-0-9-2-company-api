@@ -8,7 +8,7 @@ module GlobalConstant
     end
 
     def self.sidekiq_namespace
-      "st_api_sidekiq:#{Rails.env}"
+      "ca_api_sidekiq:#{Rails.env}"
     end
 
   end
