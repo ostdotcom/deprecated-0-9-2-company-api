@@ -31,4 +31,3 @@ export STA_CAMPAIGN_BASE_URL="https://pepocampaigns.com/"
 export STA_CAMPAIGN_MASTER_LIST="2334"
 
 export CA_REDIS_ENDPOINT='redis://ca:st123@127.0.0.1:6379'
-

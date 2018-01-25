@@ -34,6 +34,8 @@ gem 'listen', '>= 3.0.5', '< 3.2'
 
 gem 'http', '3.0.0'
 
+gem 'jwt', '2.1.0'
+
 # Build JSON APIs with ease. Read more: https://github.com/rails/jbuilder
 # gem 'jbuilder', '~> 2.5'
 # Use Redis adapter to run Action Cable in production
