@@ -22,4 +22,15 @@ class Economy::TokenController < Economy::BaseController
     render_api_response(service_response)
   end
 
+  # stake and mint
+  #
+  # * Author: Kedar
+  # * Date: 24/01/2018
+  # * Reviewed By:
+  #
+  def stake_and_mint
+    service_response = Economy::StakeAndMint.new(params).perform
+    render_api_response(service_response)
+  end
+
 end

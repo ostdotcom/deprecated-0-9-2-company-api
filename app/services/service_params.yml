@@ -55,6 +55,12 @@
     - :airdrop_bt_per_user
   :optional:
 
+'Economy::StakeAndMint':
+  :mandatory:
+    - :client_id
+    - :token_name
+  :optional:
+
 'FullClassNameOfService':
   :mandatory:
     - :p1
