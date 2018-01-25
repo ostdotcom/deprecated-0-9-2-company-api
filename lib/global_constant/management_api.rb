@@ -13,7 +13,7 @@ module GlobalConstant
     end
 
     def self.get_registration_status_api_path
-
+      'on-boarding/registration-status'
     end
 
     def self.secret_key
