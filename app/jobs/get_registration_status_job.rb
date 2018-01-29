@@ -13,6 +13,7 @@ class GetRegistrationStatusJob < ApplicationJob
   # @param [Integer] client_id (mandatory) - client id
   # @param [String] token_name (mandatory) - token name
   # @param [String] transation_hash (mandatory) - transaction hash of the proposal transaction
+  # @param [Hash] stake_params (mandatory) - stake params
   #
   def perform(params)
 
@@ -46,6 +47,7 @@ class GetRegistrationStatusJob < ApplicationJob
     @transaction_hash = params[:transaction_hash]
     @client_id = params[:client_id]
     @token_name = params[:token_name]
+    @stake_params = params[:stake_params]
 
     @registration_status = nil
     @client_token = nil
@@ -131,19 +133,34 @@ class GetRegistrationStatusJob < ApplicationJob
   # * Reviewed By:
   #
   def enqueue_job
-    return if enqueue_job_needed?
+    if registration_done?
 
-    BgJob.enqueue(
-      GetRegistrationStatusJob,
-      {
-        transaction_hash: @transaction_hash,
-        client_id: @client_id,
-        token_name: @token_name
-      },
-      {
-        wait: 30.seconds
-      }
-    )
+      @stake_params[:uuid] = @client_token.uuid
+
+      BgJob.enqueue(
+        Stake::ApproveJob,
+        {
+          stake_params: @stake_params
+        }
+      )
+
+    else
+
+      BgJob.enqueue(
+        GetRegistrationStatusJob,
+        {
+          transaction_hash: @transaction_hash,
+          client_id: @client_id,
+          token_name: @token_name,
+          stake_params: @stake_params
+        },
+        {
+          wait: 30.seconds
+        }
+      )
+
+    end
+
   end
 
   # set propose done
@@ -156,6 +173,9 @@ class GetRegistrationStatusJob < ApplicationJob
     @client_token.send(
       "set_#{GlobalConstant::ClientToken.propose_done_setup_step}"
     )
+
+    @client_token.uuid = @registration_status[:uuid]
+    @client_token.erc20_address = @registration_status[:erc20_address]
   end
 
   # set registered on uc
@@ -182,7 +202,7 @@ class GetRegistrationStatusJob < ApplicationJob
     )
   end
 
-  # Is enqueue job needed
+  # Is registration done
   #
   # * Author: Kedar
   # * Date: 24/01/2018
@@ -190,7 +210,7 @@ class GetRegistrationStatusJob < ApplicationJob
   #
   # @return [Boolean]
   #
-  def enqueue_job_needed?
+  def registration_done?
     propose_done? && registered_on_uc? && registered_on_vc?
   end
 

@@ -64,6 +64,8 @@
   :mandatory:
     - :client_id
     - :token_name
+    - :to_stake_amount
+    - :beneficiary
   :optional:
 
 'FullClassNameOfService':

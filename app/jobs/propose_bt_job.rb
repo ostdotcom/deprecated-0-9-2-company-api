@@ -14,6 +14,7 @@ class ProposeBtJob < ApplicationJob
   # @param [String] token_symbol (mandatory) - token symbol
   # @param [String] token_name (mandatory) - token name
   # @param [String] token_conversion_rate (mandatory) - token conversion rate
+  # @param [Hash] stake_params (mandatory) - stake params - to_stake_amount and beneficiary should be present
   #
   def perform(params)
 
@@ -49,6 +50,7 @@ class ProposeBtJob < ApplicationJob
     @token_symbol = params[:token_symbol]
     @token_name = params[:token_name]
     @token_conversion_rate = params[:token_conversion_rate].to_f
+    @stake_params = params[:stake_params]
 
     @transaction_hash = nil
     @client_token = nil
@@ -131,7 +133,8 @@ class ProposeBtJob < ApplicationJob
       {
         transaction_hash: @transaction_hash,
         client_id: @client_id,
-        token_name: @token_name
+        token_name: @token_name,
+        stake_params: @stake_params
       },
       {
         wait: 100.seconds
