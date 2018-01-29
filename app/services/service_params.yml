@@ -39,6 +39,11 @@
     - :r_t
   :optional:
 
+'ClientManagement::GetClientApiCredentials':
+  :mandatory:
+    - :client_id
+  :optional:
+
 'Economy::CreateToken':
   :mandatory:
     - :client_id
