@@ -98,7 +98,7 @@ class ProposeBtJob < ApplicationJob
       token_conversion_rate: @token_conversion_rate
     }
 
-    r = ManagementApi::OnBoarding::ProposeBt.new.perform(params)
+    r = SaasApi::OnBoarding::ProposeBt.new.perform(params)
     return r unless r.success?
 
     @transaction_hash =  r.data[:transaction_hash]

@@ -1,4 +1,4 @@
-module ManagementApi
+module SaasApi
 
   class Base
 
@@ -13,7 +13,7 @@ module ManagementApi
     # * Date: 25/01/2018
     # * Reviewed By:
     #
-    # @return [ManagementApi::Base]
+    # @return [SaasApi::Base]
     #
     def initialize
       @timeouts = {write: 60, connect: 60, read: 60}
@@ -32,7 +32,7 @@ module ManagementApi
     def send_request_of_type(request_type, path, params)
       begin
 
-        request_path = GlobalConstant::ManagementApi.base_url + path
+        request_path = GlobalConstant::SaasApi.base_url + path
 
         # It overrides verification of SSL certificates
         ssl_context = OpenSSL::SSL::SSLContext.new
@@ -97,7 +97,7 @@ module ManagementApi
     #
     def get_jwt_token(data)
       payload = {data: data}
-      secret_key = GlobalConstant::ManagementApi.secret_key
+      secret_key = GlobalConstant::SaasApi.secret_key
 
       JWT.encode(payload, secret_key, 'HS256')
     end

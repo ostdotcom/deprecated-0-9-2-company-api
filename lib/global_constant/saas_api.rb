@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 module GlobalConstant
 
-  class ManagementApi
+  class SaasApi
 
     def self.base_url
       #TODO - move this to env vars
@@ -14,6 +14,18 @@ module GlobalConstant
 
     def self.get_registration_status_api_path
       'on-boarding/registration-status'
+    end
+
+    def self.approve_for_stake_api_path
+      'stake/approve'
+    end
+
+    def self.get_approve_status_for_stake_api_path
+      'stake/approval-status'
+    end
+
+    def self.start_stake
+      'stake/start'
     end
 
     def self.secret_key

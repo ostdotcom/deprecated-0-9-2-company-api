@@ -1,8 +1,8 @@
-module ManagementApi
+module SaasApi
 
   module OnBoarding
 
-    class GetRegistrationStatus < ManagementApi::Base
+    class GetRegistrationStatus < SaasApi::Base
 
       # Initialize
       #
@@ -10,7 +10,7 @@ module ManagementApi
       # * Date: 25/01/2018
       # * Reviewed By:
       #
-      # @return [ManagementApi::OnBoarding::GetRegistrationStatus]
+      # @return [SaasApi::OnBoarding::GetRegistrationStatus]
       #
       def initialize
         super
@@ -29,7 +29,7 @@ module ManagementApi
       def perform(params)
         send_request_of_type(
           'get',
-          GlobalConstant::ManagementApi.get_registration_status_api_path,
+          GlobalConstant::SaasApi.get_registration_status_api_path,
           params
         )
       end

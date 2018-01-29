@@ -1,16 +1,16 @@
-module ManagementApi
+module SaasApi
 
-  module OnBoarding
+  module Stake
 
-    class ProposeBt < ManagementApi::Base
+    class Approve < SaasApi::Base
 
       # Initialize
       #
       # * Author: Kedar
-      # * Date: 25/01/2018
+      # * Date: 29/01/2018
       # * Reviewed By:
       #
-      # @return [ManagementApi::OnBoarding::ProposeBt]
+      # @return [SaasApi::Stake::Approve]
       #
       def initialize
         super
@@ -33,7 +33,7 @@ module ManagementApi
       def perform(params)
         send_request_of_type(
           'post',
-          GlobalConstant::ManagementApi.propose_bt_api_path,
+          GlobalConstant::SaasApi.propose_bt_api_path,
           params
         )
       end

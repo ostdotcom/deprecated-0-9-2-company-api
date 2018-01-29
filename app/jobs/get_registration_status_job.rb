@@ -98,7 +98,7 @@ class GetRegistrationStatusJob < ApplicationJob
       transaction_hash: @transaction_hash
     }
 
-    r = ManagementApi::OnBoarding::GetRegistrationStatus.new.perform(params)
+    r = SaasApi::OnBoarding::GetRegistrationStatus.new.perform(params)
     return r unless r.success?
 
     @registration_status = r.data[:registration_status]
