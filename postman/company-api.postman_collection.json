@@ -1,5 +1,5 @@
 {
-	"id": "ae467a39-92f8-f023-d91b-3b08249dd607",
+	"id": "ce8d26cf-1826-b6df-e12d-b2534dddfb5c",
 	"name": "company-api",
 	"description": "",
 	"order": [],
@@ -7,18 +7,32 @@
 		{
 			"name": "login",
 			"description": "",
-			"collectionId": "ae467a39-92f8-f023-d91b-3b08249dd607",
+			"collectionId": "ce8d26cf-1826-b6df-e12d-b2534dddfb5c",
 			"order": [
-				"e3599a5e-5cfe-af39-5c0a-309ddd8e911d",
-				"79048955-8683-3600-9866-d710449b2536"
+				"47a7dff3-a3d0-4f34-4fc2-072db28bcc22",
+				"8468a345-04f5-ce91-f79f-f630d9438c42"
 			],
 			"owner": "323776",
 			"folders_order": [],
-			"id": "440a26e1-98de-b07c-cb8f-537b5314f4d4"
+			"id": "465823a9-e83f-585d-6238-d5357d681ad6"
+		},
+		{
+			"name": "token",
+			"description": "",
+			"collectionId": "ce8d26cf-1826-b6df-e12d-b2534dddfb5c",
+			"order": [
+				"8d9fefc3-2f9b-129c-fe96-b819c3a72ef8",
+				"dbce363a-ef28-5632-ee3b-0b75f590a820",
+				"561a4fcc-c791-98ee-eced-7f5c5d3f2ec9"
+			],
+			"owner": "323776",
+			"folders_order": [],
+			"id": "ddbf4ea3-82ad-b7ae-7014-864540a3098d"
 		}
 	],
 	"folders_order": [
-		"440a26e1-98de-b07c-cb8f-537b5314f4d4"
+		"465823a9-e83f-585d-6238-d5357d681ad6",
+		"ddbf4ea3-82ad-b7ae-7014-864540a3098d"
 	],
 	"timestamp": 1515746035733,
 	"owner": "323776",
@@ -28,49 +42,11 @@
 	"auth": null,
 	"requests": [
 		{
-			"id": "79048955-8683-3600-9866-d710449b2536",
+			"id": "47a7dff3-a3d0-4f34-4fc2-072db28bcc22",
 			"headers": "",
 			"headerData": [],
-			"url": "{{login_api_url}}/client/login",
-			"folder": "440a26e1-98de-b07c-cb8f-537b5314f4d4",
-			"queryParams": [],
-			"events": [],
-			"pathVariables": {},
-			"pathVariableData": [],
-			"method": "POST",
-			"data": [
-				{
-					"key": "email",
-					"value": "kedar@pepo.com",
-					"description": "",
-					"type": "text",
-					"enabled": true
-				},
-				{
-					"key": "password",
-					"value": "12345678",
-					"description": "",
-					"type": "text",
-					"enabled": true
-				}
-			],
-			"dataMode": "params",
-			"version": 2,
-			"auth": null,
-			"time": 1516022999443,
-			"name": "login",
-			"description": "",
-			"collectionId": "ae467a39-92f8-f023-d91b-3b08249dd607",
-			"responses": [],
-			"currentHelper": null,
-			"helperAttributes": null
-		},
-		{
-			"id": "e3599a5e-5cfe-af39-5c0a-309ddd8e911d",
-			"headers": "",
-			"headerData": [],
-			"url": "{{login_api_url}}/client/sign-up",
-			"folder": "440a26e1-98de-b07c-cb8f-537b5314f4d4",
+			"url": "{{api_url}}/client/sign-up",
+			"folder": "465823a9-e83f-585d-6238-d5357d681ad6",
 			"queryParams": [],
 			"events": [],
 			"pathVariables": {},
@@ -116,10 +92,169 @@
 			"dataMode": "params",
 			"version": 2,
 			"auth": null,
-			"time": 1516095901478,
+			"time": 1516790442218,
 			"name": "sign-up",
 			"description": "",
-			"collectionId": "ae467a39-92f8-f023-d91b-3b08249dd607",
+			"collectionId": "ce8d26cf-1826-b6df-e12d-b2534dddfb5c",
+			"responses": [],
+			"currentHelper": null,
+			"helperAttributes": null
+		},
+		{
+			"id": "561a4fcc-c791-98ee-eced-7f5c5d3f2ec9",
+			"headers": "",
+			"headerData": [],
+			"url": "{{api_url}}/economy/token/stake-and-mint",
+			"folder": "ddbf4ea3-82ad-b7ae-7014-864540a3098d",
+			"queryParams": [],
+			"events": [],
+			"pathVariables": {},
+			"pathVariableData": [],
+			"method": "POST",
+			"data": [
+				{
+					"key": "token_name",
+					"value": "Ak11 Coin",
+					"description": "",
+					"type": "text",
+					"enabled": true
+				}
+			],
+			"dataMode": "params",
+			"version": 2,
+			"auth": null,
+			"time": 1517207333232,
+			"name": "stake-and-mint",
+			"description": "",
+			"collectionId": "ce8d26cf-1826-b6df-e12d-b2534dddfb5c",
+			"responses": [],
+			"currentHelper": null,
+			"helperAttributes": null
+		},
+		{
+			"id": "8468a345-04f5-ce91-f79f-f630d9438c42",
+			"headers": "",
+			"headerData": [],
+			"url": "{{api_url}}/client/login",
+			"folder": "465823a9-e83f-585d-6238-d5357d681ad6",
+			"queryParams": [],
+			"events": [],
+			"pathVariables": {},
+			"pathVariableData": [],
+			"method": "POST",
+			"data": [
+				{
+					"key": "email",
+					"value": "kedar@pepo.com",
+					"description": "",
+					"type": "text",
+					"enabled": true
+				},
+				{
+					"key": "password",
+					"value": "12345678",
+					"description": "",
+					"type": "text",
+					"enabled": true
+				}
+			],
+			"dataMode": "params",
+			"version": 2,
+			"auth": null,
+			"time": 1516790449765,
+			"name": "login",
+			"description": "",
+			"collectionId": "ce8d26cf-1826-b6df-e12d-b2534dddfb5c",
+			"responses": [],
+			"currentHelper": null,
+			"helperAttributes": null
+		},
+		{
+			"id": "8d9fefc3-2f9b-129c-fe96-b819c3a72ef8",
+			"headers": "",
+			"headerData": [],
+			"url": "{{api_url}}/economy/token/create",
+			"folder": "ddbf4ea3-82ad-b7ae-7014-864540a3098d",
+			"queryParams": [],
+			"events": [],
+			"pathVariables": {},
+			"pathVariableData": [],
+			"method": "POST",
+			"data": [
+				{
+					"key": "token_name",
+					"value": "Ak11 Coin",
+					"description": "",
+					"type": "text",
+					"enabled": true
+				},
+				{
+					"key": "token_symbol",
+					"value": "AKC11",
+					"description": "",
+					"type": "text",
+					"enabled": true
+				}
+			],
+			"dataMode": "params",
+			"version": 2,
+			"auth": null,
+			"time": 1517207230603,
+			"name": "create",
+			"description": "",
+			"collectionId": "ce8d26cf-1826-b6df-e12d-b2534dddfb5c",
+			"responses": [],
+			"currentHelper": null,
+			"helperAttributes": null
+		},
+		{
+			"id": "dbce363a-ef28-5632-ee3b-0b75f590a820",
+			"headers": "",
+			"headerData": [],
+			"url": "{{api_url}}/economy/token/plan",
+			"folder": "ddbf4ea3-82ad-b7ae-7014-864540a3098d",
+			"queryParams": [],
+			"events": [],
+			"pathVariables": {},
+			"pathVariableData": [],
+			"method": "POST",
+			"data": [
+				{
+					"key": "token_name",
+					"value": "Ak11 Coin",
+					"description": "",
+					"type": "text",
+					"enabled": true
+				},
+				{
+					"key": "conversion_rate",
+					"value": "100",
+					"description": "",
+					"type": "text",
+					"enabled": true
+				},
+				{
+					"key": "initial_number_of_users",
+					"value": "5",
+					"description": "",
+					"type": "text",
+					"enabled": true
+				},
+				{
+					"key": "airdrop_bt_per_user",
+					"value": "1",
+					"description": "",
+					"type": "text",
+					"enabled": true
+				}
+			],
+			"dataMode": "params",
+			"version": 2,
+			"auth": null,
+			"time": 1517207256333,
+			"name": "plan",
+			"description": "",
+			"collectionId": "ce8d26cf-1826-b6df-e12d-b2534dddfb5c",
 			"responses": [],
 			"currentHelper": null,
 			"helperAttributes": null
