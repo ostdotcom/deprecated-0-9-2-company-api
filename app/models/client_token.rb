@@ -23,4 +23,18 @@ class ClientToken < EstablishCompanyClientEconomyDbConnection
   # Note : always include this after declaring bit_wise_columns_config method
   include BitWiseConcern
 
+  # Is registration done
+  #
+  # * Author: Puneet
+  # * Date: 29/01/2018
+  # * Reviewed By:
+  #
+  # @return [Boolean]
+  #
+  def registration_done?
+    @client_token.send("#{GlobalConstant::ClientToken.propose_done_setup_step}?") &&
+      @client_token.send("#{GlobalConstant::ClientToken.registered_on_uc_setup_step}?") &&
+      @client_token.send("#{GlobalConstant::ClientToken.registered_on_vc_setup_step}?")
+  end
+
 end

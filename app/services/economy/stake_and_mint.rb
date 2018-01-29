@@ -16,6 +16,7 @@ module Economy
     # @return [Economy::StakeAndMint]
     #
     def initialize(params)
+
       super
 
       @client_id = @params[:client_id]
@@ -24,6 +25,7 @@ module Economy
       @to_stake_amount = @params[:to_stake_amount]
 
       @client_token = nil
+
     end
 
     # Perform
@@ -87,6 +89,20 @@ module Economy
         {}
       ) unless @client_token.conversion_rate.to_f > 0
 
+      # if propose was started but registeration not done yet we can not proceed
+      if @client_token.send("#{GlobalConstant::ClientToken.propose_initiated_setup_step}?") &&
+          !@client_token.registration_done?
+
+        return error_with_data(
+            'e_sam_3',
+            'Propose was initiated but was not completed.',
+            'Propose was initiated but was not completed.',
+            GlobalConstant::ErrorAction.default,
+            {}
+        )
+
+      end
+
       success
 
     end
@@ -98,19 +114,35 @@ module Economy
     # * Reviewed By:
     #
     def enqueue_job
-      BgJob.enqueue(
-        ProposeBtJob,
-        {
-          client_id: @client_id,
-          token_symbol: @client_token.symbol,
-          token_name: @client_token.name,
-          token_conversion_rate: @client_token.conversion_rate,
-          stake_params: {
-            beneficiary: @beneficiary,
-            to_stake_amount: @to_stake_amount
-          }
-        }
-      )
+
+      stake_params = {
+          beneficiary: @beneficiary,
+          to_stake_amount: @to_stake_amount
+      }
+
+      # Registeration was already complete, we would directly start staking process
+      if @client_token.registration_done?
+        stake_params[:uuid] = @client_token.uuid
+        BgJob.enqueue(
+            Stake::ApproveJob,
+            {
+                stake_params: stake_params
+            }
+        )
+      # start registeration process for client
+      else
+        BgJob.enqueue(
+            ProposeBtJob,
+            {
+                client_id: @client_id,
+                token_symbol: @client_token.symbol,
+                token_name: @client_token.name,
+                token_conversion_rate: @client_token.conversion_rate,
+                stake_params: stake_params
+            }
+        )
+      end
+
     end
 
   end
