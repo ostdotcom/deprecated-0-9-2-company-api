@@ -120,7 +120,7 @@ module Economy
           to_stake_amount: @to_stake_amount
       }
 
-      # Registeration was already complete, we would directly start staking process
+      # Registration was already complete, we would directly start staking process
       if @client_token.registration_done?
         stake_params[:uuid] = @client_token.uuid
         BgJob.enqueue(
@@ -129,7 +129,7 @@ module Economy
                 stake_params: stake_params
             }
         )
-      # start registeration process for client
+      # start registration process for client
       else
         BgJob.enqueue(
             ProposeBtJob,

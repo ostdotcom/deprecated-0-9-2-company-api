@@ -69,6 +69,7 @@ module ClientManagement
       return r unless r.success?
 
       # sanitize
+      #TODO: Do we need to convert this to checksum ETH Address
       @eth_address = @eth_address.to_s.strip
 
       return error_with_data(
