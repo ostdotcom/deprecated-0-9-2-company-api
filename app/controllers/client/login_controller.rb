@@ -6,7 +6,8 @@ class Client::LoginController < Client::BaseController
 
   before_action :authenticate_request, except: [
     :sign_up,
-    :login
+    :login,
+    :logout
   ]
 
   # Sign up
