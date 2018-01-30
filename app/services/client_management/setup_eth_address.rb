@@ -24,6 +24,7 @@ module ClientManagement
       @info_salt_d = nil
       @hashed_eth_address = nil
       @encrypted_eth_address = nil
+      @existing_db_record = nil
 
     end
 
@@ -46,7 +47,14 @@ module ClientManagement
       r = encrypt_eth_address
       return r unless r.success?
 
-      update_eth_address_in_db
+      r = fetch_existing_record_from_db
+      return r unless r.success?
+
+      if @existing_db_record.present? && @existing_db_record.hashed_ethereum_address == @hashed_eth_address
+        success
+      else
+        update_eth_address_in_db
+      end
 
     end
 
@@ -136,6 +144,22 @@ module ClientManagement
 
     end
 
+    # Fetch existing Eth Address
+    #
+    # * Author: Puneet
+    # * Date: 29/01/2018
+    # * Reviewed By:
+    #
+    # @return [Result::Base]
+    #
+    def fetch_existing_record_from_db
+
+      @existing_db_record = ClientAddress.where(client_id: @client_id).last
+
+      success
+
+    end
+
     # Update Eth Address in DB
     #
     # * Author: Puneet
@@ -146,7 +170,10 @@ module ClientManagement
     #
     def update_eth_address_in_db
 
-      ClientAddress.where(client_id: @client_id).update_all(status: GlobalConstant::ClientAddress.inactive_status)
+      if @existing_db_record.present?
+        @existing_db_record.status = GlobalConstant::ClientAddress.inactive_status
+        @existing_db_record.save
+      end
 
       ClientAddress.create(
           client_id: @client_id,
