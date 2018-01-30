@@ -132,7 +132,7 @@ module ClientManagement
     #
     def encrypt_eth_address
 
-      @hashed_eth_address = Digest::SHA256.hexdigest(@eth_address.downcase)
+      @hashed_eth_address = ClientAddress.get_hashed_eth_address(@eth_address)
 
       encryptor_obj = LocalCipher.new(@info_salt_d)
       r = encryptor_obj.encrypt(@eth_address)

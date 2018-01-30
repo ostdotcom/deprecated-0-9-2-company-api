@@ -21,7 +21,7 @@ module ClientManagement
       @eth_address = @params[:eth_address]
 
       @client = nil
-      @hashed_eth_address = nil
+      @hashed_eth_address_from_db = nil
 
     end
 
@@ -41,9 +41,9 @@ module ClientManagement
       r = fetch_eth_address_from_db
       return r unless r.success?
 
-      hashed_eth_address = Digest::SHA256.hexdigest(@eth_address.downcase)
+      hashed_eth_address = ClientAddress.get_hashed_eth_address(@eth_address)
 
-      hashed_eth_address == @hashed_eth_address ? success : error_with_data(
+      hashed_eth_address == @hashed_eth_address_from_db ? success : error_with_data(
           'cm_vea_3',
           'Invalid ETH Address.',
           'Invalid ETH Address.',
@@ -112,7 +112,7 @@ module ClientManagement
           {}
       ) if client_address.blank?
 
-      @hashed_eth_address = client_address.hashed_ethereum_address
+      @hashed_eth_address_from_db = client_address.hashed_ethereum_address
       
       success
 
