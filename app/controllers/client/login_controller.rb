@@ -9,8 +9,6 @@ class Client::LoginController < Client::BaseController
     :login
   ]
 
-  # before_action :verify_recaptcha, only: [:sign_up, :login]
-
   # Sign up
   #
   # * Author: Alpesh

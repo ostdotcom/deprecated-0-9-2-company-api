@@ -44,6 +44,18 @@
     - :client_id
   :optional:
 
+'ClientManagement::SetupEthAddress':
+  :mandatory:
+    - :client_id
+    - :eth_address
+  :optional:
+
+'ClientManagement::ValidateEthAddress':
+  :mandatory:
+    - :client_id
+    - :eth_address
+  :optional:
+
 'Economy::CreateToken':
   :mandatory:
     - :client_id
