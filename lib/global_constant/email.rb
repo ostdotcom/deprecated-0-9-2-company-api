@@ -10,7 +10,7 @@ module GlobalConstant
       end
 
       def default_to
-        ['bala@pepo.com', 'sunil@pepo.com', 'kedar@pepo.com', 'alpesh@pepo.com']
+        ['bala@pepo.com', 'sunil@pepo.com', 'kedar@pepo.com', 'alpesh@pepo.com', 'pankaj@pepo.com']
       end
 
       def subject_prefix

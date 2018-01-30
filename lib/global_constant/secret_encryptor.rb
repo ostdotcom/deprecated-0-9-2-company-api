@@ -13,6 +13,10 @@ module GlobalConstant
         GlobalConstant::Base.secret_encryptor['email_tokens_decriptor_key']
       end
 
+      def generic_sha_key
+        GlobalConstant::Base.secret_encryptor['generic_sha_key']
+      end
+
     end
 
   end

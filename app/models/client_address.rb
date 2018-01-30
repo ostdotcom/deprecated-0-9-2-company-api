@@ -16,7 +16,7 @@ class ClientAddress < EstablishCompanyClientEconomyDbConnection
   # @return [String]
   #
   def self.get_hashed_eth_address(eth_address)
-    Digest::SHA256.hexdigest(eth_address.downcase)
+    LocalCipher.new("").get_hashed_text(eth_address.downcase)
   end
 
 end
