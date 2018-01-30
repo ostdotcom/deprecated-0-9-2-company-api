@@ -55,6 +55,18 @@ class Client::LoginController < Client::BaseController
     render_api_response(service_response)
   end
 
+  # logout
+  #
+  # * Author: Puneet
+  # * Date: 29/01/2018
+  # * Reviewed By:
+  #
+  def logout
+    #TODO: add extra logic if required
+    delete_cookie(GlobalConstant::Cookie.user_cookie_name)
+    render_api_response(Result::Base.success({}))
+  end
+
   def send_reset_password_link
     service_response = UserManagement::SendResetPasswordLink.new(params).perform
     render_api_response(service_response)

@@ -4,6 +4,7 @@ Rails.application.routes.draw do
   scope 'api/client', controller: 'client/login' do
     match 'sign-up' => :sign_up, via: :POST
     match 'login' => :login, via: :POST
+    match 'logout' => :logout, via: :POST
     match 'reset-password' => :reset_password, via: :POST
     match 'send-reset-password-link' => :send_reset_password_link, via: :POST
   end
