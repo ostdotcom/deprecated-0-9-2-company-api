@@ -22,7 +22,8 @@
 			"collectionId": "4096f0ae-3b4b-c411-e8b0-a16371d43c8d",
 			"order": [
 				"08be9d72-3bf1-eb57-7e9d-7374bb39affb",
-				"b28831e4-d066-87d3-6a1c-b5c09e0f92f4"
+				"b28831e4-d066-87d3-6a1c-b5c09e0f92f4",
+				"ab84a3c7-e59e-87a3-1a57-4c1b05b8ac87"
 			],
 			"owner": 0,
 			"folders_order": [],
@@ -35,17 +36,33 @@
 			"order": [
 				"2cdef9c4-fe56-aec8-60dd-fcf104a9d53f",
 				"da11492a-61c2-416d-e996-20d1f5c994a1",
-				"990ea390-b62d-b158-b858-190234d9451d"
+				"990ea390-b62d-b158-b858-190234d9451d",
+				"498423b5-6489-6c6c-c85e-6855d99e4196"
 			],
 			"owner": 0,
 			"folders_order": [],
 			"id": "13bb35b6-f7fe-43fc-371f-6ecd8053e6fc"
+		},
+		{
+			"name": "transaction kind",
+			"description": "",
+			"collectionId": "4096f0ae-3b4b-c411-e8b0-a16371d43c8d",
+			"order": [
+				"23abcf61-105b-5d61-598d-ff998216218d",
+				"79532338-86bf-6fb6-2db7-b8219c37b991",
+				"30309ff2-b12b-2deb-94d6-3319689ebd43"
+			],
+			"owner": 0,
+			"folders_order": [],
+			"auth": null,
+			"id": "ea5e0826-f56c-0d6b-2100-03589e4c39fc"
 		}
 	],
 	"folders_order": [
 		"66d96495-2230-f3c3-84ac-d5856c6decf7",
 		"13bb35b6-f7fe-43fc-371f-6ecd8053e6fc",
-		"3e7e90d9-91fd-afa7-edcf-d88a0c76e4c6"
+		"3e7e90d9-91fd-afa7-edcf-d88a0c76e4c6",
+		"ea5e0826-f56c-0d6b-2100-03589e4c39fc"
 	],
 	"timestamp": 1515746035733,
 	"owner": 0,
@@ -115,29 +132,53 @@
 			"helperAttributes": null
 		},
 		{
+			"id": "23abcf61-105b-5d61-598d-ff998216218d",
+			"headers": "",
+			"headerData": [],
+			"url": "{{api_url}}/economy/transaction/kind/list",
+			"folder": "3e7e90d9-91fd-afa7-edcf-d88a0c76e4c6",
+			"queryParams": [],
+			"events": [],
+			"pathVariables": {},
+			"pathVariableData": [],
+			"method": "GET",
+			"data": [
+				{
+					"key": "token_name",
+					"value": "Ak11 Coin",
+					"description": "",
+					"type": "text",
+					"enabled": true
+				}
+			],
+			"dataMode": "params",
+			"version": 2,
+			"auth": null,
+			"time": 1517400273555,
+			"name": "list all kinds",
+			"description": "",
+			"collectionId": "4096f0ae-3b4b-c411-e8b0-a16371d43c8d",
+			"responses": [],
+			"currentHelper": null,
+			"helperAttributes": null
+		},
+		{
 			"id": "2cdef9c4-fe56-aec8-60dd-fcf104a9d53f",
 			"headers": "",
 			"headerData": [],
-			"url": "{{api_url}}/economy/token/create?client_id=3&token_name=STag PC&token_symbol=SPC",
+			"url": "{{api_url}}/economy/token/create?token_name=T1&token_symbol=T1",
 			"folder": "13bb35b6-f7fe-43fc-371f-6ecd8053e6fc",
 			"queryParams": [
 				{
-					"key": "client_id",
-					"value": "3",
-					"equals": true,
-					"description": "",
-					"enabled": true
-				},
-				{
 					"key": "token_name",
-					"value": "STag PC",
+					"value": "T1",
 					"equals": true,
 					"description": "",
 					"enabled": true
 				},
 				{
 					"key": "token_symbol",
-					"value": "SPC",
+					"value": "T1",
 					"equals": true,
 					"description": "",
 					"enabled": true
@@ -166,7 +207,7 @@
 			"dataMode": "params",
 			"version": 2,
 			"auth": null,
-			"time": 1517296863263,
+			"time": 1517373043371,
 			"name": "create",
 			"description": "",
 			"collectionId": "4096f0ae-3b4b-c411-e8b0-a16371d43c8d",
@@ -175,15 +216,57 @@
 			"helperAttributes": null
 		},
 		{
-			"id": "34754182-2069-5b27-5664-5db782147a90",
+			"id": "30309ff2-b12b-2deb-94d6-3319689ebd43",
 			"headers": "",
 			"headerData": [],
-			"url": "{{api_url}}/client/setup-eth-address?eth_address=0x6f916C5826fC10aBBE847B43Da3Be25723c04E5b",
-			"folder": "3e7e90d9-91fd-afa7-edcf-d88a0c76e4c6",
+			"url": "{{api_url}}/economy/transaction/kind/edit?name=ABCD&kind=user_to_user&value_currency_type=usd&value_in_usd=1&value_in_bt=1&commission_percent=10&client_transaction_id=13",
+			"folder": "ea5e0826-f56c-0d6b-2100-03589e4c39fc",
 			"queryParams": [
 				{
-					"key": "eth_address",
-					"value": "0x6f916C5826fC10aBBE847B43Da3Be25723c04E5b",
+					"key": "name",
+					"value": "ABCD",
+					"equals": true,
+					"description": "",
+					"enabled": true
+				},
+				{
+					"key": "kind",
+					"value": "user_to_user",
+					"equals": true,
+					"description": "user_to_user / user_to_company / company_to_user",
+					"enabled": true
+				},
+				{
+					"key": "value_currency_type",
+					"value": "usd",
+					"equals": true,
+					"description": "usd / bt",
+					"enabled": true
+				},
+				{
+					"key": "value_in_usd",
+					"value": "1",
+					"equals": true,
+					"description": "",
+					"enabled": true
+				},
+				{
+					"key": "value_in_bt",
+					"value": "1",
+					"equals": true,
+					"description": "",
+					"enabled": true
+				},
+				{
+					"key": "commission_percent",
+					"value": "10",
+					"equals": true,
+					"description": "",
+					"enabled": true
+				},
+				{
+					"key": "client_transaction_id",
+					"value": "13",
 					"equals": true,
 					"description": "",
 					"enabled": true
@@ -205,8 +288,78 @@
 			"dataMode": "params",
 			"version": 2,
 			"auth": null,
-			"time": 1517297005167,
+			"time": 1517400267728,
+			"name": "edit existing kind",
+			"description": "",
+			"collectionId": "4096f0ae-3b4b-c411-e8b0-a16371d43c8d",
+			"responses": [],
+			"currentHelper": null,
+			"helperAttributes": null
+		},
+		{
+			"id": "34754182-2069-5b27-5664-5db782147a90",
+			"headers": "",
+			"headerData": [],
+			"url": "{{api_url}}/client/setup-eth-address?eth_address=0x6f916C5826fC10aBBE847B43Da3Be25723c04E4d",
+			"folder": "3e7e90d9-91fd-afa7-edcf-d88a0c76e4c6",
+			"queryParams": [
+				{
+					"key": "eth_address",
+					"value": "0x6f916C5826fC10aBBE847B43Da3Be25723c04E4d",
+					"equals": true,
+					"description": "",
+					"enabled": true
+				}
+			],
+			"events": [],
+			"pathVariables": {},
+			"pathVariableData": [],
+			"method": "POST",
+			"data": [
+				{
+					"key": "token_name",
+					"value": "Ak11 Coin",
+					"description": "",
+					"type": "text",
+					"enabled": true
+				}
+			],
+			"dataMode": "params",
+			"version": 2,
+			"auth": null,
+			"time": 1517400384516,
 			"name": "setup eth address",
+			"description": "",
+			"collectionId": "4096f0ae-3b4b-c411-e8b0-a16371d43c8d",
+			"responses": [],
+			"currentHelper": null,
+			"helperAttributes": null
+		},
+		{
+			"id": "498423b5-6489-6c6c-c85e-6855d99e4196",
+			"headers": "",
+			"headerData": [],
+			"url": "{{api_url}}/economy/token/get-setup-status",
+			"folder": "13bb35b6-f7fe-43fc-371f-6ecd8053e6fc",
+			"queryParams": [],
+			"events": [],
+			"pathVariables": {},
+			"pathVariableData": [],
+			"method": "GET",
+			"data": [
+				{
+					"key": "token_name",
+					"value": "Ak11 Coin",
+					"description": "",
+					"type": "text",
+					"enabled": true
+				}
+			],
+			"dataMode": "params",
+			"version": 2,
+			"auth": null,
+			"time": 1517398646927,
+			"name": "get token steup status",
 			"description": "",
 			"collectionId": "4096f0ae-3b4b-c411-e8b0-a16371d43c8d",
 			"responses": [],
@@ -217,12 +370,12 @@
 			"id": "559262d4-5208-1a4b-7777-2524adbbe378",
 			"headers": "",
 			"headerData": [],
-			"url": "{{api_url}}/client/validate-eth-address?eth_address=0x6f916C5826fC10aBBE847B43Da3Be25723c04E5b",
+			"url": "{{api_url}}/client/validate-eth-address?eth_address=0x6f916C5826fC10aBBE847B43Da3Be25723c04E5d",
 			"folder": "3e7e90d9-91fd-afa7-edcf-d88a0c76e4c6",
 			"queryParams": [
 				{
 					"key": "eth_address",
-					"value": "0x6f916C5826fC10aBBE847B43Da3Be25723c04E5b",
+					"value": "0x6f916C5826fC10aBBE847B43Da3Be25723c04E5d",
 					"equals": true,
 					"description": "",
 					"enabled": true
@@ -244,7 +397,7 @@
 			"dataMode": "params",
 			"version": 2,
 			"auth": null,
-			"time": 1517298101984,
+			"time": 1517400276328,
 			"name": "validate eth address",
 			"description": "",
 			"collectionId": "4096f0ae-3b4b-c411-e8b0-a16371d43c8d",
@@ -253,29 +406,50 @@
 			"helperAttributes": null
 		},
 		{
-			"id": "990ea390-b62d-b158-b858-190234d9451d",
+			"id": "79532338-86bf-6fb6-2db7-b8219c37b991",
 			"headers": "",
 			"headerData": [],
-			"url": "{{api_url}}/economy/token/stake-and-mint?token_name=STag PC&to_stake_amount=12&beneficiary=0x6f916C5826fC10aBBE847B43Da3Be25723c04E5b",
-			"folder": "13bb35b6-f7fe-43fc-371f-6ecd8053e6fc",
+			"url": "{{api_url}}/economy/transaction/kind/create?name=ABC&kind=user_to_user&value_currency_type=usd&value_in_usd=1&value_in_bt=1&commission_percent=10",
+			"folder": "ea5e0826-f56c-0d6b-2100-03589e4c39fc",
 			"queryParams": [
 				{
-					"key": "token_name",
-					"value": "STag PC",
+					"key": "name",
+					"value": "ABC",
 					"equals": true,
 					"description": "",
 					"enabled": true
 				},
 				{
-					"key": "to_stake_amount",
-					"value": "12",
+					"key": "kind",
+					"value": "user_to_user",
+					"equals": true,
+					"description": "user_to_user / user_to_company / company_to_user",
+					"enabled": true
+				},
+				{
+					"key": "value_currency_type",
+					"value": "usd",
+					"equals": true,
+					"description": "usd / bt",
+					"enabled": true
+				},
+				{
+					"key": "value_in_usd",
+					"value": "1",
 					"equals": true,
 					"description": "",
 					"enabled": true
 				},
 				{
-					"key": "beneficiary",
-					"value": "0x6f916C5826fC10aBBE847B43Da3Be25723c04E5b",
+					"key": "value_in_bt",
+					"value": "1",
+					"equals": true,
+					"description": "",
+					"enabled": true
+				},
+				{
+					"key": "commission_percent",
+					"value": "10",
 					"equals": true,
 					"description": "",
 					"enabled": true
@@ -297,8 +471,77 @@
 			"dataMode": "params",
 			"version": 2,
 			"auth": null,
-			"time": 1517299549778,
+			"time": 1517400271295,
+			"name": "create new kind",
+			"description": "",
+			"collectionId": "4096f0ae-3b4b-c411-e8b0-a16371d43c8d",
+			"responses": [],
+			"currentHelper": null,
+			"helperAttributes": null
+		},
+		{
+			"id": "990ea390-b62d-b158-b858-190234d9451d",
+			"headers": "",
+			"headerData": [],
+			"url": "{{api_url}}/economy/token/stake-and-mint?token_name=T1&to_stake_amount=12",
+			"folder": "13bb35b6-f7fe-43fc-371f-6ecd8053e6fc",
+			"queryParams": [
+				{
+					"key": "token_name",
+					"value": "T1",
+					"equals": true,
+					"description": "",
+					"enabled": true
+				},
+				{
+					"key": "to_stake_amount",
+					"value": "12",
+					"equals": true,
+					"description": "",
+					"enabled": true
+				}
+			],
+			"events": [],
+			"pathVariables": {},
+			"pathVariableData": [],
+			"method": "POST",
+			"data": [
+				{
+					"key": "token_name",
+					"value": "Ak11 Coin",
+					"description": "",
+					"type": "text",
+					"enabled": true
+				}
+			],
+			"dataMode": "params",
+			"version": 2,
+			"auth": null,
+			"time": 1517373086270,
 			"name": "stake-and-mint",
+			"description": "",
+			"collectionId": "4096f0ae-3b4b-c411-e8b0-a16371d43c8d",
+			"responses": [],
+			"currentHelper": null,
+			"helperAttributes": null
+		},
+		{
+			"id": "ab84a3c7-e59e-87a3-1a57-4c1b05b8ac87",
+			"headers": "",
+			"headerData": [],
+			"url": "{{api_url}}/client/logout",
+			"folder": "66d96495-2230-f3c3-84ac-d5856c6decf7",
+			"queryParams": [],
+			"events": [],
+			"pathVariables": {},
+			"pathVariableData": [],
+			"method": "POST",
+			"data": [],
+			"dataMode": "params",
+			"version": 2,
+			"auth": null,
+			"time": 1517313267086,
+			"name": "logout",
 			"description": "",
 			"collectionId": "4096f0ae-3b4b-c411-e8b0-a16371d43c8d",
 			"responses": [],
@@ -362,12 +605,12 @@
 			"id": "da11492a-61c2-416d-e996-20d1f5c994a1",
 			"headers": "",
 			"headerData": [],
-			"url": "{{api_url}}/economy/token/plan?token_name=STag PC&conversion_rate=10&initial_number_of_users=5&airdrop_bt_per_user=2",
+			"url": "{{api_url}}/economy/token/plan?token_name=T1&conversion_rate=10&initial_number_of_users=5&airdrop_bt_per_user=2",
 			"folder": "13bb35b6-f7fe-43fc-371f-6ecd8053e6fc",
 			"queryParams": [
 				{
 					"key": "token_name",
-					"value": "STag PC",
+					"value": "T1",
 					"equals": true,
 					"description": "",
 					"enabled": true
@@ -431,7 +674,7 @@
 			"dataMode": "params",
 			"version": 2,
 			"auth": null,
-			"time": 1517299494110,
+			"time": 1517373067425,
 			"name": "plan",
 			"description": "",
 			"collectionId": "4096f0ae-3b4b-c411-e8b0-a16371d43c8d",
