@@ -1,5 +1,5 @@
 {
-	"id": "4096f0ae-3b4b-c411-e8b0-a16371d43c8d",
+	"id": "17442a4b-0050-aec2-5c88-6fbcdcebe596",
 	"name": "company-api",
 	"description": "",
 	"order": [],
@@ -9,112 +9,117 @@
 			"description": "",
 			"collectionId": "4096f0ae-3b4b-c411-e8b0-a16371d43c8d",
 			"order": [
-				"34754182-2069-5b27-5664-5db782147a90",
-				"559262d4-5208-1a4b-7777-2524adbbe378"
+				"681d3642-9bd0-3b59-4e50-2424ec622a7b",
+				"0d6da0d7-38bb-b313-2a0e-f453fc70b43c",
+				"66dd5f07-7998-f662-d597-e151198d5bc3",
+				"f2e8e365-0c69-b24c-c8a6-38e357f295a8"
 			],
 			"owner": 0,
 			"folders_order": [],
-			"id": "3e7e90d9-91fd-afa7-edcf-d88a0c76e4c6"
+			"id": "f3bc75f1-e44d-22a5-a787-ed640f268c27"
 		},
 		{
 			"name": "login",
 			"description": "",
 			"collectionId": "4096f0ae-3b4b-c411-e8b0-a16371d43c8d",
 			"order": [
-				"08be9d72-3bf1-eb57-7e9d-7374bb39affb",
-				"b28831e4-d066-87d3-6a1c-b5c09e0f92f4",
-				"ab84a3c7-e59e-87a3-1a57-4c1b05b8ac87"
+				"84f06d98-5e30-df78-42c7-7165e035a737",
+				"82964723-19a3-270b-cfea-6840de6b3bf6",
+				"79139824-dbe2-bb98-6443-f9427c442eac",
+				"00e8a99f-7f9e-226f-b886-d8e96df11b26",
+				"b5ce6f04-82d3-a3cd-9a7d-916001d16217"
 			],
 			"owner": 0,
 			"folders_order": [],
-			"id": "66d96495-2230-f3c3-84ac-d5856c6decf7"
+			"id": "7c2595ae-3997-1f63-d04b-e62f01fc48c8"
 		},
 		{
 			"name": "token",
 			"description": "",
 			"collectionId": "4096f0ae-3b4b-c411-e8b0-a16371d43c8d",
 			"order": [
-				"2cdef9c4-fe56-aec8-60dd-fcf104a9d53f",
-				"da11492a-61c2-416d-e996-20d1f5c994a1",
-				"990ea390-b62d-b158-b858-190234d9451d",
-				"498423b5-6489-6c6c-c85e-6855d99e4196"
+				"6321ea1c-3db6-e1e5-a74d-166a31990f0d",
+				"64c793c9-47c3-6530-44c3-27f627a64f88",
+				"08343120-6530-0ab6-885d-ae1e22cb216b",
+				"4a3a7416-9126-3ecd-fe28-42c53016322d"
 			],
 			"owner": 0,
 			"folders_order": [],
-			"id": "13bb35b6-f7fe-43fc-371f-6ecd8053e6fc"
+			"id": "0e2cf61a-9fc0-e873-64f1-49a9a847573a"
 		},
 		{
 			"name": "transaction kind",
 			"description": "",
 			"collectionId": "4096f0ae-3b4b-c411-e8b0-a16371d43c8d",
 			"order": [
-				"23abcf61-105b-5d61-598d-ff998216218d",
-				"79532338-86bf-6fb6-2db7-b8219c37b991",
-				"30309ff2-b12b-2deb-94d6-3319689ebd43"
+				"ba4199f7-81ca-4379-6a29-44c5c4e0bdb2",
+				"67a217c8-d9a6-70ec-d041-58e21b79519e",
+				"f7fe37cf-7d31-ba45-da4c-05eb0e2367ce"
 			],
 			"owner": 0,
 			"folders_order": [],
 			"auth": null,
-			"id": "ea5e0826-f56c-0d6b-2100-03589e4c39fc"
+			"id": "b82d6e86-d6f4-b3d5-527c-f450e8b6df59"
 		}
-	],
-	"folders_order": [
-		"66d96495-2230-f3c3-84ac-d5856c6decf7",
-		"13bb35b6-f7fe-43fc-371f-6ecd8053e6fc",
-		"3e7e90d9-91fd-afa7-edcf-d88a0c76e4c6",
-		"ea5e0826-f56c-0d6b-2100-03589e4c39fc"
 	],
 	"timestamp": 1515746035733,
 	"owner": 0,
+	"remoteLink": "",
 	"public": false,
-	"events": [],
-	"variables": [],
-	"auth": null,
+	"published": false,
 	"requests": [
 		{
-			"id": "08be9d72-3bf1-eb57-7e9d-7374bb39affb",
+			"id": "00e8a99f-7f9e-226f-b886-d8e96df11b26",
+			"headers": "",
+			"url": "{{api_url}}/client/send-reset-password-link?email=pankaj@ost.com",
+			"pathVariables": {},
+			"preRequestScript": null,
+			"method": "POST",
+			"collectionId": "17442a4b-0050-aec2-5c88-6fbcdcebe596",
+			"data": null,
+			"dataMode": "params",
+			"name": "Send Reset password link",
+			"description": "",
+			"descriptionFormat": "html",
+			"time": 1517406062638,
+			"version": 2,
+			"responses": [],
+			"tests": null,
+			"currentHelper": "normal",
+			"helperAttributes": {},
+			"folder": "7c2595ae-3997-1f63-d04b-e62f01fc48c8"
+		},
+		{
+			"id": "08343120-6530-0ab6-885d-ae1e22cb216b",
 			"headers": "",
 			"headerData": [],
-			"url": "{{api_url}}/client/sign-up",
-			"folder": "66d96495-2230-f3c3-84ac-d5856c6decf7",
-			"queryParams": [],
+			"url": "{{api_url}}/economy/token/stake-and-mint?token_name=T1&to_stake_amount=12",
+			"folder": "0e2cf61a-9fc0-e873-64f1-49a9a847573a",
+			"queryParams": [
+				{
+					"key": "token_name",
+					"value": "T1",
+					"equals": true,
+					"description": "",
+					"enabled": true
+				},
+				{
+					"key": "to_stake_amount",
+					"value": "12",
+					"equals": true,
+					"description": "",
+					"enabled": true
+				}
+			],
 			"events": [],
 			"pathVariables": {},
 			"pathVariableData": [],
 			"method": "POST",
 			"data": [
 				{
-					"key": "email",
-					"value": "kedar@pepo.com",
-					"description": "mandatory",
-					"type": "text",
-					"enabled": true
-				},
-				{
-					"key": "password",
-					"value": "12345678",
-					"description": "mandatory",
-					"type": "text",
-					"enabled": true
-				},
-				{
-					"key": "is_client_manager",
-					"value": "1",
-					"description": "optional",
-					"type": "text",
-					"enabled": true
-				},
-				{
-					"key": "client_creation_needed",
-					"value": "1",
-					"description": "optional",
-					"type": "text",
-					"enabled": true
-				},
-				{
-					"key": "tos_selected",
-					"value": "1",
-					"description": "mandatory",
+					"key": "token_name",
+					"value": "Ak11 Coin",
+					"description": "",
 					"type": "text",
 					"enabled": true
 				}
@@ -122,21 +127,63 @@
 			"dataMode": "params",
 			"version": 2,
 			"auth": null,
-			"time": 1516790442218,
-			"name": "sign-up",
+			"time": 1517373086270,
+			"name": "stake-and-mint",
 			"description": "",
-			"collectionId": "4096f0ae-3b4b-c411-e8b0-a16371d43c8d",
+			"collectionId": "17442a4b-0050-aec2-5c88-6fbcdcebe596",
 			"responses": [],
-			"collection_id": "4096f0ae-3b4b-c411-e8b0-a16371d43c8d",
 			"currentHelper": null,
-			"helperAttributes": null
+			"helperAttributes": null,
+			"preRequestScript": "",
+			"tests": ""
 		},
 		{
-			"id": "23abcf61-105b-5d61-598d-ff998216218d",
+			"id": "0d6da0d7-38bb-b313-2a0e-f453fc70b43c",
 			"headers": "",
 			"headerData": [],
-			"url": "{{api_url}}/economy/transaction/kind/list",
-			"folder": "3e7e90d9-91fd-afa7-edcf-d88a0c76e4c6",
+			"url": "{{api_url}}/client/validate-eth-address?eth_address=0x6f916C5826fC10aBBE847B43Da3Be25723c04E5d",
+			"folder": "f3bc75f1-e44d-22a5-a787-ed640f268c27",
+			"queryParams": [
+				{
+					"key": "eth_address",
+					"value": "0x6f916C5826fC10aBBE847B43Da3Be25723c04E5d",
+					"equals": true,
+					"description": "",
+					"enabled": true
+				}
+			],
+			"events": [],
+			"pathVariables": {},
+			"pathVariableData": [],
+			"method": "GET",
+			"data": [
+				{
+					"key": "token_name",
+					"value": "Ak11 Coin",
+					"description": "",
+					"type": "text",
+					"enabled": true
+				}
+			],
+			"dataMode": "params",
+			"version": 2,
+			"auth": null,
+			"time": 1517400276328,
+			"name": "validate eth address",
+			"description": "",
+			"collectionId": "17442a4b-0050-aec2-5c88-6fbcdcebe596",
+			"responses": [],
+			"currentHelper": null,
+			"helperAttributes": null,
+			"preRequestScript": "",
+			"tests": ""
+		},
+		{
+			"id": "4a3a7416-9126-3ecd-fe28-42c53016322d",
+			"headers": "",
+			"headerData": [],
+			"url": "{{api_url}}/economy/token/get-setup-status",
+			"folder": "0e2cf61a-9fc0-e873-64f1-49a9a847573a",
 			"queryParams": [],
 			"events": [],
 			"pathVariables": {},
@@ -154,20 +201,22 @@
 			"dataMode": "params",
 			"version": 2,
 			"auth": null,
-			"time": 1517400273555,
-			"name": "list all kinds",
+			"time": 1517398646927,
+			"name": "get token steup status",
 			"description": "",
-			"collectionId": "4096f0ae-3b4b-c411-e8b0-a16371d43c8d",
+			"collectionId": "17442a4b-0050-aec2-5c88-6fbcdcebe596",
 			"responses": [],
 			"currentHelper": null,
-			"helperAttributes": null
+			"helperAttributes": null,
+			"preRequestScript": "",
+			"tests": ""
 		},
 		{
-			"id": "2cdef9c4-fe56-aec8-60dd-fcf104a9d53f",
+			"id": "6321ea1c-3db6-e1e5-a74d-166a31990f0d",
 			"headers": "",
 			"headerData": [],
 			"url": "{{api_url}}/economy/token/create?token_name=T1&token_symbol=T1",
-			"folder": "13bb35b6-f7fe-43fc-371f-6ecd8053e6fc",
+			"folder": "0e2cf61a-9fc0-e873-64f1-49a9a847573a",
 			"queryParams": [
 				{
 					"key": "token_name",
@@ -210,403 +259,19 @@
 			"time": 1517373043371,
 			"name": "create",
 			"description": "",
-			"collectionId": "4096f0ae-3b4b-c411-e8b0-a16371d43c8d",
+			"collectionId": "17442a4b-0050-aec2-5c88-6fbcdcebe596",
 			"responses": [],
 			"currentHelper": null,
-			"helperAttributes": null
+			"helperAttributes": null,
+			"preRequestScript": "",
+			"tests": ""
 		},
 		{
-			"id": "30309ff2-b12b-2deb-94d6-3319689ebd43",
-			"headers": "",
-			"headerData": [],
-			"url": "{{api_url}}/economy/transaction/kind/edit?name=ABCD&kind=user_to_user&value_currency_type=usd&value_in_usd=1&value_in_bt=1&commission_percent=10&client_transaction_id=13",
-			"folder": "ea5e0826-f56c-0d6b-2100-03589e4c39fc",
-			"queryParams": [
-				{
-					"key": "name",
-					"value": "ABCD",
-					"equals": true,
-					"description": "",
-					"enabled": true
-				},
-				{
-					"key": "kind",
-					"value": "user_to_user",
-					"equals": true,
-					"description": "user_to_user / user_to_company / company_to_user",
-					"enabled": true
-				},
-				{
-					"key": "value_currency_type",
-					"value": "usd",
-					"equals": true,
-					"description": "usd / bt",
-					"enabled": true
-				},
-				{
-					"key": "value_in_usd",
-					"value": "1",
-					"equals": true,
-					"description": "",
-					"enabled": true
-				},
-				{
-					"key": "value_in_bt",
-					"value": "1",
-					"equals": true,
-					"description": "",
-					"enabled": true
-				},
-				{
-					"key": "commission_percent",
-					"value": "10",
-					"equals": true,
-					"description": "",
-					"enabled": true
-				},
-				{
-					"key": "client_transaction_id",
-					"value": "13",
-					"equals": true,
-					"description": "",
-					"enabled": true
-				}
-			],
-			"events": [],
-			"pathVariables": {},
-			"pathVariableData": [],
-			"method": "POST",
-			"data": [
-				{
-					"key": "token_name",
-					"value": "Ak11 Coin",
-					"description": "",
-					"type": "text",
-					"enabled": true
-				}
-			],
-			"dataMode": "params",
-			"version": 2,
-			"auth": null,
-			"time": 1517400267728,
-			"name": "edit existing kind",
-			"description": "",
-			"collectionId": "4096f0ae-3b4b-c411-e8b0-a16371d43c8d",
-			"responses": [],
-			"currentHelper": null,
-			"helperAttributes": null
-		},
-		{
-			"id": "34754182-2069-5b27-5664-5db782147a90",
-			"headers": "",
-			"headerData": [],
-			"url": "{{api_url}}/client/setup-eth-address?eth_address=0x6f916C5826fC10aBBE847B43Da3Be25723c04E4d",
-			"folder": "3e7e90d9-91fd-afa7-edcf-d88a0c76e4c6",
-			"queryParams": [
-				{
-					"key": "eth_address",
-					"value": "0x6f916C5826fC10aBBE847B43Da3Be25723c04E4d",
-					"equals": true,
-					"description": "",
-					"enabled": true
-				}
-			],
-			"events": [],
-			"pathVariables": {},
-			"pathVariableData": [],
-			"method": "POST",
-			"data": [
-				{
-					"key": "token_name",
-					"value": "Ak11 Coin",
-					"description": "",
-					"type": "text",
-					"enabled": true
-				}
-			],
-			"dataMode": "params",
-			"version": 2,
-			"auth": null,
-			"time": 1517400384516,
-			"name": "setup eth address",
-			"description": "",
-			"collectionId": "4096f0ae-3b4b-c411-e8b0-a16371d43c8d",
-			"responses": [],
-			"currentHelper": null,
-			"helperAttributes": null
-		},
-		{
-			"id": "498423b5-6489-6c6c-c85e-6855d99e4196",
-			"headers": "",
-			"headerData": [],
-			"url": "{{api_url}}/economy/token/get-setup-status",
-			"folder": "13bb35b6-f7fe-43fc-371f-6ecd8053e6fc",
-			"queryParams": [],
-			"events": [],
-			"pathVariables": {},
-			"pathVariableData": [],
-			"method": "GET",
-			"data": [
-				{
-					"key": "token_name",
-					"value": "Ak11 Coin",
-					"description": "",
-					"type": "text",
-					"enabled": true
-				}
-			],
-			"dataMode": "params",
-			"version": 2,
-			"auth": null,
-			"time": 1517398646927,
-			"name": "get token steup status",
-			"description": "",
-			"collectionId": "4096f0ae-3b4b-c411-e8b0-a16371d43c8d",
-			"responses": [],
-			"currentHelper": null,
-			"helperAttributes": null
-		},
-		{
-			"id": "559262d4-5208-1a4b-7777-2524adbbe378",
-			"headers": "",
-			"headerData": [],
-			"url": "{{api_url}}/client/validate-eth-address?eth_address=0x6f916C5826fC10aBBE847B43Da3Be25723c04E5d",
-			"folder": "3e7e90d9-91fd-afa7-edcf-d88a0c76e4c6",
-			"queryParams": [
-				{
-					"key": "eth_address",
-					"value": "0x6f916C5826fC10aBBE847B43Da3Be25723c04E5d",
-					"equals": true,
-					"description": "",
-					"enabled": true
-				}
-			],
-			"events": [],
-			"pathVariables": {},
-			"pathVariableData": [],
-			"method": "GET",
-			"data": [
-				{
-					"key": "token_name",
-					"value": "Ak11 Coin",
-					"description": "",
-					"type": "text",
-					"enabled": true
-				}
-			],
-			"dataMode": "params",
-			"version": 2,
-			"auth": null,
-			"time": 1517400276328,
-			"name": "validate eth address",
-			"description": "",
-			"collectionId": "4096f0ae-3b4b-c411-e8b0-a16371d43c8d",
-			"responses": [],
-			"currentHelper": null,
-			"helperAttributes": null
-		},
-		{
-			"id": "79532338-86bf-6fb6-2db7-b8219c37b991",
-			"headers": "",
-			"headerData": [],
-			"url": "{{api_url}}/economy/transaction/kind/create?name=ABC&kind=user_to_user&value_currency_type=usd&value_in_usd=1&value_in_bt=1&commission_percent=10",
-			"folder": "ea5e0826-f56c-0d6b-2100-03589e4c39fc",
-			"queryParams": [
-				{
-					"key": "name",
-					"value": "ABC",
-					"equals": true,
-					"description": "",
-					"enabled": true
-				},
-				{
-					"key": "kind",
-					"value": "user_to_user",
-					"equals": true,
-					"description": "user_to_user / user_to_company / company_to_user",
-					"enabled": true
-				},
-				{
-					"key": "value_currency_type",
-					"value": "usd",
-					"equals": true,
-					"description": "usd / bt",
-					"enabled": true
-				},
-				{
-					"key": "value_in_usd",
-					"value": "1",
-					"equals": true,
-					"description": "",
-					"enabled": true
-				},
-				{
-					"key": "value_in_bt",
-					"value": "1",
-					"equals": true,
-					"description": "",
-					"enabled": true
-				},
-				{
-					"key": "commission_percent",
-					"value": "10",
-					"equals": true,
-					"description": "",
-					"enabled": true
-				}
-			],
-			"events": [],
-			"pathVariables": {},
-			"pathVariableData": [],
-			"method": "POST",
-			"data": [
-				{
-					"key": "token_name",
-					"value": "Ak11 Coin",
-					"description": "",
-					"type": "text",
-					"enabled": true
-				}
-			],
-			"dataMode": "params",
-			"version": 2,
-			"auth": null,
-			"time": 1517400271295,
-			"name": "create new kind",
-			"description": "",
-			"collectionId": "4096f0ae-3b4b-c411-e8b0-a16371d43c8d",
-			"responses": [],
-			"currentHelper": null,
-			"helperAttributes": null
-		},
-		{
-			"id": "990ea390-b62d-b158-b858-190234d9451d",
-			"headers": "",
-			"headerData": [],
-			"url": "{{api_url}}/economy/token/stake-and-mint?token_name=T1&to_stake_amount=12",
-			"folder": "13bb35b6-f7fe-43fc-371f-6ecd8053e6fc",
-			"queryParams": [
-				{
-					"key": "token_name",
-					"value": "T1",
-					"equals": true,
-					"description": "",
-					"enabled": true
-				},
-				{
-					"key": "to_stake_amount",
-					"value": "12",
-					"equals": true,
-					"description": "",
-					"enabled": true
-				}
-			],
-			"events": [],
-			"pathVariables": {},
-			"pathVariableData": [],
-			"method": "POST",
-			"data": [
-				{
-					"key": "token_name",
-					"value": "Ak11 Coin",
-					"description": "",
-					"type": "text",
-					"enabled": true
-				}
-			],
-			"dataMode": "params",
-			"version": 2,
-			"auth": null,
-			"time": 1517373086270,
-			"name": "stake-and-mint",
-			"description": "",
-			"collectionId": "4096f0ae-3b4b-c411-e8b0-a16371d43c8d",
-			"responses": [],
-			"currentHelper": null,
-			"helperAttributes": null
-		},
-		{
-			"id": "ab84a3c7-e59e-87a3-1a57-4c1b05b8ac87",
-			"headers": "",
-			"headerData": [],
-			"url": "{{api_url}}/client/logout",
-			"folder": "66d96495-2230-f3c3-84ac-d5856c6decf7",
-			"queryParams": [],
-			"events": [],
-			"pathVariables": {},
-			"pathVariableData": [],
-			"method": "POST",
-			"data": [],
-			"dataMode": "params",
-			"version": 2,
-			"auth": null,
-			"time": 1517313267086,
-			"name": "logout",
-			"description": "",
-			"collectionId": "4096f0ae-3b4b-c411-e8b0-a16371d43c8d",
-			"responses": [],
-			"currentHelper": null,
-			"helperAttributes": null
-		},
-		{
-			"id": "b28831e4-d066-87d3-6a1c-b5c09e0f92f4",
-			"headers": "",
-			"headerData": [],
-			"url": "{{api_url}}/client/login?email=puneet.khushwani@ost.com&password=test1234",
-			"folder": "66d96495-2230-f3c3-84ac-d5856c6decf7",
-			"queryParams": [
-				{
-					"key": "email",
-					"value": "puneet.khushwani@ost.com",
-					"equals": true,
-					"description": "",
-					"enabled": true
-				},
-				{
-					"key": "password",
-					"value": "test1234",
-					"equals": true,
-					"description": "",
-					"enabled": true
-				}
-			],
-			"events": [],
-			"pathVariables": {},
-			"pathVariableData": [],
-			"method": "POST",
-			"data": [
-				{
-					"key": "email",
-					"value": "kedar@pepo.com",
-					"description": "",
-					"type": "text",
-					"enabled": true
-				},
-				{
-					"key": "password",
-					"value": "12345678",
-					"description": "",
-					"type": "text",
-					"enabled": true
-				}
-			],
-			"dataMode": "params",
-			"version": 2,
-			"auth": null,
-			"time": 1517296703765,
-			"name": "login",
-			"description": "",
-			"collectionId": "4096f0ae-3b4b-c411-e8b0-a16371d43c8d",
-			"responses": [],
-			"currentHelper": null,
-			"helperAttributes": null
-		},
-		{
-			"id": "da11492a-61c2-416d-e996-20d1f5c994a1",
+			"id": "64c793c9-47c3-6530-44c3-27f627a64f88",
 			"headers": "",
 			"headerData": [],
 			"url": "{{api_url}}/economy/token/plan?token_name=T1&conversion_rate=10&initial_number_of_users=5&airdrop_bt_per_user=2",
-			"folder": "13bb35b6-f7fe-43fc-371f-6ecd8053e6fc",
+			"folder": "0e2cf61a-9fc0-e873-64f1-49a9a847573a",
 			"queryParams": [
 				{
 					"key": "token_name",
@@ -677,10 +342,443 @@
 			"time": 1517373067425,
 			"name": "plan",
 			"description": "",
-			"collectionId": "4096f0ae-3b4b-c411-e8b0-a16371d43c8d",
+			"collectionId": "17442a4b-0050-aec2-5c88-6fbcdcebe596",
 			"responses": [],
 			"currentHelper": null,
-			"helperAttributes": null
+			"helperAttributes": null,
+			"preRequestScript": "",
+			"tests": ""
+		},
+		{
+			"id": "66dd5f07-7998-f662-d597-e151198d5bc3",
+			"headers": "",
+			"url": "{{api_url}}/client/users/create?name=Somashekhar",
+			"pathVariables": {},
+			"preRequestScript": null,
+			"method": "POST",
+			"collectionId": "17442a4b-0050-aec2-5c88-6fbcdcebe596",
+			"data": null,
+			"dataMode": "params",
+			"name": "Create User",
+			"description": "",
+			"descriptionFormat": "html",
+			"time": 1517408923877,
+			"version": 2,
+			"responses": [],
+			"tests": null,
+			"currentHelper": "normal",
+			"helperAttributes": {},
+			"folder": "f3bc75f1-e44d-22a5-a787-ed640f268c27"
+		},
+		{
+			"id": "67a217c8-d9a6-70ec-d041-58e21b79519e",
+			"headers": "",
+			"headerData": [],
+			"url": "{{api_url}}/economy/transaction/kind/create?name=ABC&kind=user_to_user&value_currency_type=usd&value_in_usd=1&value_in_bt=1&commission_percent=10",
+			"folder": "b82d6e86-d6f4-b3d5-527c-f450e8b6df59",
+			"queryParams": [
+				{
+					"key": "name",
+					"value": "ABC",
+					"equals": true,
+					"description": "",
+					"enabled": true
+				},
+				{
+					"key": "kind",
+					"value": "user_to_user",
+					"equals": true,
+					"description": "user_to_user / user_to_company / company_to_user",
+					"enabled": true
+				},
+				{
+					"key": "value_currency_type",
+					"value": "usd",
+					"equals": true,
+					"description": "usd / bt",
+					"enabled": true
+				},
+				{
+					"key": "value_in_usd",
+					"value": "1",
+					"equals": true,
+					"description": "",
+					"enabled": true
+				},
+				{
+					"key": "value_in_bt",
+					"value": "1",
+					"equals": true,
+					"description": "",
+					"enabled": true
+				},
+				{
+					"key": "commission_percent",
+					"value": "10",
+					"equals": true,
+					"description": "",
+					"enabled": true
+				}
+			],
+			"events": [],
+			"pathVariables": {},
+			"pathVariableData": [],
+			"method": "POST",
+			"data": [
+				{
+					"key": "token_name",
+					"value": "Ak11 Coin",
+					"description": "",
+					"type": "text",
+					"enabled": true
+				}
+			],
+			"dataMode": "params",
+			"version": 2,
+			"auth": null,
+			"time": 1517400271295,
+			"name": "create new kind",
+			"description": "",
+			"collectionId": "17442a4b-0050-aec2-5c88-6fbcdcebe596",
+			"responses": [],
+			"currentHelper": null,
+			"helperAttributes": null,
+			"preRequestScript": "",
+			"tests": ""
+		},
+		{
+			"id": "681d3642-9bd0-3b59-4e50-2424ec622a7b",
+			"headers": "",
+			"headerData": [],
+			"url": "{{api_url}}/client/setup-eth-address?eth_address=0x6f916C5826fC10aBBE847B43Da3Be25723c04E4d",
+			"folder": "f3bc75f1-e44d-22a5-a787-ed640f268c27",
+			"queryParams": [
+				{
+					"key": "eth_address",
+					"value": "0x6f916C5826fC10aBBE847B43Da3Be25723c04E4d",
+					"equals": true,
+					"description": "",
+					"enabled": true
+				}
+			],
+			"events": [],
+			"pathVariables": {},
+			"pathVariableData": [],
+			"method": "POST",
+			"data": [
+				{
+					"key": "token_name",
+					"value": "Ak11 Coin",
+					"description": "",
+					"type": "text",
+					"enabled": true
+				}
+			],
+			"dataMode": "params",
+			"version": 2,
+			"auth": null,
+			"time": 1517400384516,
+			"name": "setup eth address",
+			"description": "",
+			"collectionId": "17442a4b-0050-aec2-5c88-6fbcdcebe596",
+			"responses": [],
+			"currentHelper": null,
+			"helperAttributes": null,
+			"preRequestScript": "",
+			"tests": ""
+		},
+		{
+			"id": "79139824-dbe2-bb98-6443-f9427c442eac",
+			"headers": "",
+			"headerData": [],
+			"url": "{{api_url}}/client/logout",
+			"folder": "7c2595ae-3997-1f63-d04b-e62f01fc48c8",
+			"queryParams": [],
+			"events": [],
+			"pathVariables": {},
+			"pathVariableData": [],
+			"method": "POST",
+			"data": [],
+			"dataMode": "params",
+			"version": 2,
+			"auth": null,
+			"time": 1517313267086,
+			"name": "logout",
+			"description": "",
+			"collectionId": "17442a4b-0050-aec2-5c88-6fbcdcebe596",
+			"responses": [],
+			"currentHelper": null,
+			"helperAttributes": null,
+			"preRequestScript": "",
+			"tests": ""
+		},
+		{
+			"id": "82964723-19a3-270b-cfea-6840de6b3bf6",
+			"headers": "",
+			"headerData": [],
+			"url": "{{api_url}}/client/login?email=puneet.khushwani@ost.com&password=test1234",
+			"folder": "7c2595ae-3997-1f63-d04b-e62f01fc48c8",
+			"queryParams": [
+				{
+					"key": "email",
+					"value": "puneet.khushwani@ost.com",
+					"equals": true,
+					"description": "",
+					"enabled": true
+				},
+				{
+					"key": "password",
+					"value": "test1234",
+					"equals": true,
+					"description": "",
+					"enabled": true
+				}
+			],
+			"events": [],
+			"pathVariables": {},
+			"pathVariableData": [],
+			"method": "POST",
+			"data": [
+				{
+					"key": "email",
+					"value": "kedar@pepo.com",
+					"description": "",
+					"type": "text",
+					"enabled": true
+				},
+				{
+					"key": "password",
+					"value": "12345678",
+					"description": "",
+					"type": "text",
+					"enabled": true
+				}
+			],
+			"dataMode": "params",
+			"version": 2,
+			"auth": null,
+			"time": 1517296703765,
+			"name": "login",
+			"description": "",
+			"collectionId": "17442a4b-0050-aec2-5c88-6fbcdcebe596",
+			"responses": [],
+			"currentHelper": null,
+			"helperAttributes": null,
+			"preRequestScript": "",
+			"tests": ""
+		},
+		{
+			"id": "84f06d98-5e30-df78-42c7-7165e035a737",
+			"headers": "",
+			"url": "{{api_url}}/client/sign-up?email=pankaj@ost.com&password=pankaj123",
+			"preRequestScript": "",
+			"pathVariables": {},
+			"method": "POST",
+			"data": [
+				{
+					"key": "email",
+					"value": "kedar@pepo.com",
+					"description": "mandatory",
+					"type": "text",
+					"enabled": true
+				},
+				{
+					"key": "password",
+					"value": "12345678",
+					"description": "mandatory",
+					"type": "text",
+					"enabled": true
+				},
+				{
+					"key": "is_client_manager",
+					"value": "1",
+					"description": "optional",
+					"type": "text",
+					"enabled": true
+				},
+				{
+					"key": "client_creation_needed",
+					"value": "1",
+					"description": "optional",
+					"type": "text",
+					"enabled": true
+				},
+				{
+					"key": "tos_selected",
+					"value": "1",
+					"description": "mandatory",
+					"type": "text",
+					"enabled": true
+				}
+			],
+			"dataMode": "params",
+			"version": 2,
+			"tests": "",
+			"currentHelper": "normal",
+			"helperAttributes": {},
+			"time": 1517406005764,
+			"name": "sign-up",
+			"description": "",
+			"collectionId": "17442a4b-0050-aec2-5c88-6fbcdcebe596",
+			"responses": []
+		},
+		{
+			"id": "b5ce6f04-82d3-a3cd-9a7d-916001d16217",
+			"headers": "",
+			"url": "{{api_url}}/client/reset-password?r_t=XuHWcgsciJGkuPDJb6c5wWMI4Ged2PcFpHEhsqrNqvn54eo7wXvMXj7Ikq7elHQp--76e4ef971026a86c&password=pankaj123456&confirm_password=pankaj123456",
+			"pathVariables": {},
+			"preRequestScript": null,
+			"method": "POST",
+			"collectionId": "17442a4b-0050-aec2-5c88-6fbcdcebe596",
+			"data": null,
+			"dataMode": "params",
+			"name": "Reset password",
+			"description": "",
+			"descriptionFormat": "html",
+			"time": 1517406226272,
+			"version": 2,
+			"responses": [],
+			"tests": null,
+			"currentHelper": "normal",
+			"helperAttributes": {},
+			"folder": "7c2595ae-3997-1f63-d04b-e62f01fc48c8"
+		},
+		{
+			"id": "ba4199f7-81ca-4379-6a29-44c5c4e0bdb2",
+			"headers": "",
+			"headerData": [],
+			"url": "{{api_url}}/economy/transaction/kind/list",
+			"folder": "b82d6e86-d6f4-b3d5-527c-f450e8b6df59",
+			"queryParams": [],
+			"events": [],
+			"pathVariables": {},
+			"pathVariableData": [],
+			"method": "GET",
+			"data": [
+				{
+					"key": "token_name",
+					"value": "Ak11 Coin",
+					"description": "",
+					"type": "text",
+					"enabled": true
+				}
+			],
+			"dataMode": "params",
+			"version": 2,
+			"auth": null,
+			"time": 1517400273555,
+			"name": "list all kinds",
+			"description": "",
+			"collectionId": "17442a4b-0050-aec2-5c88-6fbcdcebe596",
+			"responses": [],
+			"currentHelper": null,
+			"helperAttributes": null,
+			"preRequestScript": "",
+			"tests": ""
+		},
+		{
+			"id": "f2e8e365-0c69-b24c-c8a6-38e357f295a8",
+			"headers": "",
+			"url": "{{api_url}}/client/users/edit?name=Somashekhar M&client_user_id=4",
+			"pathVariables": {},
+			"preRequestScript": null,
+			"method": "POST",
+			"collectionId": "17442a4b-0050-aec2-5c88-6fbcdcebe596",
+			"data": null,
+			"dataMode": "params",
+			"name": "Edit User",
+			"description": "",
+			"descriptionFormat": "html",
+			"time": 1517409037327,
+			"version": 2,
+			"responses": [],
+			"tests": null,
+			"currentHelper": "normal",
+			"helperAttributes": {},
+			"folder": "f3bc75f1-e44d-22a5-a787-ed640f268c27"
+		},
+		{
+			"id": "f7fe37cf-7d31-ba45-da4c-05eb0e2367ce",
+			"headers": "",
+			"headerData": [],
+			"url": "{{api_url}}/economy/transaction/kind/edit?name=ABCD&kind=user_to_user&value_currency_type=usd&value_in_usd=1&value_in_bt=1&commission_percent=10&client_transaction_id=13",
+			"folder": "b82d6e86-d6f4-b3d5-527c-f450e8b6df59",
+			"queryParams": [
+				{
+					"key": "name",
+					"value": "ABCD",
+					"equals": true,
+					"description": "",
+					"enabled": true
+				},
+				{
+					"key": "kind",
+					"value": "user_to_user",
+					"equals": true,
+					"description": "user_to_user / user_to_company / company_to_user",
+					"enabled": true
+				},
+				{
+					"key": "value_currency_type",
+					"value": "usd",
+					"equals": true,
+					"description": "usd / bt",
+					"enabled": true
+				},
+				{
+					"key": "value_in_usd",
+					"value": "1",
+					"equals": true,
+					"description": "",
+					"enabled": true
+				},
+				{
+					"key": "value_in_bt",
+					"value": "1",
+					"equals": true,
+					"description": "",
+					"enabled": true
+				},
+				{
+					"key": "commission_percent",
+					"value": "10",
+					"equals": true,
+					"description": "",
+					"enabled": true
+				},
+				{
+					"key": "client_transaction_id",
+					"value": "13",
+					"equals": true,
+					"description": "",
+					"enabled": true
+				}
+			],
+			"events": [],
+			"pathVariables": {},
+			"pathVariableData": [],
+			"method": "POST",
+			"data": [
+				{
+					"key": "token_name",
+					"value": "Ak11 Coin",
+					"description": "",
+					"type": "text",
+					"enabled": true
+				}
+			],
+			"dataMode": "params",
+			"version": 2,
+			"auth": null,
+			"time": 1517400267728,
+			"name": "edit existing kind",
+			"description": "",
+			"collectionId": "17442a4b-0050-aec2-5c88-6fbcdcebe596",
+			"responses": [],
+			"currentHelper": null,
+			"helperAttributes": null,
+			"preRequestScript": "",
+			"tests": ""
 		}
 	]
 }
