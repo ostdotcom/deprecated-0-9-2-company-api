@@ -14,7 +14,7 @@ class ServicesBase
     permitted_params = {}
 
     permitted_params_list.each do |pp|
-      permitted_params[pp] = service_params[pp]
+      permitted_params[pp] = service_params[pp] if service_params[pp].present?
     end
 
     @params = HashWithIndifferentAccess.new(permitted_params)

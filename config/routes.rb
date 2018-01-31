@@ -20,4 +20,10 @@ Rails.application.routes.draw do
     match 'stake-and-mint' => :stake_and_mint, via: :POST
   end
 
+  scope 'api/economy/transaction/kind', controller: 'economy/transaction_kind' do
+    match 'create' => :create, via: :POST
+    match 'edit' => :edit, via: :POST
+    match 'list' => :list, via: :POST
+  end
+
 end

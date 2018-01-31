@@ -80,6 +80,34 @@
     - :to_stake_amount
   :optional:
 
+'Economy::TransactionKind::Create':
+  :mandatory:
+    - :client_id
+    - :name
+    - :kind
+    - :value_currency_type
+    - :value_in_usd
+    - :value_in_bt
+    - :commission_percent
+  :optional:
+
+'Economy::TransactionKind::Edit':
+  :mandatory:
+    - :client_id
+    - :client_transaction_id
+  :optional:
+    - :name
+    - :kind
+    - :value_currency_type
+    - :value_in_usd
+    - :value_in_bt
+    - :commission_percent
+
+'Economy::TransactionKind::List':
+  :mandatory:
+    - :client_id
+  :optional:
+
 'FullClassNameOfService':
   :mandatory:
     - :p1
