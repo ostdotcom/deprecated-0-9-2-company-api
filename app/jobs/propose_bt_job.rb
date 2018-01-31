@@ -122,7 +122,14 @@ class ProposeBtJob < ApplicationJob
     reserve_address = r.data['ethereum_address']
 
     company_address = CompanyManagedAddress.get_company_address_record(reserve_address)
-    return unless @company_address.present?
+
+    return error_with_data(
+        'pbj_3',
+        'CLIENT ETH ADDRESS not found.',
+        'CLIENT ETH ADDRESS not found.',
+        GlobalConstant::ErrorAction.default,
+        {}
+    ) unless company_address.present?
 
     @client_token.company_managed_addresses_id = company_address.id
     @client_token.save
