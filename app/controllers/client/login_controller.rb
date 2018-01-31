@@ -7,7 +7,8 @@ class Client::LoginController < Client::BaseController
   before_action :authenticate_request, except: [
     :sign_up,
     :login,
-    :logout
+    :logout,
+    :send_reset_password_link, :reset_password
   ]
 
   # Sign up
@@ -68,11 +69,23 @@ class Client::LoginController < Client::BaseController
     render_api_response(Result::Base.success({}))
   end
 
+  # Send Reset Password link
+  #
+  # * Author: Pankaj
+  # * Date: 15/01/2018
+  # * Reviewed By:
+  #
   def send_reset_password_link
     service_response = UserManagement::SendResetPasswordLink.new(params).perform
     render_api_response(service_response)
   end
 
+  # Reset Password
+  #
+  # * Author: Pankaj
+  # * Date: 15/01/2018
+  # * Reviewed By:
+  #
   def reset_password
     service_response = UserManagement::ResetPassword.new(params).perform
     render_api_response(service_response)
