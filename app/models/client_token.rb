@@ -32,9 +32,9 @@ class ClientToken < EstablishCompanyClientEconomyDbConnection
   # @return [Boolean]
   #
   def registration_done?
-    @client_token.send("#{GlobalConstant::ClientToken.propose_done_setup_step}?") &&
-      @client_token.send("#{GlobalConstant::ClientToken.registered_on_uc_setup_step}?") &&
-      @client_token.send("#{GlobalConstant::ClientToken.registered_on_vc_setup_step}?")
+    send("#{GlobalConstant::ClientToken.propose_done_setup_step}?") &&
+      send("#{GlobalConstant::ClientToken.registered_on_uc_setup_step}?") &&
+      send("#{GlobalConstant::ClientToken.registered_on_vc_setup_step}?")
   end
 
 end

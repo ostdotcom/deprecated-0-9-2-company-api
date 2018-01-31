@@ -20,7 +20,13 @@ class ProposeBtJob < ApplicationJob
 
     init_params(params)
 
-    r = fetch_client_token
+    r = fetch_client_details
+    return unless r.success?
+
+    r = decrypt_info_salt
+    return r unless r.success?
+
+    r = create_reserve_address
     return unless r.success?
 
     r = propose
@@ -54,6 +60,10 @@ class ProposeBtJob < ApplicationJob
 
     @transaction_hash = nil
     @client_token = nil
+    @reserve_address = nil
+    @encrypted_passphrase = nil
+    @info_salt_d = nil
+
   end
 
   # Fetch client token
@@ -62,9 +72,21 @@ class ProposeBtJob < ApplicationJob
   # * Date: 24/01/2018
   # * Reviewed By:
   #
+  # Sets @client, @client_token
+  #
   # @return [Result::Base]
   #
-  def fetch_client_token
+  def fetch_client_details
+
+    @client = Client.where(id: @client_id).first
+    return error_with_data(
+        'pbj_',
+        'Invalid Client.',
+        'Invalid Client.',
+        GlobalConstant::ErrorAction.default,
+        {}
+    ) if @client.blank? || @client.status != GlobalConstant::Client.active_status
+
     @client_token = ClientToken.where(
       name: @token_name,
       client_id: @client_id,
@@ -72,7 +94,7 @@ class ProposeBtJob < ApplicationJob
     ).first
 
     return error_with_data(
-      'pbj_1',
+      'pbj_2',
       'Token not found.',
       'Token not found.',
       GlobalConstant::ErrorAction.default,
@@ -80,6 +102,69 @@ class ProposeBtJob < ApplicationJob
     ) unless @client_token.present?
 
     success
+
+  end
+
+  # Decrypt client Info salt
+  #
+  # * Author: Puneet
+  # * Date: 29/01/2018
+  # * Reviewed By:
+  #
+  # Sets @info_salt_d
+  #
+  # @return [Result::Base]
+  #
+  def decrypt_info_salt
+
+    # Decrypt info salt of client
+    r = Aws::Kms.new('info','user').decrypt(@client.info_salt)
+    return r unless r.success?
+
+    @info_salt_d = r.data[:plaintext]
+
+    success
+
+  end
+
+  # Create an address on UC which would act as Reserve address for this BT
+  #
+  # * Author: Puneet
+  # * Date: 29/01/2018
+  # * Reviewed By:
+  #
+  # @return [Result::Base]
+  #
+  def create_reserve_address
+
+    # Create address with this passphrase on Chain
+    r = ClientManagement::GetClientApiCredentials.new(client_id: @client_id).perform
+    return unless r.success?
+
+    # Create OST Sdk Obj
+    credentials = OSTSdk::Util::APICredentials.new(r.data[:api_key], r.data[:api_secret])
+    sdk_obj = OSTSdk::Saas::Addresses.new(GlobalConstant::Base.sub_env, credentials)
+
+    # Generate random password
+    passphrase = SecureRandom.hex(12)
+
+    r = sdk_obj.create(passphrase: passphrase)
+    return unless r.success?
+    @reserve_address = r.data['ethereum_address']
+
+    # Using Info Salt, encrypt passowrd using local cypher
+    encryptor_obj = LocalCipher.new(@info_salt_d)
+    r = encryptor_obj.encrypt(passphrase)
+    return r unless r.success?
+
+    @encrypted_passphrase = r.data[:ciphertext_blob]
+
+    @client_token.reserve_address = @reserve_address
+    @client_token.reserve_passphrase = @encrypted_passphrase
+    @client_token.save
+
+    success
+
   end
 
   # Propose
@@ -91,10 +176,8 @@ class ProposeBtJob < ApplicationJob
   # @return [Result::Base]
   #
   def propose
+
     params = {
-      # TODO - talk with Sunil for who will pass the following 2 params - rails or node.
-      sender_address: '0x8312731f3c4446b6aae61caebdf9c9249409f140',
-      sender_passphrase: 'testtest',
       token_symbol: @token_symbol,
       token_name: @token_name,
       token_conversion_rate: @token_conversion_rate
@@ -106,6 +189,7 @@ class ProposeBtJob < ApplicationJob
     @transaction_hash =  r.data[:transaction_hash]
 
     success
+
   end
 
   # Update client token

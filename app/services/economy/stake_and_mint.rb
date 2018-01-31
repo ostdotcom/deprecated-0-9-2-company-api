@@ -10,7 +10,6 @@ module Economy
     #
     # @param [Integer] client_id (mandatory) - client id
     # @param [String] token_name (mandatory) - token name
-    # @param [String] beneficiary (mandatory) - eth address of the beneficiary
     # @param [Number] to_stake_amount (mandatory) - this is the amount of OST to stake
     #
     # @return [Economy::StakeAndMint]
@@ -21,10 +20,10 @@ module Economy
 
       @client_id = @params[:client_id]
       @token_name = @params[:token_name]
-      @beneficiary = @params[:beneficiary]
       @to_stake_amount = @params[:to_stake_amount]
 
       @client_token = nil
+      @beneficiary = nil
 
     end
 
@@ -55,7 +54,7 @@ module Economy
     # * Date: 24/01/2018
     # * Reviewed By:
     #
-    # Sets @client_token
+    # Sets @client_token, @beneficiary
     #
     # @return [Result::Base]
     #
@@ -102,6 +101,8 @@ module Economy
         )
 
       end
+
+      @beneficiary = @client_token.reserve_address
 
       success
 
