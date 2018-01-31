@@ -26,7 +26,6 @@ module Economy
 
       @user = nil
       @client_token = nil
-      @beneficiary = nil
 
     end
 
@@ -57,7 +56,7 @@ module Economy
     # * Date: 24/01/2018
     # * Reviewed By:
     #
-    # Sets @client_token, @beneficiary
+    # Sets @client_token
     #
     # @return [Result::Base]
     #
@@ -108,15 +107,6 @@ module Economy
 
       end
 
-      @beneficiary = @client_token.get_reserve_address
-      return error_with_data(
-          'e_sam_4',
-          'Beneficiary not found.',
-          'Beneficiary not found.',
-          GlobalConstant::ErrorAction.default,
-          {}
-      ) unless @beneficiary.present?
-
       success
 
     end
@@ -149,7 +139,7 @@ module Economy
           'User Not Verified',
           GlobalConstant::ErrorAction.default,
           {}
-      ) if @user.status != GlobalConstant::User.is_user_verified_property
+      ) if User.get_bits_set_for_properties(@user.properties).exclude?(GlobalConstant::User.is_user_verified_property)
 
       success
 
@@ -163,20 +153,30 @@ module Economy
     #
     def enqueue_job
 
-      stake_params = {
-          beneficiary: @beneficiary,
-          to_stake_amount: @to_stake_amount
-      }
+      stake_params = {to_stake_amount: @to_stake_amount}
 
       # Registration was already complete, we would directly start staking process
       if @client_token.registration_done?
+
+        beneficiary = @client_token.get_reserve_address
+        return error_with_data(
+            'e_sam_4',
+            'Beneficiary not found.',
+            'Beneficiary not found.',
+            GlobalConstant::ErrorAction.default,
+            {}
+        ) unless beneficiary.present?
+
         stake_params[:uuid] = @client_token.uuid
+        stake_params[:beneficiary] = beneficiary
+
         BgJob.enqueue(
             Stake::ApproveJob,
             {
                 stake_params: stake_params
             }
         )
+
       # start registration process for client
       else
         BgJob.enqueue(

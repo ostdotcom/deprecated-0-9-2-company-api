@@ -117,7 +117,7 @@ class ProposeBtJob < ApplicationJob
     credentials = OSTSdk::Util::APICredentials.new(r.data[:api_key], r.data[:api_secret])
     sdk_obj = OSTSdk::Saas::Addresses.new(GlobalConstant::Base.sub_env, credentials)
 
-    r = sdk_obj.create()
+    r = sdk_obj.create
     return unless r.success?
     reserve_address = r.data['ethereum_address']
 

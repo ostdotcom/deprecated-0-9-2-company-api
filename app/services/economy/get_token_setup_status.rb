@@ -37,7 +37,12 @@ module Economy
       r = fetch_client_token
       return r unless r.success?
 
-      success_with_data(steps_performed: ClientToken.get_bits_set_for_setup_steps(@client_token.setup_steps))
+      steps_performed = []
+      if @client_token.setup_steps.present?
+        steps_performed = ClientToken.get_bits_set_for_setup_steps(@client_token.setup_steps)
+      end
+
+      success_with_data(steps_performed: steps_performed)
 
     end
 
