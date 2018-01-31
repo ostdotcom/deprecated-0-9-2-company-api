@@ -109,7 +109,7 @@ module UserManagement
           email: @user.email,
           template_name: GlobalConstant::PepoCampaigns.double_opt_in_template,
           template_vars: {
-              double_opt_in_token: @double_optin_token
+              double_opt_in_token: URI.encode(@double_optin_token)
           }
       ).perform
     end

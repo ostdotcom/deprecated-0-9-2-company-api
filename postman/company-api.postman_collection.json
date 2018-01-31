@@ -27,7 +27,8 @@
 				"82964723-19a3-270b-cfea-6840de6b3bf6",
 				"79139824-dbe2-bb98-6443-f9427c442eac",
 				"00e8a99f-7f9e-226f-b886-d8e96df11b26",
-				"b5ce6f04-82d3-a3cd-9a7d-916001d16217"
+				"b5ce6f04-82d3-a3cd-9a7d-916001d16217",
+				"89497a54-ecdb-73ca-39ae-31decfcabdbf"
 			],
 			"owner": 0,
 			"folders_order": [],
@@ -621,6 +622,27 @@
 			"description": "",
 			"collectionId": "17442a4b-0050-aec2-5c88-6fbcdcebe596",
 			"responses": []
+		},
+		{
+			"id": "89497a54-ecdb-73ca-39ae-31decfcabdbf",
+			"headers": "",
+			"url": "{{api_url}}/client/verify-email?r_t=4hg90xFAgxDanalXsQjHvpN6deXqGPv6J0WmuMdwYQqBVlQtfrgYUD19n9orOWCa--3a69ab3a42ab1ddc",
+			"pathVariables": {},
+			"preRequestScript": null,
+			"method": "POST",
+			"collectionId": "17442a4b-0050-aec2-5c88-6fbcdcebe596",
+			"data": null,
+			"dataMode": "params",
+			"name": "Verify email",
+			"description": "",
+			"descriptionFormat": "html",
+			"time": 1517413127476,
+			"version": 2,
+			"responses": [],
+			"tests": null,
+			"currentHelper": "normal",
+			"helperAttributes": {},
+			"folder": "7c2595ae-3997-1f63-d04b-e62f01fc48c8"
 		},
 		{
 			"id": "b5ce6f04-82d3-a3cd-9a7d-916001d16217",

@@ -7,6 +7,7 @@ Rails.application.routes.draw do
     match 'logout' => :logout, via: :POST
     match 'reset-password' => :reset_password, via: :POST
     match 'send-reset-password-link' => :send_reset_password_link, via: :POST
+    match 'verify-email' => :verify_email, via: :POST
   end
 
   scope 'api/client', controller: 'client/setup' do

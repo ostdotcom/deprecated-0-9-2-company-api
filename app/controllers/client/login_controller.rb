@@ -91,4 +91,15 @@ class Client::LoginController < Client::BaseController
     render_api_response(service_response)
   end
 
+  # Email verification of user
+  #
+  # * Author: Pankaj
+  # * Date: 15/01/2018
+  # * Reviewed By:
+  #
+  def verify_email
+    service_response = UserManagement::DoubleOptIn.new(params).perform
+    render_api_response(service_response)
+  end
+
 end
