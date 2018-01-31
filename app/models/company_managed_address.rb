@@ -1,0 +1,2 @@
+class CompanyManagedAddress < EstablishCompanyClientEconomyDbConnection
+end
