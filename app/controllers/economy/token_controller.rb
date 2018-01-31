@@ -33,4 +33,15 @@ class Economy::TokenController < Economy::BaseController
     render_api_response(service_response)
   end
 
+  # Get Setup Status
+  #
+  # * Author: Puneet
+  # * Date: 31/01/2018
+  # * Reviewed By:
+  #
+  def get_setup_status
+    service_response = Economy::GetTokenSetupStatus.new(params).perform
+    render_api_response(service_response)
+  end
+
 end

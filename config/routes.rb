@@ -18,12 +18,13 @@ Rails.application.routes.draw do
     match 'create' => :create_token, via: :POST
     match 'plan' => :plan_token, via: :POST
     match 'stake-and-mint' => :stake_and_mint, via: :POST
+    match 'get-setup-status' => :get_setup_status, via: :GET
   end
 
   scope 'api/economy/transaction/kind', controller: 'economy/transaction_kind' do
     match 'create' => :create, via: :POST
     match 'edit' => :edit, via: :POST
-    match 'list' => :list, via: :POST
+    match 'list' => :list, via: :GET
   end
 
 end

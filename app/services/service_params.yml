@@ -80,6 +80,11 @@
     - :to_stake_amount
   :optional:
 
+'Economy::GetTokenSetupStatus':
+  :mandatory:
+    - :client_id
+  :optional:
+
 'Economy::TransactionKind::Create':
   :mandatory:
     - :client_id
