@@ -41,7 +41,7 @@ module ClientManagement
       r = fetch_eth_address_from_db
       return r unless r.success?
 
-      hashed_eth_address = ClientAddress.get_hashed_eth_address(@eth_address)
+      hashed_eth_address = LocalCipher.get_sha_hashed_text(@eth_address)
 
       hashed_eth_address == @hashed_eth_address_from_db ? success : error_with_data(
           'cm_vea_3',

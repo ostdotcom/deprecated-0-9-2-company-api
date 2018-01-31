@@ -23,9 +23,6 @@ class ProposeBtJob < ApplicationJob
     r = fetch_client_details
     return unless r.success?
 
-    r = decrypt_info_salt
-    return r unless r.success?
-
     r = create_reserve_address
     return unless r.success?
 
@@ -60,9 +57,6 @@ class ProposeBtJob < ApplicationJob
 
     @transaction_hash = nil
     @client_token = nil
-    @reserve_address = nil
-    @encrypted_passphrase = nil
-    @info_salt_d = nil
 
   end
 
@@ -105,28 +99,6 @@ class ProposeBtJob < ApplicationJob
 
   end
 
-  # Decrypt client Info salt
-  #
-  # * Author: Puneet
-  # * Date: 29/01/2018
-  # * Reviewed By:
-  #
-  # Sets @info_salt_d
-  #
-  # @return [Result::Base]
-  #
-  def decrypt_info_salt
-
-    # Decrypt info salt of client
-    r = Aws::Kms.new('info','user').decrypt(@client.info_salt)
-    return r unless r.success?
-
-    @info_salt_d = r.data[:plaintext]
-
-    success
-
-  end
-
   # Create an address on UC which would act as Reserve address for this BT
   #
   # * Author: Puneet
@@ -145,22 +117,14 @@ class ProposeBtJob < ApplicationJob
     credentials = OSTSdk::Util::APICredentials.new(r.data[:api_key], r.data[:api_secret])
     sdk_obj = OSTSdk::Saas::Addresses.new(GlobalConstant::Base.sub_env, credentials)
 
-    # Generate random password
-    passphrase = SecureRandom.hex(12)
-
-    r = sdk_obj.create(passphrase: passphrase)
+    r = sdk_obj.create()
     return unless r.success?
-    @reserve_address = r.data['ethereum_address']
+    reserve_address = r.data['ethereum_address']
 
-    # Using Info Salt, encrypt passowrd using local cypher
-    encryptor_obj = LocalCipher.new(@info_salt_d)
-    r = encryptor_obj.encrypt(passphrase)
-    return r unless r.success?
+    company_address = CompanyManagedAddress.get_company_address_record(reserve_address)
+    return unless @company_address.present?
 
-    @encrypted_passphrase = r.data[:ciphertext_blob]
-
-    @client_token.reserve_address = @reserve_address
-    @client_token.reserve_passphrase = @encrypted_passphrase
+    @client_token.company_managed_addresses_id = company_address.id
     @client_token.save
 
     success

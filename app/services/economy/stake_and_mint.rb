@@ -108,7 +108,14 @@ module Economy
 
       end
 
-      @beneficiary = @client_token.reserve_address
+      @beneficiary = @client_token.get_reserve_address
+      return error_with_data(
+          'e_sam_4',
+          'Beneficiary not found.',
+          'Beneficiary not found.',
+          GlobalConstant::ErrorAction.default,
+          {}
+      ) unless @beneficiary.present?
 
       success
 

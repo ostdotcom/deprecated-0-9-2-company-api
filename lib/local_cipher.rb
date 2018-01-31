@@ -57,8 +57,8 @@ class LocalCipher
     end
   end
 
-  def get_hashed_text(text)
-    OpenSSL::HMAC.hexdigest("SHA256", GlobalConstant::SecretEncryptor.generic_sha_key, text)
+  def self.get_sha_hashed_text(text)
+    OpenSSL::HMAC.hexdigest("SHA256", GlobalConstant::SecretEncryptor.generic_sha_key, text.downcase)
   end
 
   private

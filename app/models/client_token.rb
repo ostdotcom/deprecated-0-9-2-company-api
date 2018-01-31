@@ -37,4 +37,27 @@ class ClientToken < EstablishCompanyClientEconomyDbConnection
       send("#{GlobalConstant::ClientToken.registered_on_vc_setup_step}?")
   end
 
+  # Get Reserve address of a client
+  #
+  # * Author: Pankaj
+  # * Date: 31/01/2018
+  # * Reviewed By:
+  #
+  # @return [String]
+  #
+  def get_reserve_address
+    client = Client.where(id: client_id).first
+    r = Aws::Kms.new('info','user').decrypt(client.info_salt)
+    return nil unless r.success?
+    info_salt_d = r.data[:plaintext]
+
+    cma = CompanyManagedAddress.where(id: company_managed_addresses_id).first
+    return nil if cma.blank?
+
+    r = LocalCipher.new(info_salt_d).decrypt(cma.ethereum_address)
+    return (r.success? ? r.data[:plaintext] : nil)
+  end
+
+
+
 end
