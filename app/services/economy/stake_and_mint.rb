@@ -9,6 +9,7 @@ module Economy
     # * Reviewed By:
     #
     # @param [Integer] client_id (mandatory) - client id
+    # @param [Integer] user_id (mandatory) - user id
     # @param [String] token_name (mandatory) - token name
     # @param [Number] to_stake_amount (mandatory) - this is the amount of OST to stake
     #
@@ -18,10 +19,12 @@ module Economy
 
       super
 
+      @user_id = @params[:user_id]
       @client_id = @params[:client_id]
       @token_name = @params[:token_name]
       @to_stake_amount = @params[:to_stake_amount]
 
+      @user = nil
       @client_token = nil
       @beneficiary = nil
 
@@ -61,6 +64,9 @@ module Economy
     def validate_and_sanitize
 
       r = validate
+      return r unless r.success?
+
+      r = validate_user
       return r unless r.success?
 
       # sanitize
@@ -103,6 +109,40 @@ module Economy
       end
 
       @beneficiary = @client_token.reserve_address
+
+      success
+
+    end
+
+    # Validate User
+    #
+    # * Author: Puneet
+    # * Date: 29/01/2018
+    # * Reviewed By:
+    #
+    # Sets @user
+    #
+    # @return [Result::Base]
+    #
+    def validate_user
+
+      @user = User.get_from_memcache(@user_id)
+
+      return error_with_data(
+          'e_sam_4',
+          'Invalid User Id',
+          'Invalid User Id',
+          GlobalConstant::ErrorAction.default,
+          {}
+      ) if @user.blank?
+
+      return error_with_data(
+          'e_sam_5',
+          'User Not Verified',
+          'User Not Verified',
+          GlobalConstant::ErrorAction.default,
+          {}
+      ) if @user.status != GlobalConstant::User.is_user_verified_property
 
       success
 

@@ -75,6 +75,7 @@
 'Economy::StakeAndMint':
   :mandatory:
     - :client_id
+    - :user_id
     - :token_name
     - :to_stake_amount
   :optional:
