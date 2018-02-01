@@ -1,4 +1,5 @@
 class Memcache
+
   class << self
 
     def get_ttl(ttl)
@@ -43,6 +44,7 @@ class Memcache
     end
 
     def get_set_memcached_multi(keys, ttl = 0, marshaling = true)
+
       raise 'block not given to get_set_memcached' unless block_given?
 
       Rails.cache.fetch_multi(*keys, {expires_in: get_ttl(ttl), raw: !marshaling}) do

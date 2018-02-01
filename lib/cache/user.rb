@@ -1,0 +1,65 @@
+module Cache
+
+  class User < Cache::Base
+
+    private
+
+    # Fetch from db
+    #
+    # * Author: Puneet
+    # * Date: 01/02/2018
+    # * Reviewed By:
+    #
+    # @return [Hash]
+    #
+    def fetch_from_db(cache_miss_ids)
+      ::User.where(id: cache_miss_ids).inject({}) do |user_data, user|
+        user_data[user.id] = {
+            id: user.id,
+            status: user.status,
+            default_client_id: user.default_client_id,
+            properties: ::User.get_bits_set_for_properties(user.properties),
+            uts: user.updated_at.to_i
+        }
+        user_data
+      end
+    end
+
+    #
+    # * Author: Puneet
+    # * Date: 01/02/2018
+    # * Reviewed By:
+    #
+    # @return [MemcacheKey]
+    #
+    def memcache_key_object
+      @m_k_o ||= MemcacheKey.new('user.details')
+    end
+
+    # Fetch cache key
+    #
+    # * Author: Puneet
+    # * Date: 01/02/2018
+    # * Reviewed By:
+    #
+    # @return [String]
+    #
+    def get_cache_key(id)
+      memcache_key_object.key_template % @options.merge(id: id)
+    end
+
+    # Fetch cache expiry (in seconds)
+    #
+    # * Author: Puneet
+    # * Date: 01/02/2018
+    # * Reviewed By:
+    #
+    # @return [Integer]
+    #
+    def get_cache_expiry
+      memcache_key_object.expiry
+    end
+
+  end
+
+end
