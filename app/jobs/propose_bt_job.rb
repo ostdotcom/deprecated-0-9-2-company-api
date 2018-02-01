@@ -111,14 +111,14 @@ class ProposeBtJob < ApplicationJob
 
     # Create address with this passphrase on Chain
     r = ClientManagement::GetClientApiCredentials.new(client_id: @client_id).perform
-    return unless r.success?
+    return r unless r.success?
 
     # Create OST Sdk Obj
     credentials = OSTSdk::Util::APICredentials.new(r.data[:api_key], r.data[:api_secret])
     sdk_obj = OSTSdk::Saas::Addresses.new(GlobalConstant::Base.sub_env, credentials)
 
     r = sdk_obj.create
-    return unless r.success?
+    return r unless r.success?
     reserve_address = r.data['ethereum_address']
 
     company_address = CompanyManagedAddress.get_company_address_record(reserve_address)

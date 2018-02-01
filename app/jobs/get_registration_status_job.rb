@@ -133,6 +133,7 @@ class GetRegistrationStatusJob < ApplicationJob
   # * Reviewed By:
   #
   def enqueue_job
+
     if registration_done?
 
       @stake_params[:uuid] = @client_token.uuid
