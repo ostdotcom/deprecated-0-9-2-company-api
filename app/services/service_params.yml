@@ -72,6 +72,14 @@
     - :airdrop_bt_per_user
   :optional:
 
+'Economy::LogTransferToStaker':
+  :mandatory:
+    - :client_id
+    - :user_id
+    - :client_token_id
+    - :transaction_hash
+  :optional:
+
 'Economy::StakeAndMint':
   :mandatory:
     - :client_id

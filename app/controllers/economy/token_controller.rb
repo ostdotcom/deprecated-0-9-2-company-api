@@ -22,6 +22,17 @@ class Economy::TokenController < Economy::BaseController
     render_api_response(service_response)
   end
 
+  # Record a transaction in our DB which was used to transfer OST from Client's Address to Our Staker's Address
+  #
+  # * Author: Puneet
+  # * Date: 02/02/2018
+  # * Reviewed By:
+  #
+  def log_transfer_to_staker
+    service_response = Economy::LogTransferToStaker.new(params).perform
+    render_api_response(service_response)
+  end
+
   # stake and mint
   #
   # * Author: Kedar

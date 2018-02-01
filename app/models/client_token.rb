@@ -58,6 +58,4 @@ class ClientToken < EstablishCompanyClientEconomyDbConnection
     return (r.success? ? r.data[:plaintext] : nil)
   end
 
-
-
 end

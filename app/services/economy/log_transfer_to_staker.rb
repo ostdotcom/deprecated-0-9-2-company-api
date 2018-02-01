@@ -1,0 +1,183 @@
+module Economy
+
+  class LogTransferToStaker < ServicesBase
+
+    # Initialize
+    #
+    # * Author: Puneet
+    # * Date: 31/01/2018
+    # * Reviewed By:
+    #
+    # @params [Integer] client_id (mandatory) - client id
+    # @params [Integer] user_id (mandatory) - user id
+    # @params [Integer] client_token_id (mandatory) - client token id
+    # @params [String] transaction_hash (mandatory) - transaction_hash
+    #
+    # @return [Economy::LogTransferToStaker]
+    #
+    def initialize(params)
+
+      super
+
+      @client_id = @params[:client_id]
+      @client_token_id = @params[:client_token_id]
+      @user_id = @params[:user_id]
+      @transaction_hash = @params[:transaction_hash]
+
+      @user = nil
+      @client_token = nil
+      @client_setup_activity_log_id = nil
+
+    end
+
+    # Perform
+    #
+    # * Author: Puneet
+    # * Date: 31/01/2018
+    # * Reviewed By:
+    #
+    # @return [Result::Base]
+    #
+    def perform
+
+      r = validate_and_sanitize
+      return r unless r.success?
+
+      r = log_transfer
+      return r unless r.success?
+
+      enque_job
+
+    end
+
+    private
+
+    # Validate and sanitize
+    #
+    # * Author: Puneet
+    # * Date: 31/01/2018
+    # * Reviewed By:
+    #
+    # Sets @user
+    #
+    # @return [Result::Base]
+    #
+    def validate_and_sanitize
+
+      r = validate
+      return r unless r.success?
+
+      r = validate_user
+      return r unless r.success?
+
+      validate_client_token
+
+    end
+
+    # Validate User
+    #
+    # * Author: Puneet
+    # * Date: 29/01/2018
+    # * Reviewed By:
+    #
+    # Sets @user
+    #
+    # @return [Result::Base]
+    #
+    def validate_user
+
+      @user = User.get_from_memcache(@user_id)
+
+      return error_with_data(
+          'e_ltts_1',
+          'Invalid User Id',
+          'Invalid User Id',
+          GlobalConstant::ErrorAction.default,
+          {}
+      ) if @user.blank? ||
+          User.get_bits_set_for_properties(@user.properties).exclude?(GlobalConstant::User.is_user_verified_property)
+
+      success
+
+    end
+
+    # Validate Client Token
+    #
+    # * Author: Puneet
+    # * Date: 29/01/2018
+    # * Reviewed By:
+    #
+    # Sets @client_token
+    #
+    # @return [Result::Base]
+    #
+    def validate_client_token
+
+      @client_token = ClientToken.where(id: @client_token_id).first
+
+      return error_with_data(
+          'e_ltts_1',
+          'Invalid User Id',
+          'Invalid User Id',
+          GlobalConstant::ErrorAction.default,
+          {}
+      ) if @client_token.blank? || @client_token.client_id != @client_id
+
+      success
+
+    end
+
+    # Log Transfer
+    #
+    # * Author: Puneet
+    # * Date: 29/01/2018
+    # * Reviewed By:
+    #
+    # Sets @client_setup_activity_log_id
+    #
+    # @return [Result::Base]
+    #
+    def log_transfer
+
+      db_record = ClientSetupActivityLog.create!(
+        client_id: @client_id,
+        client_token_id: @client_token_id,
+        activity_type: GlobalConstant::ClientEconomyActivityLog.transfer_to_staker_activty_type,
+        chain_type: GlobalConstant::ClientEconomyActivityLog.value_chain_type,
+        status: GlobalConstant::ClientEconomyActivityLog.pending_status,
+        transaction_hash: @transaction_hash
+      )
+
+      @client_setup_activity_log_id = db_record.id
+
+      success
+
+    end
+
+    # Enqueue a job which would observe this transaction (to check if it was mined)
+    #
+    # * Author: Puneet
+    # * Date: 29/01/2018
+    # * Reviewed By:
+    #
+    # @return [Result::Base]
+    #
+    def enqueue_job
+
+      BgJob.enqueue(
+          Stake::GetTransferToStakerStatusJob,
+          {
+              transaction_hash: @transaction_hash,
+              client_setup_activity_log_id: @client_setup_activity_log_id,
+              started_at: current_timestamp
+          },
+          {
+              wait: 30.seconds
+          }
+      )
+
+    end
+
+  end
+
+end

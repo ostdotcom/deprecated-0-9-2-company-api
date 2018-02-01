@@ -11,6 +11,10 @@ module GlobalConstant
         'request_ost'
       end
 
+      def transfer_to_staker_activty_type
+        'transfer_to_staker'
+      end
+
       ########## chain_types #############
 
       def utility_chain_type
@@ -29,6 +33,10 @@ module GlobalConstant
 
       def processed_status
         'processed'
+      end
+
+      def failed_status
+        'failed'
       end
 
     end
