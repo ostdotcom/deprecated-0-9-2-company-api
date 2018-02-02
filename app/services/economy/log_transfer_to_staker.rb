@@ -86,7 +86,8 @@ module Economy
     #
     def validate_user
 
-      @user = User.get_from_memcache(@user_id)
+      cache_data = Cache::UserSecure.new([@user_id]).fetch
+      @user = cache_data[@user_id]
 
       return error_with_data(
           'e_ltts_1',
@@ -94,8 +95,7 @@ module Economy
           'Invalid User Id',
           GlobalConstant::ErrorAction.default,
           {}
-      ) if @user.blank? ||
-          User.get_bits_set_for_properties(@user.properties).exclude?(GlobalConstant::User.is_user_verified_property)
+      ) if @user.blank? || @user[:properties].exclude?(GlobalConstant::User.is_user_verified_property)
 
       success
 

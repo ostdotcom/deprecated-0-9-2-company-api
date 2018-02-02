@@ -123,7 +123,8 @@ module Economy
     #
     def validate_user
 
-      @user = User.get_from_memcache(@user_id)
+      cache_data = Cache::UserSecure.new([@user_id]).fetch
+      @user = cache_data[@user_id]
 
       return error_with_data(
           'e_sam_4',
@@ -139,7 +140,7 @@ module Economy
           'User Not Verified',
           GlobalConstant::ErrorAction.default,
           {}
-      ) if User.get_bits_set_for_properties(@user.properties).exclude?(GlobalConstant::User.is_user_verified_property)
+      ) if @user[:properties].exclude?(GlobalConstant::User.is_user_verified_property)
 
       success
 

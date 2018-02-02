@@ -1,6 +1,6 @@
 module Cache
 
-  class User < Cache::Base
+  class UserSecure < Cache::Base
 
     private
 
@@ -14,13 +14,7 @@ module Cache
     #
     def fetch_from_db(cache_miss_ids)
       ::User.where(id: cache_miss_ids).inject({}) do |user_data, user|
-        user_data[user.id] = {
-            id: user.id,
-            status: user.status,
-            default_client_id: user.default_client_id,
-            properties: ::User.get_bits_set_for_properties(user.properties),
-            uts: user.updated_at.to_i
-        }
+        user_data[user.id] = user.formated_cache_data
         user_data
       end
     end

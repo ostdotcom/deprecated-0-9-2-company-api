@@ -95,13 +95,15 @@ module UserManagement
     # @return [Result::Base]
     #
     def validate_token
-      @user = User.get_from_memcache(@user_id)
-      return unauthorized_access_response('um_vc_5') unless @user.present? && @user.password.present? &&
-          (@user[:status] == GlobalConstant::User.active_status)
+
+      cache_data = Cache::UserSecure.new([@user_id]).fetch
+      @user = cache_data[@user_id]
+
+      return unauthorized_access_response('um_vc_5') unless @user.present? && @user[:status] == GlobalConstant::User.active_status
 
       # if @client_id != default_client_id
       # check for client id to be existing in client managers table
-      if @client_id != @user.default_client_id
+      if @client_id != @user[:default_client_id]
         return unauthorized_access_response('um_vc_6') unless ClientManager.where(
           client_id: @client_id,
           user_id: @user_id,
@@ -113,6 +115,7 @@ module UserManagement
       return unauthorized_access_response('um_vc_7') unless (evaluated_token == @token)
 
       success
+
     end
 
     # Set extended cookie value

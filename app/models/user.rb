@@ -22,16 +22,15 @@ class User < EstablishCompanyUserDbConnection
   # Note : always include this after declaring bit_wise_columns_config method
   include BitWiseConcern
 
-
-  def self.get_memcache_key_object
-    MemcacheKey.new('user.user_details')
-  end
-
-  def self.get_from_memcache(user_id)
-    memcache_key_object = User.get_memcache_key_object
-    Memcache.get_set_memcached(memcache_key_object.key_template % {id: user_id}, memcache_key_object.expiry) do
-      User.where(id: user_id).first
-    end
+  def formated_cache_data
+    {
+        id: id,
+        status: status,
+        default_client_id: default_client_id,
+        properties: properties.present? ? User.get_bits_set_for_properties(properties) : [],
+        password: password,
+        uts: updated_at.to_i
+    }
   end
 
   def self.get_encrypted_password(password, salt)
