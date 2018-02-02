@@ -171,6 +171,7 @@ module UserManagement
     def mark_user_verified
       @user.send("set_#{GlobalConstant::User.is_user_verified_property}")
       @user.save!
+      clear_cache
     end
 
     # Update User Validation hash used for double opt in and make all others inactive.
@@ -227,6 +228,17 @@ module UserManagement
           GlobalConstant::ErrorAction.default,
           {}
       )
+    end
+
+    #
+    # * Author: Puneet
+    # * Date: 11/01/2018
+    # * Reviewed By
+    #
+    # @return [Result::Base]
+    #
+    def clear_cache
+      Cache::User.new([@user.id]).clear
     end
 
   end

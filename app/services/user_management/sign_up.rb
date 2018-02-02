@@ -60,6 +60,8 @@ module UserManagement
 
       UserManagement::SendDoubleOptInLink.new(email: @email).perform
 
+      clear_cache
+
       success_with_data(
         cookie_value: @cookie_value
       )
@@ -327,6 +329,18 @@ module UserManagement
           }
       ).perform
 
+    end
+
+    #
+    # * Author: Puneet
+    # * Date: 11/01/2018
+    # * Reviewed By
+    #
+    # @return [Result::Base]
+    #
+    def clear_cache
+      Cache::User.new([@user.id]).clear
+      Cache::Client.new([@client_id]).clear
     end
 
   end
