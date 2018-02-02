@@ -10,3 +10,6 @@ client:
   details:
     key_template: 'c_d_%{id}'
     expiry_in_seconds: 86400
+  token_details:
+    key_template: 'c_td_%{id}'
+    expiry_in_seconds: 86400

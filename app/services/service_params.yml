@@ -90,7 +90,8 @@
 
 'Economy::GetTokenSetupStatus':
   :mandatory:
-    - :client_id
+    - :client_token_id
+    - :user_id
   :optional:
 
 'Economy::TransactionKind::Create':
@@ -119,6 +120,16 @@
 'Economy::TransactionKind::List':
   :mandatory:
     - :client_id
+  :optional:
+
+'Economy::Transaction::FetchHistory':
+  :mandatory:
+    - :client_token_id
+  :optional:
+
+'Economy::Transaction::Execute':
+  :mandatory:
+    - :client_token_id
   :optional:
 
 'FullClassNameOfService':

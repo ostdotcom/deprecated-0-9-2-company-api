@@ -11,7 +11,6 @@ class CreateClientTokens < DbMigrationConnection
         t.column :symbol, :string, null: false
         t.column :symbol_icon, :string, null: true
         t.column :conversion_rate, :decimal, precision: 30, scale: 10, null: true
-        t.column :properties, :tinyint, null: true
         t.column :setup_steps, :tinyint, null: true
         t.column :status, :tinyint, null: false
         t.timestamps

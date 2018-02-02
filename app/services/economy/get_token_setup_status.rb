@@ -8,15 +8,18 @@ module Economy
     # * Date: 31/01/2018
     # * Reviewed By:
     #
-    # @params [Integer] client_id (mandatory) - client id
+    # @params [Integer] client_token_id (mandatory) - client token id
+    # @params [Integer] user_id (mandatory) - user id
     #
-    # @return [Economy::PlaGetTokenSetupStatusn]
+    # @return [Economy::GetTokenSetupStatus]
     #
     def initialize(params)
 
       super
 
-      @client_id = @params[:client_id]
+      @user_id = @params[:user_id]
+      @client_token_id = @params[:client_token_id]
+
       @client_token = nil
 
     end
@@ -37,12 +40,10 @@ module Economy
       r = fetch_client_token
       return r unless r.success?
 
-      steps_performed = []
-      if @client_token.setup_steps.present?
-        steps_performed = ClientToken.get_bits_set_for_setup_steps(@client_token.setup_steps)
-      end
-
-      success_with_data(steps_performed: steps_performed)
+      success_with_data(
+        client_token: @client_token,
+        user: Cache::User.new([@user_id]).fetch[@user_id]
+      )
 
     end
 
@@ -57,7 +58,7 @@ module Economy
     #
     def fetch_client_token
 
-      @client_token = ClientToken.where(client_id: @client_id).last
+      @client_token = Cache::ClientToken.new([@client_token_id]).fetch[@client_token_id]
       return error_with_data(
           'e_gtss_1',
           'Token not found.',

@@ -127,6 +127,8 @@ module Economy
 
       ct.save!
 
+      Cache::ClientToken.new([ct.id]).clear
+
       success
 
     end

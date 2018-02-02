@@ -22,16 +22,21 @@ Rails.application.routes.draw do
 
   scope 'api/economy/token', controller: 'economy/token' do
     match 'create' => :create_token, via: :POST
+    match 'get-setup-status' => :get_setup_status, via: :GET
     match 'plan' => :plan_token, via: :POST
     match 'log-transfer-to-staker' => :log_transfer_to_staker, via: :POST
     match 'stake-and-mint' => :stake_and_mint, via: :POST
-    match 'get-setup-status' => :get_setup_status, via: :GET
   end
 
   scope 'api/economy/transaction/kind', controller: 'economy/transaction_kind' do
     match 'create' => :create, via: :POST
     match 'edit' => :edit, via: :POST
     match 'list' => :list, via: :GET
+  end
+
+  scope 'api/economy/transaction', controller: 'economy/transaction' do
+    match 'execute' => :execute, via: :POST
+    match 'history' => :fetch_history, via: :GET
   end
 
 end
