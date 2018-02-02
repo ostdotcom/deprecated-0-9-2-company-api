@@ -23,7 +23,9 @@ module UserManagement
       @token = nil
 
       @user = nil
+      @client = nil
       @extended_cookie_value = nil
+
     end
 
     # Perform
@@ -49,6 +51,7 @@ module UserManagement
       success_with_data(
           user_id: @user_id,
           client_id: @client_id,
+          client_token_id: @client[:default_token_id],
           extended_cookie_value: @extended_cookie_value
       )
 
@@ -90,7 +93,7 @@ module UserManagement
     # * Date: 15/01/2018
     # * Reviewed By:
     #
-    # Sets @user
+    # Sets @user, @client
     #
     # @return [Result::Base]
     #
@@ -101,14 +104,12 @@ module UserManagement
 
       return unauthorized_access_response('um_vc_5') unless @user.present? && @user[:status] == GlobalConstant::User.active_status
 
+      @client = Cache::Client.new([@client_id]).fetch[@client_id]
+
       # if @client_id != default_client_id
       # check for client id to be existing in client managers table
       if @client_id != @user[:default_client_id]
-        return unauthorized_access_response('um_vc_6') unless ClientManager.where(
-          client_id: @client_id,
-          user_id: @user_id,
-          status: GlobalConstant::ClientManager.active_status
-        ).first.present?
+        return unauthorized_access_response('um_vc_6') if @client[:manager_user_ids].exclude?(@user_id)
       end
 
       evaluated_token = User.get_cookie_token(@user_id, @client_id, @user[:password], '', @created_ts)

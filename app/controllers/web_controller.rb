@@ -64,9 +64,9 @@ class WebController < ApplicationController
         GlobalConstant::Cookie.user_expiry.from_now
       ) if extended_cookie_value.present?
 
-      # Set user id
       params[:user_id] = service_response.data[:user_id]
       params[:client_id] = service_response.data[:client_id]
+      params[:client_token_id] = service_response.data[:client_token_id]
 
       # Remove sensitive data
       service_response.data = {}

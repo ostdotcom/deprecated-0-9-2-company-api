@@ -80,7 +80,7 @@ module ClientManagement
           {}
       ) unless Util::CommonValidator.is_ethereum_address?(@eth_address)
 
-      @client = Client.where(id: @client_id).first
+      @client = Cache::Client.new([@client_id]).fetch[@client_id]
 
       return error_with_data(
           'cm_vea_2',
@@ -88,7 +88,7 @@ module ClientManagement
           'Invalid Client.',
           GlobalConstant::ErrorAction.default,
           {}
-      ) if @client.blank? || @client.status != GlobalConstant::Client.active_status
+      ) if @client.blank? || @client[:status] != GlobalConstant::Client.active_status
 
       success
 

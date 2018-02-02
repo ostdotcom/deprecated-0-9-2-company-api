@@ -22,6 +22,14 @@ class User < EstablishCompanyUserDbConnection
   # Note : always include this after declaring bit_wise_columns_config method
   include BitWiseConcern
 
+  # Format data to a format which goes into cache
+  #
+  # * Author: Puneet
+  # * Date: 01/02/2018
+  # * Reviewed By:
+  #
+  # @return [Hash]
+  #
   def formated_cache_data
     {
         id: id,

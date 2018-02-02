@@ -1,7 +1,9 @@
 user:
-  user_details:
-    key_template: 'u_det_%{id}'
-    expiry_in_seconds: 86400
   details:
     key_template: 'u_d_%{id}'
+    expiry_in_seconds: 86400
+
+client:
+  details:
+    key_template: 'c_d_%{id}'
     expiry_in_seconds: 86400

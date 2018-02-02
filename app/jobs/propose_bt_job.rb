@@ -72,14 +72,14 @@ class ProposeBtJob < ApplicationJob
   #
   def fetch_client_details
 
-    @client = Client.where(id: @client_id).first
+    @client = Cache::Client.new([@client_id]).fetch[@client_id]
     return error_with_data(
         'pbj_',
         'Invalid Client.',
         'Invalid Client.',
         GlobalConstant::ErrorAction.default,
         {}
-    ) if @client.blank? || @client.status != GlobalConstant::Client.active_status
+    ) if @client.blank? || @client[:status] != GlobalConstant::Client.active_status
 
     @client_token = ClientToken.where(
       name: @token_name,
