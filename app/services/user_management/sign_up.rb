@@ -12,23 +12,33 @@ module UserManagement
     # @param [String] password (mandatory) - user password
     # @param [Integer] is_client_manager (mandatory) - 1 if the user is to be added as a client manager
     # @param [Integer] client_creation_needed (mandatory) - 1 if new client creation is needed
+    # @param [String] token_name (mandatory) - token name
+    # @param [String] token_symbol (mandatory) - token symbol
+    # @param [String] tos_selected (mandatory) - tos_selected
     #
     # @return [UserManagement::SignUp]
     #
     def initialize(params)
+
       super
 
       @email = @params[:email]
       @password = @params[:password]
       @is_client_manager = @params[:is_client_manager]
       @client_creation_needed = @params[:client_creation_needed]
-      @client_id = @params[:client_id]
+      @token_name = @params[:token_name]
+      @token_symbol = @params[:token_symbol]
+      @tos_selected = @params[:tos_selected]
+
+      @client_id = nil
+      @client_token_id = nil
 
       @login_salt_hash = nil
       @info_salt_hash = nil
       @user_secret = nil
       @user = nil
       @cookie_value = nil
+
     end
 
     # Perform
@@ -52,6 +62,8 @@ module UserManagement
       create_client_manager
 
       create_client_api_credentials
+
+      create_client_token
 
       set_cookie_value
 
@@ -88,6 +100,11 @@ module UserManagement
       # min char in password should be 8
       validation_errors[:password] = 'Password should be minimum 8 characters' if @password.to_s.length < 8
 
+      validation_errors[:tos_selected] = 'Tos not selected' unless Util::CommonValidator.is_boolean_string?(@tos_selected)
+
+      r = validate_token_creation_params
+      validation_errors.merge!(r.data) unless r.success?
+
       return error_with_data(
         'um_su_1',
         'Registration Error',
@@ -116,6 +133,41 @@ module UserManagement
       return r unless r.success?
 
       success
+
+    end
+
+    # Validate token creation params
+    #
+    # * Author: Puneet
+    # * Date: 02/02/2018
+    # * Reviewed By:
+    #
+    # @return [Result::Base]
+    #
+    def validate_token_creation_params
+
+      validation_errors = {}
+
+      client_tokens = ClientToken.where(status: GlobalConstant::ClientToken.active_status).
+          where('name = ? OR symbol = ?', @token_name, @token_symbol).all
+
+      client_token_by_name = client_tokens.select{ |client_token| client_token.name == @token_name}
+      if client_token_by_name.any?
+        validation_errors[:token_name] = 'Token name already exists.'
+      end
+
+      client_token_by_symbol = client_tokens.select{ |client_token| client_token.symbol == @token_symbol}
+      if client_token_by_symbol.any?
+        validation_errors[:token_symbol] = 'Token symbol already exists.'
+      end
+
+      validation_errors.blank? ? success : error_with_data(
+          'e_ct_4',
+          'Token Creation params errors.',
+          'Token Creation params errors.',
+          GlobalConstant::ErrorAction.default,
+          validation_errors
+      )
 
     end
 
@@ -258,6 +310,29 @@ module UserManagement
 
     end
 
+    # Create Client Token
+    #
+    # * Author: Puneet
+    # * Date: 02/02/2018
+    # * Reviewed By:
+    #
+    # Sets @client_token_id
+    #
+    def create_client_token
+
+      ct = ClientToken.new(
+          client_id: @client_id,
+          name: @token_name,
+          symbol: @token_symbol,
+          status: GlobalConstant::ClientToken.active_status
+      )
+
+      ct.save!
+
+      @client_token_id = ct.id
+
+    end
+
     # Set cookie value
     #
     # * Author: Alpesh
@@ -341,6 +416,7 @@ module UserManagement
     def clear_cache
       Cache::User.new([@user.id]).clear
       Cache::Client.new([@client_id]).clear
+      Cache::ClientToken.new([@client_token_id]).clear
     end
 
   end

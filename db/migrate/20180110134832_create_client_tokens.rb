@@ -6,7 +6,7 @@ class CreateClientTokens < DbMigrationConnection
 
       create_table :client_tokens do |t|
         t.column :client_id, :integer, null: false
-        t.column :company_managed_addresses_id, :integer, null: false
+        t.column :company_managed_addresses_id, :integer, null: true
         t.column :name, :string, null: false
         t.column :symbol, :string, null: false
         t.column :symbol_icon, :string, null: true

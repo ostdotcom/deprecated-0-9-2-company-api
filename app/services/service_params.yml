@@ -4,6 +4,9 @@
     - :password
     - :is_client_manager
     - :client_creation_needed
+    - :token_name
+    - :token_symbol
+    - :tos_selected
   :optional:
 
 'UserManagement::Login':
