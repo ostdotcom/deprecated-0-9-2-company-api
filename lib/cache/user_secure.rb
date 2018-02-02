@@ -1,5 +1,6 @@
 module Cache
 
+  # This cache has sensitive user info. SHOULD NOT BE SENT TO FE
   class UserSecure < Cache::Base
 
     private
