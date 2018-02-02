@@ -7,10 +7,12 @@ class ClientToken < EstablishCompanyClientEconomyDbConnection
 
   def self.setup_steps_config
     @u_props ||= {
-      GlobalConstant::ClientToken.propose_initiated_setup_step => 1,
-      GlobalConstant::ClientToken.propose_done_setup_step => 2,
-      GlobalConstant::ClientToken.registered_on_uc_setup_step => 4,
-      GlobalConstant::ClientToken.registered_on_vc_setup_step => 8
+      GlobalConstant::ClientToken.set_conversion_rate_setup_step => 1,
+      GlobalConstant::ClientToken.configure_transactions_setup_step => 2,
+      GlobalConstant::ClientToken.propose_initiated_setup_step => 4,
+      GlobalConstant::ClientToken.propose_done_setup_step => 8,
+      GlobalConstant::ClientToken.registered_on_uc_setup_step => 16,
+      GlobalConstant::ClientToken.registered_on_vc_setup_step => 32
     }
   end
 

@@ -19,6 +19,14 @@ module GlobalConstant
 
       ### Setup Steps Start ###
 
+      def set_conversion_rate_setup_step
+        'set_conversion_rate'
+      end
+
+      def configure_transactions_setup_step
+        'configure_transactions'
+      end
+
       def propose_initiated_setup_step
         'propose_initiated'
       end

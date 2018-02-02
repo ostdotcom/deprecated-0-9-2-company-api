@@ -2,6 +2,8 @@ class ApplicationJob < ActiveJob::Base
 
   require 'benchmark'
 
+  include Util::ResultHelper
+
   # checks if time taken > threshold and logs
   #
   # * Author: Kedar

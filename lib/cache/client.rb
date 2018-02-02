@@ -15,8 +15,7 @@ module Cache
     #
     def fetch_from_db(cache_miss_ids)
 
-      client_default_token_id_map = ClientToken.
-          where(client_id: cache_miss_ids, status: GlobalConstant::ClientToken.active_status).
+      client_default_token_id_map = ::ClientToken.where(client_id: cache_miss_ids, status: GlobalConstant::ClientToken.active_status).
           select(:id, :client_id).order('id ASC').all.inject({}) do |map, client_token|
 
         map[client_token.client_id] = client_token.id
@@ -24,7 +23,7 @@ module Cache
 
       end
 
-      client_manager_user_ids_map = ClientManager.
+      client_manager_user_ids_map = ::ClientManager.
           where(client_id: cache_miss_ids, status: GlobalConstant::ClientManager.active_status).
           select(:id, :client_id, :user_id).all.inject({}) do |map, client_manager|
 

@@ -8,20 +8,22 @@ module Economy
     # * Date: 24/01/2018
     # * Reviewed By:
     #
-    # @params [Integer] client_id (mandatory) - client id
-    # @params [String] token_name (mandatory) - token name
+    # @params [Integer] client_token_id (mandatory) - client token id
     # @params [Decimal] conversion_rate (mandatory) - how many branded tokens are there in one OST
     #
     # @return [Economy::Plan]
     #
     def initialize(params)
+
       super
 
-      @client_id = @params[:client_id]
-      @token_name = @params[:token_name]
+      @client_token_id = @params[:client_token_id]
       @conversion_rate = @params[:conversion_rate]
       @initial_number_of_users = @params[:initial_number_of_users]
       @airdrop_bt_per_user = @params[:airdrop_bt_per_user]
+
+      @is_first_time_set = nil
+
     end
 
     # Perform
@@ -39,6 +41,8 @@ module Economy
 
       r = update
       return r unless r.success?
+
+      enqueue_job
 
       success
 
@@ -108,8 +112,7 @@ module Economy
     def update
 
       ct = ClientToken.where(
-        client_id: @client_id,
-        name: @token_name,
+        id: @client_token_id,
         status: GlobalConstant::ClientToken.active_status
       ).first
 
@@ -125,11 +128,34 @@ module Economy
       ct.initial_number_of_users = @initial_number_of_users
       ct.airdrop_bt_per_user = @airdrop_bt_per_user
 
+      @is_first_time_set = !ct.send("#{GlobalConstant::ClientToken.set_conversion_rate_setup_step}?")
+
+      ct.send("set_#{GlobalConstant::ClientToken.set_conversion_rate_setup_step}")
+
       ct.save!
 
       Cache::ClientToken.new([ct.id]).clear
 
       success
+
+    end
+
+    # Enqueue job on first time economy setup
+    #
+    # * Author: Puneet
+    # * Date: 02/02/2018
+    # * Reviewed By:
+    #
+    # @return [Result::Base]
+    #
+    def enqueue_job
+
+      return unless @is_first_time_set
+
+      BgJob.enqueue(
+        PlanEconomyJob,
+        {client_token_id: @client_token_id}
+      )
 
     end
 

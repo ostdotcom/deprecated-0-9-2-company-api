@@ -68,7 +68,7 @@
 
 'Economy::Plan':
   :mandatory:
-    - :client_id
+    - :client_token_id
     - :token_name
     - :conversion_rate
     - :initial_number_of_users
@@ -103,10 +103,10 @@
     - :name
     - :kind
     - :value_currency_type
-    - :value_in_usd
-    - :value_in_bt
     - :commission_percent
   :optional:
+    - :value_in_usd
+    - :value_in_bt
 
 'Economy::TransactionKind::Edit':
   :mandatory:
