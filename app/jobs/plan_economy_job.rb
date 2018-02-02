@@ -109,7 +109,7 @@ class PlanEconomyJob < ApplicationJob
 
     failed_logs = {}
 
-    Array(1..25).each do |id|
+    Array(1..@client_token.initial_number_of_users).each do |id|
       name = "User #{id}"
       service_response = @ost_sdk_obj.create(name: name)
       failed_logs[name] = service_response.to_json unless service_response.success?
