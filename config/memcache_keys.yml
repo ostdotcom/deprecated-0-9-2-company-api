@@ -2,6 +2,9 @@ user:
   details:
     key_template: 'u_d_%{id}'
     expiry_in_seconds: 86400
+  secure_details:
+    key_template: 'u_sd_%{id}'
+    expiry_in_seconds: 86400
 
 client:
   details:

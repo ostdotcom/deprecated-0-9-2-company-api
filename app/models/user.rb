@@ -33,11 +33,25 @@ class User < EstablishCompanyUserDbConnection
   def formated_cache_data
     {
         id: id,
+        email: email,
         status: status,
         default_client_id: default_client_id,
-        properties: properties.present? ? User.get_bits_set_for_properties(properties) : [],
-        password: password,
-        uts: updated_at.to_i
+        properties: properties.present? ? User.get_bits_set_for_properties(properties) : []
+    }
+  end
+
+  # Format data to a format which goes into cache
+  #
+  # * Author: Puneet
+  # * Date: 01/02/2018
+  # * Reviewed By:
+  #
+  # @return [Hash]
+  #
+  def formated_secure_cache_data
+    {
+        id: id,
+        password: password
     }
   end
 

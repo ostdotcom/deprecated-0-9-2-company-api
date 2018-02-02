@@ -93,16 +93,17 @@ module UserManagement
     # * Date: 15/01/2018
     # * Reviewed By:
     #
-    # Sets @user, @client
+    # Sets @user, @user_s, @client
     #
     # @return [Result::Base]
     #
     def validate_token
 
-      cache_data = Cache::UserSecure.new([@user_id]).fetch
-      @user = cache_data[@user_id]
+      @user = Cache::User.new([@user_id]).fetch[@user_id]
+      @user_s = Cache::UserSecure.new([@user_id]).fetch[@user_id]
 
-      return unauthorized_access_response('um_vc_5') unless @user.present? && @user[:status] == GlobalConstant::User.active_status
+      return unauthorized_access_response('um_vc_5') unless @user.present? &&
+          @user[:status] == GlobalConstant::User.active_status
 
       @client = Cache::Client.new([@client_id]).fetch[@client_id]
 
@@ -112,7 +113,7 @@ module UserManagement
         return unauthorized_access_response('um_vc_6') if @client[:manager_user_ids].exclude?(@user_id)
       end
 
-      evaluated_token = User.get_cookie_token(@user_id, @client_id, @user[:password], '', @created_ts)
+      evaluated_token = User.get_cookie_token(@user_id, @client_id, @user_s[:password], '', @created_ts)
       return unauthorized_access_response('um_vc_7') unless (evaluated_token == @token)
 
       success
@@ -129,7 +130,7 @@ module UserManagement
     #
     def set_extended_cookie_value
       #return if (@created_ts + 29.days.to_i) >= Time.now.to_i
-      @extended_cookie_value = User.get_cookie_value(@user_id, @client_id, @user[:password])
+      @extended_cookie_value = User.get_cookie_value(@user_id, @client_id, @user_s[:password])
     end
 
     # Unauthorized access response

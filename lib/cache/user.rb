@@ -1,7 +1,6 @@
 module Cache
 
-  # This cache has sensitive user info. SHOULD NOT BE SENT TO FE
-  class UserSecure < Cache::Base
+  class User < Cache::Base
 
     private
 
@@ -14,8 +13,8 @@ module Cache
     # @return [Hash]
     #
     def fetch_from_db(cache_miss_ids)
-      ::User.where(id: cache_miss_ids).select(:id, :password).inject({}) do |user_data, user|
-        user_data[user.id] = user.formated_secure_cache_data
+      ::User.where(id: cache_miss_ids).inject({}) do |user_data, user|
+        user_data[user.id] = user.formated_cache_data
         user_data
       end
     end
@@ -28,7 +27,7 @@ module Cache
     # @return [MemcacheKey]
     #
     def memcache_key_object
-      @m_k_o ||= MemcacheKey.new('user.secure_details')
+      @m_k_o ||= MemcacheKey.new('user.details')
     end
 
     # Fetch cache key
