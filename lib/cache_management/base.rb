@@ -1,4 +1,4 @@
-module Cache
+module CacheManagement
 
   class Base
 
@@ -11,7 +11,7 @@ module Cache
     # @param [Array] ids (mandatory) - ids which would form cache keys
     # @param [Hash] options (optional) - optional params which might be needed in forming cache key
     #
-    # @return [Cache::Base]
+    # @return [CacheManagement::Base]
     #
     def initialize(ids, options = {})
 

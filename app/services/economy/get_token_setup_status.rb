@@ -42,7 +42,7 @@ module Economy
 
       success_with_data(
         client_token: @client_token,
-        user: Cache::User.new([@user_id]).fetch[@user_id]
+        user: CacheManagement::User.new([@user_id]).fetch[@user_id]
       )
 
     end
@@ -58,7 +58,7 @@ module Economy
     #
     def fetch_client_token
 
-      @client_token = Cache::ClientToken.new([@client_token_id]).fetch[@client_token_id]
+      @client_token = CacheManagement::ClientToken.new([@client_token_id]).fetch[@client_token_id]
       return error_with_data(
           'e_gtss_1',
           'Token not found.',

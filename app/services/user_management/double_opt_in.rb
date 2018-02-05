@@ -238,7 +238,7 @@ module UserManagement
     # @return [Result::Base]
     #
     def clear_cache
-      Cache::User.new([@user.id]).clear
+      CacheManagement::User.new([@user.id]).clear
     end
 
   end

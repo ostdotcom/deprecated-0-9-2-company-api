@@ -1,6 +1,6 @@
-module Cache
+module CacheManagement
 
-  class User < Cache::Base
+  class ClientToken < CacheManagement::Base
 
     private
 
@@ -13,10 +13,14 @@ module Cache
     # @return [Hash]
     #
     def fetch_from_db(cache_miss_ids)
-      ::User.where(id: cache_miss_ids).inject({}) do |user_data, user|
-        user_data[user.id] = user.formated_cache_data
-        user_data
+
+      ::ClientToken.where(id: cache_miss_ids).all.inject({}) do |cache_data, client_token|
+
+        cache_data[client_token.id] = client_token.formated_cache_data
+        cache_data
+
       end
+
     end
 
     #
@@ -27,7 +31,7 @@ module Cache
     # @return [MemcacheKey]
     #
     def memcache_key_object
-      @m_k_o ||= MemcacheKey.new('user.details')
+      @m_k_o ||= MemcacheKey.new('client.token_details')
     end
 
     # Fetch cache key

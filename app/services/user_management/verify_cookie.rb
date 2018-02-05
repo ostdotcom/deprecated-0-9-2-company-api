@@ -99,22 +99,23 @@ module UserManagement
     #
     def validate_token
 
-      @user = Cache::User.new([@user_id]).fetch[@user_id]
-      @user_s = Cache::UserSecure.new([@user_id]).fetch[@user_id]
+      @user = CacheManagement::User.new([@user_id]).fetch[@user_id]
 
       return unauthorized_access_response('um_vc_5') unless @user.present? &&
           @user[:status] == GlobalConstant::User.active_status
 
-      @client = Cache::Client.new([@client_id]).fetch[@client_id]
+      @user_s = CacheManagement::UserSecure.new([@user_id]).fetch[@user_id]
+
+      evaluated_token = User.get_cookie_token(@user_id, @client_id, @user_s[:password], '', @created_ts)
+      return unauthorized_access_response('um_vc_7') unless (evaluated_token == @token)
+
+      @client = CacheManagement::Client.new([@client_id]).fetch[@client_id]
 
       # if @client_id != default_client_id
       # check for client id to be existing in client managers table
       if @client_id != @user[:default_client_id]
         return unauthorized_access_response('um_vc_6') if @client[:manager_user_ids].exclude?(@user_id)
       end
-
-      evaluated_token = User.get_cookie_token(@user_id, @client_id, @user_s[:password], '', @created_ts)
-      return unauthorized_access_response('um_vc_7') unless (evaluated_token == @token)
 
       success
 

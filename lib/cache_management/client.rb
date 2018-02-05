@@ -1,7 +1,7 @@
-module Cache
+module CacheManagement
 
   #TODO: This cache does not have info_salt. Should we add it here or in seperat cache or keep querying from db ?
-  class Client < Cache::Base
+  class Client < CacheManagement::Base
 
     private
 

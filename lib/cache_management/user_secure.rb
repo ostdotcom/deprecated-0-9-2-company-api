@@ -1,7 +1,7 @@
-module Cache
+module CacheManagement
 
   # This cache has sensitive user info. SHOULD NOT BE SENT TO FE
-  class UserSecure < Cache::Base
+  class UserSecure < CacheManagement::Base
 
     private
 

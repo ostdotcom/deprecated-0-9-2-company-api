@@ -86,7 +86,7 @@ module Economy
     #
     def validate_user
 
-      cache_data = Cache::User.new([@user_id]).fetch
+      cache_data = CacheManagement::User.new([@user_id]).fetch
       @user = cache_data[@user_id]
 
       return error_with_data(

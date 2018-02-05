@@ -80,7 +80,7 @@ module ClientManagement
           {}
       ) unless Util::CommonValidator.is_ethereum_address?(@eth_address)
 
-      @client = Cache::Client.new([@client_id]).fetch[@client_id]
+      @client = CacheManagement::Client.new([@client_id]).fetch[@client_id]
 
       return error_with_data(
           'cm_vea_2',

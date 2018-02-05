@@ -414,9 +414,9 @@ module UserManagement
     # @return [Result::Base]
     #
     def clear_cache
-      Cache::User.new([@user.id]).clear
-      Cache::Client.new([@client_id]).clear
-      Cache::ClientToken.new([@client_token_id]).clear
+      CacheManagement::User.new([@user.id]).clear
+      CacheManagement::Client.new([@client_id]).clear
+      CacheManagement::ClientToken.new([@client_token_id]).clear
     end
 
   end

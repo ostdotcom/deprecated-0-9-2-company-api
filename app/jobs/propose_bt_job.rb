@@ -72,7 +72,7 @@ class ProposeBtJob < ApplicationJob
   #
   def fetch_client_details
 
-    @client = Cache::Client.new([@client_id]).fetch[@client_id]
+    @client = CacheManagement::Client.new([@client_id]).fetch[@client_id]
     return error_with_data(
         'pbj_',
         'Invalid Client.',
