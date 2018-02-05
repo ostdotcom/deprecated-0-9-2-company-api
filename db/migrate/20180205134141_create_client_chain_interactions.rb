@@ -1,8 +1,8 @@
-class CreateClientSetupActivityLogs < DbMigrationConnection
+class CreateClientChainInteractions < DbMigrationConnection
 
   def up
     run_migration_for_db(EstablishCompanyClientEconomyDbConnection) do
-      create_table :client_setup_activity_logs do |t|
+      create_table :client_chain_interactions do |t|
         t.column :client_id, :integer, null: false
         t.column :client_token_id, :integer, null: false
         t.column :activity_type, :tinyint, size: 2, null: false
@@ -12,13 +12,13 @@ class CreateClientSetupActivityLogs < DbMigrationConnection
         t.column :status, :tinyint, size: 1, null: false
         t.timestamps
       end
-      add_index :client_setup_activity_logs, :client_token_id, unique: false, name: 'i_1'
+      add_index :client_chain_interactions, :client_token_id, unique: false, name: 'i_1'
     end
   end
 
   def down
     run_migration_for_db(EstablishCompanyClientEconomyDbConnection) do
-      drop_table :client_setup_activity_logs
+      drop_table :client_chain_interactions
     end
   end
 
