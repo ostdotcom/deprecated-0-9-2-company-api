@@ -69,7 +69,6 @@
 'Economy::Plan':
   :mandatory:
     - :client_token_id
-    - :token_name
     - :conversion_rate
     - :initial_number_of_users
     - :airdrop_bt_per_user

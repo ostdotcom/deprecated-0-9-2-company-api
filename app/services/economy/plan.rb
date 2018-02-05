@@ -63,9 +63,6 @@ module Economy
       r = validate
       return r unless r.success?
 
-      # sanitize
-      @token_name = @token_name.to_s.strip
-
       @conversion_rate = @conversion_rate.to_f
 
       return error_with_data(
