@@ -21,7 +21,7 @@ Rails.application.routes.draw do
   end
 
   scope 'api/economy/token', controller: 'economy/token' do
-    match 'get-setup-status' => :get_setup_status, via: :GET
+    match 'get-setup-details' => :get_setup_details, via: :GET
     match 'plan' => :plan_token, via: :POST
     match 'log-transfer-to-staker' => :log_transfer_to_staker, via: :POST
     match 'stake-and-mint' => :stake_and_mint, via: :POST
