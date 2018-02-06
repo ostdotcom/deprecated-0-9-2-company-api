@@ -165,7 +165,7 @@ module ClientUsersManagement
       offset = (@page_no-1) * @page_size
       economy_users = ar.limit(@page_size+1).offset(offset).all
       @has_more = economy_users[@page_size].present?
-      economy_users = economy_users[0...-1]
+      economy_users = economy_users[0...-1] if economy_users.length >= @page_size
 
       @economy_users = economy_users.map do |object|
         {
