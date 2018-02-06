@@ -15,9 +15,10 @@ Rails.application.routes.draw do
     match 'validate-eth-address' => :validate_eth_address, via: :GET
   end
 
-  scope 'api/client/users', controller: 'client/user' do
+  scope 'api/economy/users', controller: 'economy/user' do
     match 'create' => :create_user, via: :POST
     match 'edit' => :edit_user, via: :POST
+    match 'list' => :list_users, via: :GET
   end
 
   scope 'api/economy/token', controller: 'economy/token' do

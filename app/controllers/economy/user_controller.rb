@@ -1,4 +1,4 @@
-class Client::UserController < Client::BaseController
+class Economy::UserController < Economy::BaseController
 
   # Create user for client
   #
@@ -29,6 +29,20 @@ class Client::UserController < Client::BaseController
   def edit_user
 
     service_response = ClientUsersManagement::EditUser.new(params).perform
+
+    render_api_response(service_response)
+
+  end
+
+  # list all users of client
+  #
+  # * Author: Puneet
+  # * Date: 02/02/2018
+  # * Reviewed By:
+  #
+  def list_users
+
+    service_response = ClientUsersManagement::ListUser.new(params).perform
 
     render_api_response(service_response)
 
