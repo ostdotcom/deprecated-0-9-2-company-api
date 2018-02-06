@@ -95,11 +95,12 @@ module Economy
 
         #TODO: add logic to replace this dummy data
         @api_response[:token_supply_details] = {
-            tokens_minted: 2,
-            tokens_available: 2,
-            tokens_distributed: 2,
-            ost_usd_conversion_factor: 1,
-            ost_bt_conversion_factor: 2
+          tokens_minted: 2,
+          tokens_distributed: 2
+        }
+
+        @api_response[:client_token_balance] = {
+          token_balance: 2
         }
 
       elsif setup_steps_done.include?(GlobalConstant::ClientToken.configure_transactions_setup_step)
@@ -109,9 +110,7 @@ module Economy
         #TODO: add logic to replace this dummy data
         @api_response[:client_balance] = {
           ost_balance: 1,
-          token_balance: 2,
-          ost_usd_conversion_factor: 1,
-          ost_bt_conversion_factor: 2
+          ost_usd_conversion_factor: 1
         }
 
       elsif setup_steps_done.include?(GlobalConstant::ClientToken.set_conversion_rate_setup_step)
