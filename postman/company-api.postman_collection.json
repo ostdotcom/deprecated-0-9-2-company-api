@@ -17,6 +17,20 @@
 			"id": "3e7e90d9-91fd-afa7-edcf-d88a0c76e4c6"
 		},
 		{
+			"name": "client user management",
+			"description": "",
+			"collectionId": "4096f0ae-3b4b-c411-e8b0-a16371d43c8d",
+			"order": [
+				"a22fd7c9-8c40-0ae4-27b2-758b29c2405e",
+				"c25f4895-8578-8925-87d4-02370aa6c791",
+				"5c00f260-94e9-d982-611c-8f210500046e"
+			],
+			"owner": "326010",
+			"folders_order": [],
+			"auth": null,
+			"id": "65bfd5a8-a373-3ce7-1f5c-aae610cae4c4"
+		},
+		{
 			"name": "login",
 			"description": "",
 			"collectionId": "4096f0ae-3b4b-c411-e8b0-a16371d43c8d",
@@ -75,7 +89,8 @@
 		"13bb35b6-f7fe-43fc-371f-6ecd8053e6fc",
 		"3e7e90d9-91fd-afa7-edcf-d88a0c76e4c6",
 		"ea5e0826-f56c-0d6b-2100-03589e4c39fc",
-		"1afe007e-25ad-a055-611f-7b09d2519b1b"
+		"1afe007e-25ad-a055-611f-7b09d2519b1b",
+		"65bfd5a8-a373-3ce7-1f5c-aae610cae4c4"
 	],
 	"timestamp": 1515746035733,
 	"owner": "326010",
@@ -261,7 +276,7 @@
 			"id": "498423b5-6489-6c6c-c85e-6855d99e4196",
 			"headers": "",
 			"headerData": [],
-			"url": "{{api_url}}/economy/token/get-setup-status",
+			"url": "{{api_url}}/economy/token/get-setup-details",
 			"folder": "13bb35b6-f7fe-43fc-371f-6ecd8053e6fc",
 			"queryParams": [],
 			"events": [],
@@ -280,8 +295,8 @@
 			"dataMode": "params",
 			"version": 2,
 			"auth": null,
-			"time": 1517398646927,
-			"name": "get token steup status",
+			"time": 1517830803287,
+			"name": "get token steup details",
 			"description": "",
 			"collectionId": "4096f0ae-3b4b-c411-e8b0-a16371d43c8d",
 			"responses": [],
@@ -328,6 +343,45 @@
 			"helperAttributes": null
 		},
 		{
+			"id": "5c00f260-94e9-d982-611c-8f210500046e",
+			"headers": "",
+			"headerData": [],
+			"url": "{{api_url}}/economy/users/list?page_no=2",
+			"folder": "65bfd5a8-a373-3ce7-1f5c-aae610cae4c4",
+			"queryParams": [
+				{
+					"key": "page_no",
+					"value": "2",
+					"equals": true,
+					"description": "",
+					"enabled": true
+				}
+			],
+			"events": [],
+			"pathVariables": {},
+			"pathVariableData": [],
+			"method": "GET",
+			"data": [
+				{
+					"key": "token_name",
+					"value": "Ak11 Coin",
+					"description": "",
+					"type": "text",
+					"enabled": true
+				}
+			],
+			"dataMode": "params",
+			"version": 2,
+			"auth": null,
+			"time": 1517924395716,
+			"name": "list",
+			"description": "",
+			"collectionId": "4096f0ae-3b4b-c411-e8b0-a16371d43c8d",
+			"responses": [],
+			"currentHelper": null,
+			"helperAttributes": null
+		},
+		{
 			"id": "79532338-86bf-6fb6-2db7-b8219c37b991",
 			"headers": "",
 			"headerData": [],
@@ -361,13 +415,6 @@
 					"enabled": true
 				},
 				{
-					"key": "value_in_usd",
-					"value": "1",
-					"equals": true,
-					"description": "",
-					"enabled": true
-				},
-				{
 					"key": "value_in_bt",
 					"value": "1",
 					"description": "",
@@ -380,12 +427,19 @@
 					"description": "",
 					"type": "text",
 					"enabled": true
+				},
+				{
+					"key": "value_in_usd",
+					"value": "1",
+					"description": "",
+					"type": "text",
+					"enabled": true
 				}
 			],
 			"dataMode": "params",
 			"version": 2,
 			"auth": null,
-			"time": 1517818652613,
+			"time": 1517836624714,
 			"name": "create new kind",
 			"description": "",
 			"collectionId": "4096f0ae-3b4b-c411-e8b0-a16371d43c8d",
@@ -463,6 +517,37 @@
 			"helperAttributes": null
 		},
 		{
+			"id": "a22fd7c9-8c40-0ae4-27b2-758b29c2405e",
+			"headers": "",
+			"headerData": [],
+			"url": "{{api_url}}/economy/users/create",
+			"folder": "65bfd5a8-a373-3ce7-1f5c-aae610cae4c4",
+			"queryParams": [],
+			"events": [],
+			"pathVariables": {},
+			"pathVariableData": [],
+			"method": "POST",
+			"data": [
+				{
+					"key": "name",
+					"value": "Puneet",
+					"description": "",
+					"type": "text",
+					"enabled": true
+				}
+			],
+			"dataMode": "params",
+			"version": 2,
+			"auth": null,
+			"time": 1517924304792,
+			"name": "create",
+			"description": "",
+			"collectionId": "4096f0ae-3b4b-c411-e8b0-a16371d43c8d",
+			"responses": [],
+			"currentHelper": null,
+			"helperAttributes": null
+		},
+		{
 			"id": "ab84a3c7-e59e-87a3-1a57-4c1b05b8ac87",
 			"headers": "",
 			"headerData": [],
@@ -524,6 +609,44 @@
 			"helperAttributes": null
 		},
 		{
+			"id": "c25f4895-8578-8925-87d4-02370aa6c791",
+			"headers": "",
+			"headerData": [],
+			"url": "{{api_url}}/economy/users/edit",
+			"folder": "65bfd5a8-a373-3ce7-1f5c-aae610cae4c4",
+			"queryParams": [],
+			"events": [],
+			"pathVariables": {},
+			"pathVariableData": [],
+			"method": "POST",
+			"data": [
+				{
+					"key": "name",
+					"value": "Puneet K",
+					"description": "",
+					"type": "text",
+					"enabled": true
+				},
+				{
+					"key": "client_user_id",
+					"value": "26",
+					"description": "",
+					"type": "text",
+					"enabled": true
+				}
+			],
+			"dataMode": "params",
+			"version": 2,
+			"auth": null,
+			"time": 1517924742147,
+			"name": "edit",
+			"description": "",
+			"collectionId": "4096f0ae-3b4b-c411-e8b0-a16371d43c8d",
+			"responses": [],
+			"currentHelper": null,
+			"helperAttributes": null
+		},
+		{
 			"id": "da11492a-61c2-416d-e996-20d1f5c994a1",
 			"headers": "",
 			"headerData": [],
@@ -535,13 +658,6 @@
 			"pathVariableData": [],
 			"method": "POST",
 			"data": [
-				{
-					"key": "token_name",
-					"value": "Ak11 Coin",
-					"description": "",
-					"type": "text",
-					"enabled": true
-				},
 				{
 					"key": "conversion_rate",
 					"value": "100",
@@ -567,7 +683,7 @@
 			"dataMode": "params",
 			"version": 2,
 			"auth": null,
-			"time": 1517818473602,
+			"time": 1517828267602,
 			"name": "plan",
 			"description": "",
 			"collectionId": "4096f0ae-3b4b-c411-e8b0-a16371d43c8d",
