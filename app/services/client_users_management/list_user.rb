@@ -172,7 +172,9 @@ module ClientUsersManagement
           id: object.id,
           name: object.name,
           total_airdropped_tokens_in_wei: object.total_airdropped_tokens_in_wei,
-          token_balance_in_wei: 0 #TODO: fix later
+          total_airdropped_tokens: Util::Converter.from_wei_value(object.total_airdropped_tokens_in_wei),
+          token_balance_in_wei: 0, #TODO: fix later
+          token_balance: Util::Converter.from_wei_value(0) #TODO: fix later
         }
       end
 
