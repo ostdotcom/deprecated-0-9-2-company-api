@@ -103,6 +103,7 @@
     - :kind
     - :value_currency_type
     - :commission_percent
+    - :use_price_oracle
   :optional:
     - :value_in_usd
     - :value_in_bt
@@ -118,6 +119,7 @@
     - :value_in_usd
     - :value_in_bt
     - :commission_percent
+    - :use_price_oracle
 
 'Economy::TransactionKind::List':
   :mandatory:
