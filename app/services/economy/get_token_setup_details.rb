@@ -93,16 +93,39 @@ module Economy
 
         # Step 3 was also performed, thus return relevant data
 
+        #TODO: add logic to replace this dummy data
+        @api_response[:token_supply_details] = {
+            tokens_minted: 2,
+            tokens_available: 2,
+            tokens_distributed: 2,
+            ost_usd_conversion_factor: 1,
+            ost_bt_conversion_factor: 2
+        }
+
       elsif setup_steps_done.include?(GlobalConstant::ClientToken.configure_transactions_setup_step)
 
         # step 2 was performed, we would return data needed to perform step 3
+
+        #TODO: add logic to replace this dummy data
+        @api_response[:client_balance] = {
+          ost_balance: 1,
+          token_balance: 2,
+          ost_usd_conversion_factor: 1,
+          ost_bt_conversion_factor: 2
+        }
 
       elsif setup_steps_done.include?(GlobalConstant::ClientToken.set_conversion_rate_setup_step)
 
         # step 1 was performed, we would return data needed to perform step 2
 
+        r = Economy::TransactionKind::List.new(client_id: @client_token[:client_id]).perform
+        return r unless r.success?
+
+        @api_response[:transaction_kinds] = r.data['transaction_kinds']
+
       else # no step was performed, return data to perform step 1
 
+        # no extra data to return
 
       end
 
