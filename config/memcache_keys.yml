@@ -13,3 +13,11 @@ client:
   token_details:
     key_template: 'c_td_%{id}'
     expiry_in_seconds: 86400
+  ost_balance:
+    key_template: 'c_ostb_%{id}'
+    expiry_in_seconds: 60
+
+mics:
+  ost_usd_conversion_factor:
+    key_template: 'm_oucf'
+    expiry_in_seconds: 86400

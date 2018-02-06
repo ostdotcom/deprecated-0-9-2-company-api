@@ -99,19 +99,13 @@ module Economy
           tokens_distributed: 2
         }
 
-        @api_response[:client_token_balance] = {
-          token_balance: 2
-        }
+        @api_response[:client_token_balance] = FetchClientTokenBalance.new(client_token_id: @client_token[:id]).perform
 
       elsif setup_steps_done.include?(GlobalConstant::ClientToken.configure_transactions_setup_step)
 
         # step 2 was performed, we would return data needed to perform step 3
 
-        #TODO: add logic to replace this dummy data
-        @api_response[:client_balance] = {
-          ost_balance: 1,
-          ost_usd_conversion_factor: 1
-        }
+        @api_response[:client_ost_balance] = FetchClientOstBalance.new(client_id: @client_token[:client_id]).perform
 
       elsif setup_steps_done.include?(GlobalConstant::ClientToken.set_conversion_rate_setup_step)
 
