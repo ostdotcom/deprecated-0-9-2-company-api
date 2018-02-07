@@ -1,4 +1,4 @@
-class FetchClientTokenBalance
+class FetchClientTokenSupplyDetails
 
   #
   # * Author: Puneet
@@ -7,7 +7,7 @@ class FetchClientTokenBalance
   #
   def initialize(params)
 
-    @client_token = params[:client_token]
+    @client_token_id = params[:client_token_id]
 
   end
 
@@ -19,8 +19,8 @@ class FetchClientTokenBalance
   def perform
 
     {
-      token_balance: 2 #TODO: Fetch from platform,
-      token_to_ost_conversion_rate: @client_token[:conversion_rate]
+        tokens_minted: 2,
+        tokens_distributed: 2,
     }
 
   end

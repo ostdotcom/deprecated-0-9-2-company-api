@@ -93,13 +93,9 @@ module Economy
 
         # Step 3 was also performed, thus return relevant data
 
-        #TODO: add logic to replace this dummy data
-        @api_response[:token_supply_details] = {
-          tokens_minted: 2,
-          tokens_distributed: 2
-        }
+        @api_response[:token_supply_details] = FetchClientTokenSupplyDetails.new(client_token_id: @client_token[:id]).perform
 
-        @api_response[:client_token_balance] = FetchClientTokenBalance.new(client_token_id: @client_token[:id]).perform
+        @api_response[:client_token_balance] = FetchClientTokenBalance.new(client_token: @client_token).perform
 
       elsif setup_steps_done.include?(GlobalConstant::ClientToken.configure_transactions_setup_step)
 
