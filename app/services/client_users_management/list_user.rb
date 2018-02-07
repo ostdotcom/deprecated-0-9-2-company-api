@@ -206,7 +206,7 @@ module ClientUsersManagement
         result_type: result_type,
         result_type.to_sym => @economy_users,
         client_token: @client_token,
-        user: CacheManagement::ClientToken.new([@user_id]).fetch[@user_id],
+        user: CacheManagement::User.new([@user_id]).fetch[@user_id],
         client_token_balance: FetchClientTokenBalance.new(client_token: @client_token).perform,
         client_ost_balance: FetchClientOstBalance.new(client_id: @client_token[:client_id]).perform,
         next_page_payload: @has_more ? {

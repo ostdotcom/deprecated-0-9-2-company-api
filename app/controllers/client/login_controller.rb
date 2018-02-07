@@ -18,7 +18,9 @@ class Client::LoginController < Client::BaseController
   # * Reviewed By:
   #
   def verify_cookie
-    render_api_response(Result::Base.success({}))
+    render_api_response(Result::Base.success(data: {
+      client_token: CacheManagement::ClientToken.new([params[:client_token_id]]).fetch[params[:client_token_id]]
+    }))
   end
 
   # Sign up
