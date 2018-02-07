@@ -14,7 +14,7 @@ module UserManagement
     # @param [Integer] client_creation_needed (mandatory) - 1 if new client creation is needed
     # @param [String] token_name (mandatory) - token name
     # @param [String] token_symbol (mandatory) - token symbol
-    # @param [String] tos_selected (mandatory) - tos_selected
+    # @param [String] agreed_terms_of_service (mandatory) - agreed_terms_of_service
     #
     # @return [UserManagement::SignUp]
     #
@@ -28,7 +28,7 @@ module UserManagement
       @client_creation_needed = @params[:client_creation_needed]
       @token_name = @params[:token_name]
       @token_symbol = @params[:token_symbol]
-      @tos_selected = @params[:tos_selected]
+      @agreed_terms_of_service = @params[:agreed_terms_of_service]
 
       @client_id = nil
       @client_token_id = nil
@@ -100,7 +100,7 @@ module UserManagement
       # min char in password should be 8
       validation_errors[:password] = 'Password should be minimum 8 characters' if @password.to_s.length < 8
 
-      validation_errors[:tos_selected] = 'Tos not selected' unless Util::CommonValidator.is_boolean_string?(@tos_selected)
+      validation_errors[:agreed_terms_of_service] = 'Tos not selected' unless @agreed_terms_of_service == 'on'
 
       r = validate_token_creation_params
       validation_errors.merge!(r.data) unless r.success?

@@ -6,7 +6,7 @@
     - :client_creation_needed
     - :token_name
     - :token_symbol
-    - :tos_selected
+    - :agreed_terms_of_service
   :optional:
 
 'UserManagement::Login':
