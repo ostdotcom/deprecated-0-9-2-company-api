@@ -8,7 +8,9 @@ module ClientUsersManagement
     # * Date: 02/02/2018
     # * Reviewed By:
     #
-    # @param [Integer] client_id (mandatory) - Client Id to check that its user.
+    # @param [Integer] user_id (mandatory) - user Id
+    # @param [Integer] client_id (mandatory) - Client Id
+    # @param [Integer] client_token_id (mandatory) - Client Token Id
     # @param [Integer] page_no (optional) - page no
     # @param [String] filter (optional) - newly_added
     #
@@ -19,11 +21,14 @@ module ClientUsersManagement
       super
 
       @client_id = @params[:client_id]
+      @client_token_id = @params[:client_token_id]
+      @user_id = @params[:user_id]
       @page_no = @params[:page_no]
       @filter = @params[:filter]
 
       @page_size = 25
       @client = nil
+      @client_token = nil
       @economy_users = []
       @has_more = false
 
@@ -121,7 +126,7 @@ module ClientUsersManagement
     # * Date: 02/02/2018
     # * Reviewed By:
     #
-    # Sets @client
+    # Sets @client, @client_token
     #
     # @return [Result::Base]
     #
@@ -138,6 +143,8 @@ module ClientUsersManagement
       ) if @client.blank? || @client[:status] != GlobalConstant::Client.active_status
 
       @client_id = @client_id.to_i
+
+      @client_token = CacheManagement::ClientToken.new([@client_token_id]).fetch[@client_token_id]
 
       success
 
@@ -195,9 +202,13 @@ module ClientUsersManagement
     # @return [Hash]
     #
     def api_response
-      {
+      rsp = {
         result_type: result_type,
         result_type.to_sym => @economy_users,
+        client_token: @client_token,
+        user: CacheManagement::ClientToken.new([@user_id]).fetch[@user_id],
+        client_token_balance: FetchClientTokenBalance.new(client_token: @client_token).perform,
+        client_ost_balance: FetchClientOstBalance.new(client_id: @client_token[:client_id]).perform
         next_page_payload: @has_more ? {
           page_no: @page_no + 1,
           filter: @filter

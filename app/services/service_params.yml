@@ -124,6 +124,8 @@
 'Economy::TransactionKind::List':
   :mandatory:
     - :client_id
+    - :client_token_id
+    - :user_id
   :optional:
 
 'Economy::Transaction::FetchHistory':
@@ -154,5 +156,7 @@
 'ClientUsersManagement::ListUser':
   :mandatory:
     - :client_id
+    - :client_token_id
+    - :user_id
   :optional:
     - :page_no
