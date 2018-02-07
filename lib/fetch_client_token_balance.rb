@@ -19,7 +19,7 @@ class FetchClientTokenBalance
   def perform
 
     {
-      token_balance: 2 #TODO: Fetch from platform,
+      token_balance: 2, #TODO: Fetch from platform,
       token_to_ost_conversion_rate: @client_token[:conversion_rate]
     }
 

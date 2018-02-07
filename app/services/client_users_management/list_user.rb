@@ -208,7 +208,7 @@ module ClientUsersManagement
         client_token: @client_token,
         user: CacheManagement::ClientToken.new([@user_id]).fetch[@user_id],
         client_token_balance: FetchClientTokenBalance.new(client_token: @client_token).perform,
-        client_ost_balance: FetchClientOstBalance.new(client_id: @client_token[:client_id]).perform
+        client_ost_balance: FetchClientOstBalance.new(client_id: @client_token[:client_id]).perform,
         next_page_payload: @has_more ? {
           page_no: @page_no + 1,
           filter: @filter

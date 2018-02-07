@@ -12,12 +12,16 @@ module Economy
       #
       # @params [String] client_id (mandatory) - client_id
       # @param [Integer] client_token_id (mandatory) - Client Token Id
+      # @param [Integer] user_id (mandatory) - user Id
       #
       # @return [Economy::TransactionKind::List]
       #
       def initialize(params)
 
         super
+
+        @user_id = @params[:user_id]
+        @client_token_id = @params[:client_token_id]
 
         @api_response = {}
 
@@ -82,7 +86,7 @@ module Economy
             client_token: client_token,
             user: CacheManagement::ClientToken.new([@user_id]).fetch[@user_id],
             client_token_balance: FetchClientTokenBalance.new(client_token: client_token).perform,
-            client_ost_balance: FetchClientOstBalance.new(client_id: @client_token[:client_id]).perform
+            client_ost_balance: FetchClientOstBalance.new(client_id: client_token[:client_id]).perform
         )
 
         success
