@@ -11,6 +11,16 @@ class Client::LoginController < Client::BaseController
     :send_reset_password_link, :reset_password
   ]
 
+  # Verify Login Cookie
+  #
+  # * Author: Puneet
+  # * Date: 02/02/2018
+  # * Reviewed By:
+  #
+  def verify_cookie
+    render_api_response(Result::Base.success({}))
+  end
+
   # Sign up
   #
   # * Author: Alpesh
