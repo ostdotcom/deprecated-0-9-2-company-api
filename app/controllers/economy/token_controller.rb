@@ -44,4 +44,15 @@ class Economy::TokenController < Economy::BaseController
     render_api_response(service_response)
   end
 
+  # Get Supply Status
+  #
+  # * Author: Puneet
+  # * Date: 31/01/2018
+  # * Reviewed By:
+  #
+  def get_supply_details
+    service_response = Economy::GetTokenSupplyDetails.new(params).perform
+    render_api_response(service_response)
+  end
+
 end

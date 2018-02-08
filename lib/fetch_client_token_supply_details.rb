@@ -1,5 +1,7 @@
 class FetchClientTokenSupplyDetails
 
+  include Util::ResultHelper
+
   #
   # * Author: Puneet
   # * Date: 02/02/2018
@@ -18,10 +20,10 @@ class FetchClientTokenSupplyDetails
   #
   def perform
 
-    {
-        tokens_minted: 2,
-        tokens_distributed: 2,
-    }
+    success_with_data(
+      tokens_minted: 2,
+      tokens_distributed: 2,
+    )
 
   end
 

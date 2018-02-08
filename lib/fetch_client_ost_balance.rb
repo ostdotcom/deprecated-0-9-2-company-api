@@ -1,5 +1,7 @@
 class FetchClientOstBalance
 
+  include Util::ResultHelper
+
   #
   # * Author: Puneet
   # * Date: 02/02/2018
@@ -22,10 +24,10 @@ class FetchClientOstBalance
       0.008 #TODO: fix this
     end
 
-    {
+    success_with_data(
       ost_balance: ost_balance,
       ost_usd_conversion_factor: FetchOstUsdConversionFactor.perform
-    }
+    )
 
   end
 

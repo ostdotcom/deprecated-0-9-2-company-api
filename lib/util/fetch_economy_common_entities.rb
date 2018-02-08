@@ -122,7 +122,9 @@ module Util
 
       return success if @client_token_balance.present?
 
-      @client_token_balance = FetchClientTokenBalance.new(client_token: @client_token).perform
+      r = FetchClientTokenBalance.new(client_token: @client_token).perform
+      return r unless r.success?
+      @client_token_balance = r.data
 
       success
 
@@ -141,7 +143,10 @@ module Util
 
       return success if @client_ost_balance.present?
 
-      @client_ost_balance = FetchClientOstBalance.new(client_id: @client_token[:client_id]).perform
+      r = FetchClientOstBalance.new(client_id: @client_token[:client_id]).perform
+      return r unless r.success?
+
+      @client_ost_balance = r.data
 
       success
 

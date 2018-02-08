@@ -21,7 +21,7 @@ module Economy
       @client_token_id = @params[:client_token_id]
 
       @client_token = nil
-      @api_response = {}
+      @api_response_data = {}
 
     end
 
@@ -44,12 +44,12 @@ module Economy
       r = fetch_setup_details
       return r unless r.success?
 
-      @api_response = {
+      @api_response_data = {
           client_token: @client_token,
           user: CacheManagement::User.new([@user_id]).fetch[@user_id]
       }
 
-      success_with_data(@api_response)
+      success_with_data(@api_response_data)
 
     end
 
@@ -83,7 +83,7 @@ module Economy
     # * Date: 31/01/2018
     # * Reviewed By:
     #
-    # Sets @api_response
+    # Sets @api_response_data
     #
     def fetch_setup_details
 
@@ -93,15 +93,21 @@ module Economy
 
         # Step 3 was also performed, thus return relevant data
 
-        @api_response[:token_supply_details] = FetchClientTokenSupplyDetails.new(client_token_id: @client_token[:id]).perform
+        r = FetchClientTokenSupplyDetails.new(client_token_id: @client_token[:id]).perform
+        return r unless r.success?
+        @api_response_data[:token_supply_details] = r.data
 
-        @api_response[:client_token_balance] = FetchClientTokenBalance.new(client_token: @client_token).perform
+        r = FetchClientTokenBalance.new(client_token: @client_token).perform
+        return r unless r.success?
+        @api_response_data[:client_token_balance] = r.data
 
       elsif setup_steps_done.include?(GlobalConstant::ClientToken.configure_transactions_setup_step)
 
         # step 2 was performed, we would return data needed to perform step 3
 
-        @api_response[:client_ost_balance] = FetchClientOstBalance.new(client_id: @client_token[:client_id]).perform
+        r = FetchClientOstBalance.new(client_id: @client_token[:client_id]).perform
+        return r unless r.success?
+        @api_response_data[:client_ost_balance] = r.data
 
       elsif setup_steps_done.include?(GlobalConstant::ClientToken.set_conversion_rate_setup_step)
 
@@ -110,7 +116,7 @@ module Economy
         r = Economy::TransactionKind::List.new(client_id: @client_token[:client_id]).perform
         return r unless r.success?
 
-        @api_response[:transaction_kinds] = r.data['transaction_kinds']
+        @api_response_data[:transaction_kinds] = r.data['transaction_kinds']
 
       else # no step was performed, return data to perform step 1
 

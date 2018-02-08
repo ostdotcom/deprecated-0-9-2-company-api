@@ -96,6 +96,12 @@
     - :user_id
   :optional:
 
+'Economy::GetTokenSupplyDetails':
+  :mandatory:
+    - :client_token_id
+    - :user_id
+  :optional:
+
 'Economy::TransactionKind::Create':
   :mandatory:
     - :client_id
