@@ -165,7 +165,8 @@ module Util
         client_token: @client_token,
         user: @user,
         client_token_balance: @client_token_balance,
-        client_ost_balance: @client_ost_balance
+        client_ost_balance: @client_ost_balance,
+        ost_fiat_conversion_factors: FetchOstFiatConversionFactors.perform
       )
 
     end

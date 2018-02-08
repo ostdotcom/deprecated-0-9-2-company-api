@@ -21,12 +21,11 @@ class FetchClientOstBalance
   def perform
 
     ost_balance = Memcache.get_set_memcached(memcache_key, memcache_expiry) do
-      0.008 #TODO: fix this
+      10 #TODO: fix this
     end
 
     success_with_data(
-      ost_balance: ost_balance,
-      ost_usd_conversion_factor: FetchOstUsdConversionFactor.perform
+      ost_balance: ost_balance
     )
 
   end

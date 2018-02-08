@@ -1,4 +1,4 @@
-class FetchOstUsdConversionFactor
+class FetchOstFiatConversionFactors
 
   class << self
 
@@ -10,7 +10,9 @@ class FetchOstUsdConversionFactor
     def perform
 
       Memcache.get_set_memcached(memcache_key, memcache_expiry) do
-        0.008 #TODO: fix this
+        {
+          usd: 0.008 #TODO: fix this
+        }
       end
 
     end
@@ -18,7 +20,7 @@ class FetchOstUsdConversionFactor
     private
 
     def memcache_key_obj
-      @m_k_obj ||= MemcacheKey.new('mics.ost_usd_conversion_factor')
+      @m_k_obj ||= MemcacheKey.new('mics.ost_fiat_conversion_factors')
     end
 
     def memcache_key
