@@ -28,7 +28,6 @@ module ClientUsersManagement
 
       @page_size = 25
       @client = nil
-      @client_token = nil
       @economy_users = []
       @has_more = false
 
@@ -50,7 +49,7 @@ module ClientUsersManagement
       r = fetch_users
       return r unless r.success?
 
-      success_with_data(api_response)
+      return api_response
 
     end
 
@@ -126,7 +125,7 @@ module ClientUsersManagement
     # * Date: 02/02/2018
     # * Reviewed By:
     #
-    # Sets @client, @client_token
+    # Sets @client
     #
     # @return [Result::Base]
     #
@@ -143,8 +142,6 @@ module ClientUsersManagement
       ) if @client.blank? || @client[:status] != GlobalConstant::Client.active_status
 
       @client_id = @client_id.to_i
-
-      @client_token = CacheManagement::ClientToken.new([@client_token_id]).fetch[@client_token_id]
 
       success
 
@@ -199,21 +196,27 @@ module ClientUsersManagement
     # * Date: 02/02/2018
     # * Reviewed By:
     #
-    # @return [Hash]
+    # @return [Result::Base]
     #
     def api_response
+
       rsp = {
         result_type: result_type,
         result_type.to_sym => @economy_users,
-        client_token: @client_token,
-        user: CacheManagement::User.new([@user_id]).fetch[@user_id],
-        client_token_balance: FetchClientTokenBalance.new(client_token: @client_token).perform,
-        client_ost_balance: FetchClientOstBalance.new(client_id: @client_token[:client_id]).perform,
         next_page_payload: @has_more ? {
           page_no: @page_no + 1,
           filter: @filter
         } : {}
       }
+
+      if @page_no == 1
+        r = Util::FetchEconomyCommonEntities.new(user_id: @user_id, client_token_id: @client_token_id).perform
+        return r unless r.success?
+        rsp.merge!(r.data)
+      end
+
+      success_with_data(rsp)
+
     end
 
     def newly_added_filter

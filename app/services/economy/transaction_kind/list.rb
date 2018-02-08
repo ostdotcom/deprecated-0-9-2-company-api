@@ -23,7 +23,7 @@ module Economy
         @user_id = @params[:user_id]
         @client_token_id = @params[:client_token_id]
 
-        @api_response = {}
+        @api_response_data = {}
 
       end
 
@@ -33,7 +33,7 @@ module Economy
       # * Date: 29/01/2018
       # * Reviewed By:
       #
-      # Sets @api_response
+      # Sets @api_response_data
       #
       # @return [Result::Base]
       #
@@ -48,7 +48,7 @@ module Economy
         r = fetch_supporting_data
         return r unless r.success?
 
-        success_with_data(@api_response)
+        success_with_data(@api_response_data)
 
       end
 
@@ -64,7 +64,12 @@ module Economy
       #
       def execute
 
-        @ost_sdk_obj.list({})
+        r = @ost_sdk_obj.list({})
+        return r unless r.success?
+
+        @api_response_data = r.data
+
+        success
 
       end
 
@@ -74,20 +79,16 @@ module Economy
       # * Date: 29/01/2018
       # * Reviewed By:
       #
-      # Sets @api_response
+      # Sets @api_response_data
       #
       # @return [Result::Base]
       #
       def fetch_supporting_data
 
-        client_token = CacheManagement::ClientToken.new([@client_token_id]).fetch[@client_token_id]
+        r = Util::FetchEconomyCommonEntities.new(user_id: @user_id, client_token_id: @client_token_id).perform
+        return r unless r.success?
 
-        @api_response.merge!(
-            client_token: client_token,
-            user: CacheManagement::ClientToken.new([@user_id]).fetch[@user_id],
-            client_token_balance: FetchClientTokenBalance.new(client_token: client_token).perform,
-            client_ost_balance: FetchClientOstBalance.new(client_id: client_token[:client_id]).perform
-        )
+        @api_response_data.merge!(r.data)
 
         success
 
