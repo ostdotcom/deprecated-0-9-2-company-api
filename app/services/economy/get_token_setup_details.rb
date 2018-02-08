@@ -46,7 +46,8 @@ module Economy
 
       @api_response_data = {
           client_token: @client_token,
-          user: CacheManagement::User.new([@user_id]).fetch[@user_id]
+          user: CacheManagement::User.new([@user_id]).fetch[@user_id],
+          ost_fiat_conversion_factors: FetchOstFiatConversionFactors.perform
       }
 
       success_with_data(@api_response_data)
