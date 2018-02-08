@@ -77,10 +77,10 @@ class PlanEconomyJob < ApplicationJob
     failed_logs = {}
 
     [
-      {name: 'Upvote', kind: 'user_to_user', value_currency_type: 'usd', value_in_usd: '0.01', commission_percent: '2'},
-      {name: 'Like', kind: 'user_to_user', value_currency_type: 'bt', value_in_bt: '3', commission_percent: '2'},
-      {name: 'Rewards', kind: 'company_to_user', value_currency_type: 'bt', value_in_usd: '100', commission_percent: '0'},
-      {name: 'Subscription Fees', kind: 'user_to_company', value_currency_type: 'bt', value_in_bt: '10', commission_percent: '0'}
+      {name: 'Upvote', kind: 'user_to_user', value_currency_type: 'usd', value_in_usd: '0.01', commission_percent: '2', use_price_oracle: 1},
+      {name: 'Like', kind: 'user_to_user', value_currency_type: 'bt', value_in_bt: '3', commission_percent: '2', use_price_oracle: 1},
+      {name: 'Rewards', kind: 'company_to_user', value_currency_type: 'bt', value_in_usd: '100', commission_percent: '0', use_price_oracle: 1},
+      {name: 'Subscription Fees', kind: 'user_to_company', value_currency_type: 'bt', value_in_bt: '10', commission_percent: '0', use_price_oracle: 1}
     ].each do |params|
 
       service_response = Economy::TransactionKind::Create.new(params.merge(client_id: @client_token.client_id)).perform
