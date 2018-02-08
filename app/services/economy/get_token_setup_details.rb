@@ -44,11 +44,8 @@ module Economy
       r = fetch_setup_details
       return r unless r.success?
 
-      @api_response_data = {
-          client_token: @client_token,
-          user: CacheManagement::User.new([@user_id]).fetch[@user_id],
-          ost_fiat_conversion_factors: FetchOstFiatConversionFactors.perform
-      }
+      r = fetch_supporting_data
+      return r unless r.success?
 
       success_with_data(@api_response_data)
 
@@ -128,6 +125,27 @@ module Economy
         # no extra data to return
 
       end
+
+      success
+
+    end
+
+    # fetch supporting data for pi responce
+    #
+    # * Author: Puneet
+    # * Date: 29/01/2018
+    # * Reviewed By:
+    #
+    # Sets @api_response_data
+    #
+    # @return [Result::Base]
+    #
+    def fetch_supporting_data
+
+      r = Util::FetchEconomyCommonEntities.new(user_id: @user_id, client_token: @client_token).perform
+      return r unless r.success?
+
+      @api_response_data.merge!(r.data)
 
       success
 
