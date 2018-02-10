@@ -45,7 +45,9 @@ class ClientToken < EstablishCompanyClientEconomyDbConnection
         setup_steps: setup_steps.present? ? ClientToken.get_bits_set_for_setup_steps(setup_steps) : [],
         conversion_rate: conversion_rate,
         airdrop_bt_per_user: airdrop_bt_per_user,
-        initial_number_of_users: initial_number_of_users
+        initial_number_of_users: initial_number_of_users,
+        uuid: uuid,
+        erc20_address: erc20_address
     }
   end
 
