@@ -132,7 +132,7 @@ module Economy
       # We are firing this extra update query to ensure that even
       # if multiple requests are fired from FE, we enqueue job onlu once
       updated_row_cnt = ClientToken.where(id: @client_token_id).
-          where("setup_steps & #{bit_value} = 0").update_all("setup_steps = setup_steps | #{bit_value}")
+          where("setup_steps is NULL OR (setup_steps & #{bit_value} = 0)").update_all("setup_steps = setup_steps | #{bit_value}")
 
       @is_first_time_set = updated_row_cnt == 1
 
