@@ -17,11 +17,7 @@ class PlanEconomyJob < ApplicationJob
     r = validate_client_token
     return r unless r.success?
 
-    generate_dummy_transaction_types
-
     generate_dummy_users
-
-    update_client_token
 
     notify_devs
 
@@ -64,35 +60,6 @@ class PlanEconomyJob < ApplicationJob
 
   end
 
-  # Generate Dummy types
-  #
-  # * Author: Puneet
-  # * Date: 02/02/2018
-  # * Reviewed By:
-  #
-  # @return [Result::Base]
-  #
-  def generate_dummy_transaction_types
-
-    failed_logs = {}
-
-    [
-      {name: 'Upvote', kind: 'user_to_user', value_currency_type: 'usd', value_in_usd: '0.01', commission_percent: '2', use_price_oracle: 1},
-      {name: 'Like', kind: 'user_to_user', value_currency_type: 'bt', value_in_bt: '3', commission_percent: '2', use_price_oracle: 1},
-      {name: 'Rewards', kind: 'company_to_user', value_currency_type: 'bt', value_in_usd: '100', commission_percent: '0', use_price_oracle: 1},
-      {name: 'Subscription Fees', kind: 'user_to_company', value_currency_type: 'bt', value_in_bt: '10', commission_percent: '0', use_price_oracle: 1}
-    ].each do |params|
-
-      service_response = Economy::TransactionKind::Create.new(params.merge(client_id: @client_token.client_id)).perform
-
-      failed_logs[params[:name]] = service_response.to_json unless service_response.success?
-
-    end
-
-    @failed_logs[:transaction_types] = failed_logs if failed_logs.present?
-
-  end
-
   #
   # * Author: Puneet
   # * Date: 02/02/2018
@@ -117,20 +84,6 @@ class PlanEconomyJob < ApplicationJob
 
     @failed_logs[:dummy_users] = failed_logs if failed_logs.present?
 
-  end
-
-  # Update client token
-  #
-  # * Author: Kedar
-  # * Date: 24/01/2018
-  # * Reviewed By:
-  #
-  # @return [Result::Base]
-  #
-  def update_client_token
-    return if @failed_logs[:transaction_types].present?
-    @client_token.send("set_#{GlobalConstant::ClientToken.configure_transactions_setup_step}")
-    @client_token.save!
   end
 
   # Send mail

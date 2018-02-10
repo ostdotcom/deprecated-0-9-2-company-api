@@ -103,15 +103,6 @@ module Economy
 
         # step 1 was performed, we would return data needed to perform step 2
 
-        r = Economy::TransactionKind::List.new(
-            client_id: @client_token[:client_id],
-            client_token_id: @client_token[:id],
-            user_id: @user_id
-        ).perform
-        return r unless r.success?
-
-        @api_response_data[:transaction_kinds] = r.data['transaction_kinds']
-
       else # no step was performed, return data to perform step 1
 
         # no extra data to return
