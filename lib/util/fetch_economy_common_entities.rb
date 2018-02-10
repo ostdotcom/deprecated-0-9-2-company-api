@@ -87,7 +87,10 @@ module Util
     #
     def fetch_client_token
 
-      return success if @client_token.present?
+      if @client_token.present?
+        @client_token_id = @client_token[:id]
+        return success
+      end
 
       return error_with_data(
           'u_fece_2',
