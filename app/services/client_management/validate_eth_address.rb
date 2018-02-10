@@ -11,7 +11,7 @@ module ClientManagement
     # @param [Integer] client_id (mandatory) - Client Id for which Eth address has to be set up
     # @param [String] eth_address (mandatory) - eth address
     #
-    # @return [ClientManagement::SetupEthAddress]
+    # @return [ClientManagement::ValidateEthAddress]
     #
     def initialize(params)
 

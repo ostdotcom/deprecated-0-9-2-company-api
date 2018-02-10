@@ -12,7 +12,6 @@ Rails.application.routes.draw do
   end
 
   scope 'api/client', controller: 'client/setup' do
-    match 'setup-eth-address' => :setup_eth_address, via: :POST
     match 'validate-eth-address' => :validate_eth_address, via: :GET
   end
 
