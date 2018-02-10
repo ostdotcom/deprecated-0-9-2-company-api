@@ -24,7 +24,6 @@ module ClientManagement
       @info_salt_d = nil
       @hashed_eth_address = nil
       @encrypted_eth_address = nil
-      @existing_db_record = nil
 
     end
 
@@ -41,20 +40,31 @@ module ClientManagement
       r = validate_and_sanitize
       return r unless r.success?
 
+      existing_db_record = ClientAddress.where(client_id: @client_id).last
+
+      @hashed_eth_address = LocalCipher.get_sha_hashed_text(@eth_address)
+
+      if existing_db_record.present?
+        if existing_db_record.hashed_ethereum_address == @hashed_eth_address
+          return success
+        else
+          return error_with_data(
+              'cm_sea_1',
+              'Client Already Has ETH address associated',
+              'Client Already Has ETH address associated',
+              GlobalConstant::ErrorAction.default,
+              {}
+          )
+        end
+      end
+
       r = decrypt_info_salt
       return r unless r.success?
 
       r = encrypt_eth_address
       return r unless r.success?
 
-      r = fetch_existing_record_from_db
-      return r unless r.success?
-
-      if @existing_db_record.present? && @existing_db_record.hashed_ethereum_address == @hashed_eth_address
-        success
-      else
-        update_eth_address_in_db
-      end
+      create_eth_address_in_db
 
     end
 
@@ -77,13 +87,8 @@ module ClientManagement
       #TODO: Do we need to convert this to checksum ETH Address
       @eth_address = @eth_address.to_s.strip
 
-      return error_with_data(
-          'cm_sea_1',
-          'Invalid Eth Address.',
-          'Invalid Eth Address.',
-          GlobalConstant::ErrorAction.default,
-          {}
-      ) unless Util::CommonValidator.is_ethereum_address?(@eth_address)
+      r = ClientManagement::ValidateEthAddress.new(client_id: @client_id, eth_address: @eth_address).perform
+      return r unless r.success?
 
       @client = Client.where(id: @client_id).first
 
@@ -93,7 +98,7 @@ module ClientManagement
           'Invalid Client.',
           GlobalConstant::ErrorAction.default,
           {}
-      ) if @client.blank? || @client.status != GlobalConstant::Client.active_status
+      ) if @client.blank?
 
       success
 
@@ -126,35 +131,17 @@ module ClientManagement
     # * Date: 29/01/2018
     # * Reviewed By:
     #
-    # Sets @hashed_eth_address & @encrypted_eth_address
+    # Sets @encrypted_eth_address
     #
     # @return [Result::Base]
     #
     def encrypt_eth_address
-
-      @hashed_eth_address = LocalCipher.get_sha_hashed_text(@eth_address)
 
       encryptor_obj = LocalCipher.new(@info_salt_d)
       r = encryptor_obj.encrypt(@eth_address)
       return r unless r.success?
 
       @encrypted_eth_address = r.data[:ciphertext_blob]
-
-      success
-
-    end
-
-    # Fetch existing Eth Address
-    #
-    # * Author: Puneet
-    # * Date: 29/01/2018
-    # * Reviewed By:
-    #
-    # @return [Result::Base]
-    #
-    def fetch_existing_record_from_db
-
-      @existing_db_record = ClientAddress.where(client_id: @client_id).last
 
       success
 
@@ -168,12 +155,7 @@ module ClientManagement
     #
     # @return [Result::Base]
     #
-    def update_eth_address_in_db
-
-      if @existing_db_record.present?
-        @existing_db_record.status = GlobalConstant::ClientAddress.inactive_status
-        @existing_db_record.save
-      end
+    def create_eth_address_in_db
 
       ClientAddress.create(
           client_id: @client_id,
