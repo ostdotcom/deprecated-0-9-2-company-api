@@ -21,7 +21,7 @@ module ClientManagement
       @eth_address = @params[:eth_address]
 
       @client = nil
-      @hashed_eth_address_from_db = nil
+      @hashed_eth_address = nil
 
     end
 
@@ -38,18 +38,9 @@ module ClientManagement
       r = validate_and_sanitize
       return r unless r.success?
 
-      r = fetch_eth_address_from_db
-      return r unless r.success?
+      @hashed_eth_address = LocalCipher.get_sha_hashed_text(@eth_address)
 
-      hashed_eth_address = LocalCipher.get_sha_hashed_text(@eth_address)
-
-      hashed_eth_address == @hashed_eth_address_from_db ? success : error_with_data(
-          'cm_vea_3',
-          'Invalid ETH Address.',
-          'Invalid ETH Address.',
-          GlobalConstant::ErrorAction.default,
-          {}
-      )
+      validate_eth_address_from_db
 
     end
 
@@ -90,6 +81,8 @@ module ClientManagement
           {}
       ) if @client.blank? || @client[:status] != GlobalConstant::Client.active_status
 
+      @client_id = @client_id.to_i
+
       success
 
     end
@@ -102,18 +95,17 @@ module ClientManagement
     #
     # @return [Result::Base]
     #
-    def fetch_eth_address_from_db
+    def validate_eth_address_from_db
 
-      client_address = ClientAddress.where(client_id: @client_id).last
+      client_address = ClientAddress.where(hashed_ethereum_address: @hashed_eth_address).last
+
       return error_with_data(
           'cm_vea_4',
-          'Invalid Client.',
-          'Invalid Client.',
+          'Invalid ETH Address.', # do we have to reveal in this message that eth address was associated with someone else
+          'Invalid ETH Address.',
           GlobalConstant::ErrorAction.default,
           {}
-      ) if client_address.blank?
-
-      @hashed_eth_address_from_db = client_address.hashed_ethereum_address
+      ) if client_address.present? && client_address.client_id != @client_id
       
       success
 
