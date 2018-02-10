@@ -135,9 +135,9 @@ module Util
         erc20_address: @client_token_s[:erc20_address]
       ).perform(balance_types)
 
-      return r unless r.success?
-
-      @client_balances = r.data
+      if r.success?
+        @client_balances = r.data
+      end
 
       success
 
