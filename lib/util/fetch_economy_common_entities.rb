@@ -20,8 +20,7 @@ module Util
 
       @client_token = params[:client_token]
       @user = params[:user]
-      @client_token_balance = params[:client_token_balance]
-      @client_ost_balance = params[:client_ost_balance]
+      @client_balances = params[:client_balances]
 
     end
 
@@ -41,10 +40,7 @@ module Util
       r = fetch_client_token
       return r unless r.success?
 
-      r = fetch_client_token_balance
-      return r unless r.success?
-
-      r = fetch_client_ost_balance
+      r = fetch_client_balances
       return r unless r.success?
 
       return formatted_response
@@ -118,35 +114,27 @@ module Util
     #
     # @return [Result::Base]
     #
-    def fetch_client_token_balance
+    def fetch_client_balances
 
-      return success if @client_token_balance.present?
+      return success if @client_balances.present?
 
-      r = FetchClientTokenBalance.new(client_token: @client_token).perform
-      return r unless r.success?
-      @client_token_balance = r.data
+      @client_token_s = CacheManagement::ClientTokenSecure.new([@client_token_id]).fetch[@client_token_id]
 
-      success
+      balance_types = [
+        GlobalConstant::BalanceTypes.ost_balance_type,
+        GlobalConstant::BalanceTypes.ost_prime_balance_type,
+        GlobalConstant::BalanceTypes.branded_token_balance_type
+      ]
 
-    end
+      r = FetchClientBalances.new(
+        client_id: @client_token[:client_id],
+        address: @client_token_s[:reserve_address],
+        erc20_address: @client_token_s[:erc20_address]
+      ).perform(balance_types)
 
-    #
-    # * Author: Puneet
-    # * Date: 02/02/2018
-    # * Reviewed By:
-    #
-    # Sets @client_ost_balance
-    #
-    # @return [Result::Base]
-    #
-    def fetch_client_ost_balance
-
-      return success if @client_ost_balance.present?
-
-      r = FetchClientOstBalance.new(client_id: @client_token[:client_id]).perform
       return r unless r.success?
 
-      @client_ost_balance = r.data
+      @client_balances = r.data
 
       success
 
@@ -164,9 +152,7 @@ module Util
       success_with_data(
         client_token: @client_token,
         user: @user,
-        client_token_balance: @client_token_balance,
-        client_ost_balance: @client_ost_balance,
-        ost_fiat_conversion_factors: FetchOstFiatConversionFactors.perform
+        client_balances: @client_balances
       )
 
     end

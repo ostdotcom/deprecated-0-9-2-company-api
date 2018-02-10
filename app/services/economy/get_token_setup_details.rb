@@ -95,17 +95,9 @@ module Economy
         return r unless r.success?
         @api_response_data[:token_supply_details] = r.data
 
-        r = FetchClientTokenBalance.new(client_token: @client_token).perform
-        return r unless r.success?
-        @api_response_data[:client_token_balance] = r.data
-
       elsif setup_steps_done.include?(GlobalConstant::ClientToken.configure_transactions_setup_step)
 
         # step 2 was performed, we would return data needed to perform step 3
-
-        r = FetchClientOstBalance.new(client_id: @client_token[:client_id]).perform
-        return r unless r.success?
-        @api_response_data[:client_ost_balance] = r.data
 
       elsif setup_steps_done.include?(GlobalConstant::ClientToken.set_conversion_rate_setup_step)
 
