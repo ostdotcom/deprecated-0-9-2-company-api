@@ -7,11 +7,11 @@ module GlobalConstant
 
       ########## activity_types #############
 
-      def request_ost_activty_type
+      def request_ost_activity_type
         'request_ost'
       end
 
-      def transfer_to_staker_activty_type
+      def transfer_to_staker_activity_type
         'transfer_to_staker'
       end
 

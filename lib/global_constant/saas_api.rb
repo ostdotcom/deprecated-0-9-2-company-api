@@ -16,6 +16,10 @@ module GlobalConstant
       'on-boarding/registration-status'
     end
 
+    def self.grant_test_ost_path
+      'on-boarding/grant-test-ost'
+    end
+
     def self.approve_for_stake_api_path
       'stake/approve'
     end

@@ -59,6 +59,14 @@
     - :eth_address
   :optional:
 
+'ClientManagement::GetTestOst':
+  :mandatory:
+    - :client_id
+    - :client_token_id
+    - :requested_amount
+  :optional:
+    - :eth_address
+
 'Economy::CreateToken':
   :mandatory:
     - :client_id
