@@ -548,11 +548,11 @@
 			"helperAttributes": null
 		},
 		{
-			"id": "ab84a3c7-e59e-87a3-1a57-4c1b05b8ac87",
+			"id": "79139824-dbe2-bb98-6443-f9427c442eac",
 			"headers": "",
 			"headerData": [],
 			"url": "{{api_url}}/client/logout",
-			"folder": "66d96495-2230-f3c3-84ac-d5856c6decf7",
+			"folder": "7c2595ae-3997-1f63-d04b-e62f01fc48c8",
 			"queryParams": [],
 			"events": [],
 			"pathVariables": {},
@@ -565,18 +565,35 @@
 			"time": 1517313267086,
 			"name": "logout",
 			"description": "",
-			"collectionId": "4096f0ae-3b4b-c411-e8b0-a16371d43c8d",
+			"collectionId": "17442a4b-0050-aec2-5c88-6fbcdcebe596",
 			"responses": [],
 			"currentHelper": null,
-			"helperAttributes": null
+			"helperAttributes": null,
+			"preRequestScript": "",
+			"tests": ""
 		},
 		{
-			"id": "b28831e4-d066-87d3-6a1c-b5c09e0f92f4",
+			"id": "82964723-19a3-270b-cfea-6840de6b3bf6",
 			"headers": "",
 			"headerData": [],
-			"url": "{{api_url}}/client/login",
-			"folder": "66d96495-2230-f3c3-84ac-d5856c6decf7",
-			"queryParams": [],
+			"url": "{{api_url}}/client/login?email=puneet.khushwani@ost.com&password=test1234",
+			"folder": "7c2595ae-3997-1f63-d04b-e62f01fc48c8",
+			"queryParams": [
+				{
+					"key": "email",
+					"value": "puneet.khushwani@ost.com",
+					"equals": true,
+					"description": "",
+					"enabled": true
+				},
+				{
+					"key": "password",
+					"value": "test1234",
+					"equals": true,
+					"description": "",
+					"enabled": true
+				}
+			],
 			"events": [],
 			"pathVariables": {},
 			"pathVariableData": [],
@@ -584,7 +601,7 @@
 			"data": [
 				{
 					"key": "email",
-					"value": "puneet.khushwani+3@ost.com",
+					"value": "kedar@pepo.com",
 					"description": "",
 					"type": "text",
 					"enabled": true
@@ -600,13 +617,57 @@
 			"dataMode": "params",
 			"version": 2,
 			"auth": null,
-			"time": 1517573831139,
+			"time": 1517296703765,
 			"name": "login",
 			"description": "",
-			"collectionId": "4096f0ae-3b4b-c411-e8b0-a16371d43c8d",
+			"collectionId": "17442a4b-0050-aec2-5c88-6fbcdcebe596",
 			"responses": [],
 			"currentHelper": null,
-			"helperAttributes": null
+			"helperAttributes": null,
+			"preRequestScript": "",
+			"tests": ""
+		},
+		{
+			"id": "89497a54-ecdb-73ca-39ae-31decfcabdbf",
+			"headers": "",
+			"url": "{{api_url}}/client/verify-email?r_t=4hg90xFAgxDanalXsQjHvpN6deXqGPv6J0WmuMdwYQqBVlQtfrgYUD19n9orOWCa--3a69ab3a42ab1ddc",
+			"pathVariables": {},
+			"preRequestScript": null,
+			"method": "POST",
+			"collectionId": "17442a4b-0050-aec2-5c88-6fbcdcebe596",
+			"data": null,
+			"dataMode": "params",
+			"name": "Verify email",
+			"description": "",
+			"descriptionFormat": "html",
+			"time": 1517413127476,
+			"version": 2,
+			"responses": [],
+			"tests": null,
+			"currentHelper": "normal",
+			"helperAttributes": {},
+			"folder": "7c2595ae-3997-1f63-d04b-e62f01fc48c8"
+		},
+		{
+			"id": "b5ce6f04-82d3-a3cd-9a7d-916001d16217",
+			"headers": "",
+			"url": "{{api_url}}/client/reset-password?r_t=XuHWcgsciJGkuPDJb6c5wWMI4Ged2PcFpHEhsqrNqvn54eo7wXvMXj7Ikq7elHQp--76e4ef971026a86c&password=pankaj123456&confirm_password=pankaj123456",
+			"pathVariables": {},
+			"preRequestScript": null,
+			"method": "POST",
+			"collectionId": "17442a4b-0050-aec2-5c88-6fbcdcebe596",
+			"data": null,
+			"dataMode": "params",
+			"name": "Reset password",
+			"description": "",
+			"descriptionFormat": "html",
+			"time": 1517406226272,
+			"version": 2,
+			"responses": [],
+			"tests": null,
+			"currentHelper": "normal",
+			"helperAttributes": {},
+			"folder": "7c2595ae-3997-1f63-d04b-e62f01fc48c8"
 		},
 		{
 			"id": "c25f4895-8578-8925-87d4-02370aa6c791",
