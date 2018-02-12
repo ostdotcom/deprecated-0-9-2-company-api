@@ -36,8 +36,10 @@
 			"collectionId": "4096f0ae-3b4b-c411-e8b0-a16371d43c8d",
 			"order": [
 				"08be9d72-3bf1-eb57-7e9d-7374bb39affb",
-				"b28831e4-d066-87d3-6a1c-b5c09e0f92f4",
-				"ab84a3c7-e59e-87a3-1a57-4c1b05b8ac87"
+				"79139824-dbe2-bb98-6443-f9427c442eac",
+                "82964723-19a3-270b-cfea-6840de6b3bf6",
+                "89497a54-ecdb-73ca-39ae-31decfcabdbf",
+                "b5ce6f04-82d3-a3cd-9a7d-916001d16217"
 			],
 			"owner": 0,
 			"folders_order": [],
@@ -552,7 +554,7 @@
 			"headers": "",
 			"headerData": [],
 			"url": "{{api_url}}/client/logout",
-			"folder": "7c2595ae-3997-1f63-d04b-e62f01fc48c8",
+			"folder": "66d96495-2230-f3c3-84ac-d5856c6decf7",
 			"queryParams": [],
 			"events": [],
 			"pathVariables": {},
@@ -565,7 +567,7 @@
 			"time": 1517313267086,
 			"name": "logout",
 			"description": "",
-			"collectionId": "17442a4b-0050-aec2-5c88-6fbcdcebe596",
+			"collectionId": "4096f0ae-3b4b-c411-e8b0-a16371d43c8d",
 			"responses": [],
 			"currentHelper": null,
 			"helperAttributes": null,
@@ -577,7 +579,7 @@
 			"headers": "",
 			"headerData": [],
 			"url": "{{api_url}}/client/login?email=puneet.khushwani@ost.com&password=test1234",
-			"folder": "7c2595ae-3997-1f63-d04b-e62f01fc48c8",
+			"folder": "66d96495-2230-f3c3-84ac-d5856c6decf7",
 			"queryParams": [
 				{
 					"key": "email",
@@ -620,7 +622,7 @@
 			"time": 1517296703765,
 			"name": "login",
 			"description": "",
-			"collectionId": "17442a4b-0050-aec2-5c88-6fbcdcebe596",
+			"collectionId": "4096f0ae-3b4b-c411-e8b0-a16371d43c8d",
 			"responses": [],
 			"currentHelper": null,
 			"helperAttributes": null,
@@ -634,7 +636,7 @@
 			"pathVariables": {},
 			"preRequestScript": null,
 			"method": "POST",
-			"collectionId": "17442a4b-0050-aec2-5c88-6fbcdcebe596",
+			"collectionId": "4096f0ae-3b4b-c411-e8b0-a16371d43c8d",
 			"data": null,
 			"dataMode": "params",
 			"name": "Verify email",
@@ -646,7 +648,7 @@
 			"tests": null,
 			"currentHelper": "normal",
 			"helperAttributes": {},
-			"folder": "7c2595ae-3997-1f63-d04b-e62f01fc48c8"
+			"folder": "66d96495-2230-f3c3-84ac-d5856c6decf7"
 		},
 		{
 			"id": "b5ce6f04-82d3-a3cd-9a7d-916001d16217",
@@ -655,7 +657,7 @@
 			"pathVariables": {},
 			"preRequestScript": null,
 			"method": "POST",
-			"collectionId": "17442a4b-0050-aec2-5c88-6fbcdcebe596",
+			"collectionId": "4096f0ae-3b4b-c411-e8b0-a16371d43c8d",
 			"data": null,
 			"dataMode": "params",
 			"name": "Reset password",
@@ -667,7 +669,7 @@
 			"tests": null,
 			"currentHelper": "normal",
 			"helperAttributes": {},
-			"folder": "7c2595ae-3997-1f63-d04b-e62f01fc48c8"
+			"folder": "66d96495-2230-f3c3-84ac-d5856c6decf7"
 		},
 		{
 			"id": "c25f4895-8578-8925-87d4-02370aa6c791",
