@@ -33,4 +33,15 @@ class Economy::TransactionKindController < Economy::BaseController
     render_api_response(service_response)
   end
 
+  # create Edit transactions
+  #
+  # * Author: Alpesh
+  # * Date: 12/02/2018
+  # * Reviewed By:
+  #
+  def bulk_create_edit
+    service_response = Economy::TransactionKind::BulkCreateEdit.new(params).perform
+    render_api_response(service_response)
+  end
+
 end

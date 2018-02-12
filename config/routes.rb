@@ -32,6 +32,7 @@ Rails.application.routes.draw do
   scope 'api/economy/transaction/kind', controller: 'economy/transaction_kind' do
     match 'create' => :create, via: :POST
     match 'edit' => :edit, via: :POST
+    match 'bulk-create-edit' => :bulk_create_edit, via: :POST
     match 'list' => :list, via: :GET
   end
 

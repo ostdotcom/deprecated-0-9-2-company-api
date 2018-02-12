@@ -127,6 +127,12 @@
     - :commission_percent
     - :use_price_oracle
 
+'Economy::TransactionKind::BulkCreateEdit':
+  :mandatory:
+    - :client_id
+    - :transaction_kinds
+  :optional:
+
 'Economy::TransactionKind::List':
   :mandatory:
     - :client_id

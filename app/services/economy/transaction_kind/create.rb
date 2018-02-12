@@ -17,6 +17,7 @@ module Economy
       # @params [String] value_in_usd (mandatory) - value_in_usd of transaction
       # @params [String] value_in_bt (mandatory) - value_in_bt of transaction
       # @params [String] commission_percent (mandatory) - commission_percent of transaction
+      # @params [Integer] use_price_oracle (mandatory) - use prie oracle
       #
       # @return [Economy::TransactionKind::Base]
       #
