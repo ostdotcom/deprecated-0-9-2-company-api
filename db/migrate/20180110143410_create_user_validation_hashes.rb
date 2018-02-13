@@ -1,6 +1,6 @@
 class CreateUserValidationHashes < DbMigrationConnection
 
-  def change
+  def up
 
     run_migration_for_db(EstablishCompanyUserDbConnection) do
 
@@ -13,6 +13,14 @@ class CreateUserValidationHashes < DbMigrationConnection
         t.timestamps
       end
 
+    end
+
+  end
+
+  def down
+
+    run_migration_for_db(EstablishCompanyUserDbConnection) do
+      drop_table :user_validation_hashes
     end
 
   end
