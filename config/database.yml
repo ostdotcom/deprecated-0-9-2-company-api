@@ -33,10 +33,6 @@ company_big_<%= GlobalConstant::Base.sub_env%>_<%= Rails.env%>:
   <<: *default
   database: company_big_<%= GlobalConstant::Base.sub_env%>_<%= Rails.env%>
 
-company_transaction_<%= GlobalConstant::Base.sub_env%>_<%= Rails.env%>:
-  <<: *default
-  database: company_transaction_<%= GlobalConstant::Base.sub_env%>_<%= Rails.env%>
-
 saas_client_economy_<%= GlobalConstant::Base.sub_env%>_<%= Rails.env%>:
   <<: *default
   database: saas_client_economy_<%= GlobalConstant::Base.sub_env%>_<%= Rails.env%>

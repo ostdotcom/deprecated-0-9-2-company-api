@@ -6,7 +6,7 @@ class CreateUsers < DbMigrationConnection
 
       create_table :users do |t|
         t.column :email, :string, null: false
-        t.column :password, :blob, null: false #encrypted
+        t.column :password, :text, null: false #encrypted
         t.column :login_salt, :blob, null: true #encrypted
         t.column :properties, :tinyint, null: false
         t.column :default_client_id, :integer, null: true

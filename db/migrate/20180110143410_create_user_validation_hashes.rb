@@ -6,7 +6,7 @@ class CreateUserValidationHashes < DbMigrationConnection
 
       create_table :user_validation_hashes do |t|
         t.column :user_id, :integer, null: false
-        t.column :validation_hash, :blob, null: false #encrypted
+        t.column :validation_hash, :text, null: false #encrypted
         t.column :kind, :tinyint, limit: 1, null: false
         t.column :usage_attempts, :tinyint, default: 0
         t.column :status, :tinyint, limit: 1, null: false
