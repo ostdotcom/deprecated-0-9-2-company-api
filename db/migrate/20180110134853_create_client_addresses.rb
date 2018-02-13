@@ -1,19 +1,28 @@
 class CreateClientAddresses < DbMigrationConnection
 
-  def change
+  def up
 
     run_migration_for_db(EstablishCompanyClientEconomyDbConnection) do
 
       create_table :client_addresses do |t|
-        t.column :ethereum_address, :blob, null: false #encrypted
-        t.column :hashed_ethereum_address, :blob, null: false #encrypted
         t.column :client_id, :integer, null: false
+        t.column :ethereum_address, :text, null: false #encrypted
+        t.column :hashed_ethereum_address, :string, null: false #encrypted
+        t.column :address_salt, :blob, null: false #encrypted
         t.column :status, :tinyint, null: false
         t.timestamps
       end
 
-    end
+      add_index :client_addresses, [:hashed_ethereum_address], unique: true, name: 'index_1'
+      add_index :client_addresses, [:client_id, :status], name: 'index_2'
 
+    end
+  end
+
+  def down
+    run_migration_for_db(EstablishCompanyClientEconomyDbConnection) do
+      drop_table :client_addresses
+    end
   end
 
 end

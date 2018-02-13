@@ -1,0 +1,2 @@
+class ClientTokenPlanner < EstablishCompanyClientEconomyDbConnection
+end
