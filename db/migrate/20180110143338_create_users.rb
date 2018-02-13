@@ -10,6 +10,7 @@ class CreateUsers < DbMigrationConnection
         t.column :login_salt, :blob, null: true #encrypted
         t.column :properties, :tinyint, null: false
         t.column :default_client_id, :integer, null: true
+        t.column :failed_login_attempt_count, :integer, null: true
         t.column :status, :tinyint, limit: 1, null: false
         t.timestamps
       end

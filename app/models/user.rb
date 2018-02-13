@@ -56,13 +56,29 @@ class User < EstablishCompanyUserDbConnection
   end
 
   def self.get_encrypted_password(password, salt)
+
+    sha256_params = {
+      string: "#{password}::#{salt}",
+      salt: salt[0..50]
+    }
+
     begin
-      Digest::MD5.hexdigest("#{password}::#{salt}")
+
+      Sha256.new(sha256_params).perform
+
     rescue Encoding::CompatibilityError => e
+
       p = password.to_s.force_encoding("UTF-8")
       s = salt.to_s.force_encoding("UTF-8")
-      Digest::MD5.hexdigest("#{p}::#{s}")
+      sha256_params = {
+          string: "#{p}::#{s}",
+          salt: s[0..50]
+      }
+
+      Sha256.new(sha256_params).perform
+
     end
+
   end
 
   def self.get_cookie_value(user_id, default_client_id, password, browser_user_agent = '')
