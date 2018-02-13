@@ -23,7 +23,7 @@ company_user_<%= Rails.env%>:
 
 company_async_hooks_<%= GlobalConstant::Base.sub_env%>_<%= Rails.env%>:
   <<: *default
-  database: company_async_hooks_<%= Rails.env%>
+  database: company_async_hooks_<%= GlobalConstant::Base.sub_env%>_<%= Rails.env%>
 
 company_client_economy_<%= GlobalConstant::Base.sub_env%>_<%= Rails.env%>:
   <<: *default
