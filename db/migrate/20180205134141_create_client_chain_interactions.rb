@@ -1,7 +1,7 @@
 class CreateClientChainInteractions < DbMigrationConnection
 
   def up
-    run_migration_for_db(EstablishCompanyClientEconomyDbConnection) do
+    run_migration_for_db(EstablishCompanyBigDbConnection) do
       create_table :client_chain_interactions do |t|
         t.column :client_id, :integer, null: false
         t.column :client_token_id, :integer, null: false
