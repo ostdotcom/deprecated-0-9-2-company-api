@@ -36,3 +36,15 @@ company_big_<%= Rails.env%>:
 company_transaction_<%= GlobalConstant::Base.sub_env%>_<%= Rails.env%>:
   <<: *default
   database: company_transaction_<%= GlobalConstant::Base.sub_env%>_<%= Rails.env%>
+
+saas_client_economy_<%= GlobalConstant::Base.sub_env%>_<%= Rails.env%>:
+  <<: *default
+  database: saas_client_economy_<%= GlobalConstant::Base.sub_env%>_<%= Rails.env%>
+
+saas_transaction_<%= GlobalConstant::Base.sub_env%>_<%= Rails.env%>:
+  <<: *default
+  database: saas_transaction_<%= GlobalConstant::Base.sub_env%>_<%= Rails.env%>
+
+company_saas_shared_<%= GlobalConstant::Base.sub_env%>_<%= Rails.env%>:
+  <<: *default
+  database: company_saas_shared_<%= GlobalConstant::Base.sub_env%>_<%= Rails.env%>
