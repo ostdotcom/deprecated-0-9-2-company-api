@@ -1,8 +1,9 @@
-class EstablishCompanyEmailDbConnection < ApplicationRecord
+class EstablishCompanyAsyncHooksDbConnection < ApplicationRecord
+
   self.abstract_class = true
 
   def self.config_key
-    "company_email_#{Rails.env}"
+    "company_async_hooks_#{Rails.env}"
   end
 
   def self.applicable_sub_environments
@@ -12,4 +13,5 @@ class EstablishCompanyEmailDbConnection < ApplicationRecord
   end
 
   self.establish_connection(config_key.to_sym)
+
 end

@@ -1,6 +1,8 @@
 class CreateEmailServiceApiCallHooks < DbMigrationConnection
+
   def up
-    run_migration_for_db(EstablishCompanyEmailDbConnection) do
+
+    run_migration_for_db(EstablishCompanyAsyncHooksDbConnection) do
 
       create_table :email_service_api_call_hooks do |t|
 
@@ -31,7 +33,7 @@ class CreateEmailServiceApiCallHooks < DbMigrationConnection
   end
 
   def down
-    run_migration_for_db(EstablishCompanyEmailDbConnection) do
+    run_migration_for_db(EstablishCompanyAsyncHooksDbConnection) do
       drop_table :email_service_api_call_hooks
     end
   end
