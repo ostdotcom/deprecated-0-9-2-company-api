@@ -9,7 +9,6 @@ module ClientManagement
     # * Reviewed By:
     #
     # @param [Integer] client_id (mandatory) - Client Id to get Test Ost
-    # @param [Integer] client_token_id (mandatory) - Client Token for which Test OST would be granted.
     # @param [Float] requested_amount (mandatory) - Amount of Test OST requested by client.
     # @param [String] eth_address (Optional) - eth address for first time in client set up flow
     #
@@ -21,7 +20,7 @@ module ClientManagement
 
       @client_id = @params[:client_id]
       @client_token_id = @params[:client_token_id]
-      @amount = @params[:requested_amount]
+      @amount = @params[:requested_amount] || 500
       @eth_address = @params[:eth_address]
 
       @client = nil
@@ -58,11 +57,9 @@ module ClientManagement
       insert_db
 
       r = make_saas_api_call
-      return r unless r.success?
+      return r
 
       # TODO:: Make transaction UUID and transaction hash table.
-
-      return success
 
     end
 

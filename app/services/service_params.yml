@@ -63,9 +63,9 @@
   :mandatory:
     - :client_id
     - :client_token_id
-    - :requested_amount
   :optional:
     - :eth_address
+    - :requested_amount
 
 'Economy::CreateToken':
   :mandatory:
