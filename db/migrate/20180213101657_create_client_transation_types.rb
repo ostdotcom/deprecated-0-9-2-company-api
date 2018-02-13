@@ -7,7 +7,7 @@ class CreateClientTransationTypes < DbMigrationConnection
         t.column :name, :string, null: false
         t.column :kind, :tinyint, null: false, limit: 1 # 1: user_to_user, 2: user_to_company, 3: company_to_user
         t.column :currency_type, :tinyint, null: false, limit: 1 # 1: usd, 2: bt
-        t.column :value_in_usd, :decimal, null: true, precision: 10, scale: 5
+        t.column :value_in_usd, :decimal, null: true, precision: 12, scale: 6
         t.column :value_in_bt_wei, :decimal, null: true, precision: 30, scale: 0
         t.column :commission_percent, :decimal, null: false, precision: 6, scale: 3
         t.column :status, :tinyint, null: false, limit: 1

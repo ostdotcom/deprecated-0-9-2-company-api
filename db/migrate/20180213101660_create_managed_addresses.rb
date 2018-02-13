@@ -6,9 +6,9 @@ class CreateManagedAddresses < DbMigrationConnection
         t.column :client_id, :integer, null: false
         t.column :uuid, :string, null: false
         t.column :name, :string
-        t.column :ethereum_address, :blob
+        t.column :ethereum_address, :text
         t.column :hashed_ethereum_address, :string
-        t.column :passphrase, :blob
+        t.column :passphrase, :text
         t.column :status, :tinyint, null: false, limit: 1
         t.timestamps
       end
