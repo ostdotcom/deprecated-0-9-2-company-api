@@ -2,7 +2,7 @@ class EstablishSaasClientEconomyDbConnection < ApplicationRecord
   self.abstract_class = true
 
   def self.config_key
-    "sass_client_economy_#{GlobalConstant::Base.sub_env}_#{Rails.env}"
+    "saas_client_economy_#{GlobalConstant::Base.sub_env}_#{Rails.env}"
   end
 
   def self.applicable_sub_environments

@@ -2,7 +2,7 @@ class EstablishSaasTransactionDbConnection < ApplicationRecord
   self.abstract_class = true
 
   def self.config_key
-    "sass_transaction_#{GlobalConstant::Base.sub_env}_#{Rails.env}"
+    "saas_transaction_#{GlobalConstant::Base.sub_env}_#{Rails.env}"
   end
 
   def self.applicable_sub_environments

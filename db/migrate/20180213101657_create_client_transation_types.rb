@@ -14,7 +14,7 @@ class CreateClientTransationTypes < DbMigrationConnection
         t.timestamps
       end
 
-      add_index :client_transation_types, [:client_id, :name], name: 'uniq_client_id_name', uniq:true
+      add_index :client_transation_types, [:client_id, :name], name: 'uniq_client_id_name', unique:true
 
     end
   end
