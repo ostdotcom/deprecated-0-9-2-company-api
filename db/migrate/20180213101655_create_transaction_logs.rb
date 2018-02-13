@@ -11,8 +11,8 @@ class CreateTransactionLogs < DbMigrationConnection
         t.timestamps
       end
 
-      add_index :transaction_logs, [:uuid], name: 'uniq_uuid', uniq: true
-      add_index :transaction_logs, [:transaction_hash], name: 'uniq_transaction_hash', uniq: true
+      add_index :transaction_logs, [:uuid], name: 'uniq_uuid', unique: true
+      add_index :transaction_logs, [:transaction_hash], name: 'uniq_transaction_hash', unique: true
 
     end
   end

@@ -8,7 +8,7 @@ class CreateManagedAddressSalts < DbMigrationConnection
         t.timestamps
       end
 
-      add_index :managed_address_salts, :client_id, name: 'uniq_client_id', uniq: true
+      add_index :managed_address_salts, :client_id, name: 'uniq_client_id', unique: true
     end
   end
 

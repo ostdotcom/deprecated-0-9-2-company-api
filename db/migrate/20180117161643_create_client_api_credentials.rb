@@ -12,7 +12,7 @@ class CreateClientApiCredentials < DbMigrationConnection
         t.timestamps
       end
 
-      add_index :client_api_credentials, [:api_key], name: 'uniq_api_key', uniq: true
+      add_index :client_api_credentials, [:api_key], name: 'uniq_api_key', unique: true
       add_index :client_api_credentials, [:client_id, :expiry_timestamp], name: 'index_client_id_expiry_timestamp'
 
     end
