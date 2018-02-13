@@ -8,6 +8,7 @@
     - :token_symbol
     - :agreed_terms_of_service
   :optional:
+    - :token_icon
 
 'UserManagement::Login':
   :mandatory:

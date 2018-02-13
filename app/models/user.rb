@@ -49,44 +49,52 @@ class User < EstablishCompanyUserDbConnection
   # @return [Hash]
   #
   def formated_secure_cache_data
-    {
-        id: id,
-        password: password
-    }
+    {id: id, password: password}
   end
 
+  # Generate encrypted password
+  #
+  # * Author: Puneet
+  # * Date: 01/02/2018
+  # * Reviewed By: Sunil
+  #
+  # @return [String]
+  #
   def self.get_encrypted_password(password, salt)
-
-    sha256_params = {
-      string: "#{password}::#{salt}",
-      salt: salt[0..50]
-    }
+    sha256_params = {string: "#{password}::#{salt}", salt: salt[0..50]}
 
     begin
-
       Sha256.new(sha256_params).perform
-
     rescue Encoding::CompatibilityError => e
-
       p = password.to_s.force_encoding("UTF-8")
       s = salt.to_s.force_encoding("UTF-8")
-      sha256_params = {
-          string: "#{p}::#{s}",
-          salt: s[0..50]
-      }
-
+      sha256_params = {string: "#{p}::#{s}", salt: s[0..50]}
       Sha256.new(sha256_params).perform
-
     end
-
   end
 
+  # generate login cookie
+  #
+  # * Author: Puneet
+  # * Date: 01/02/2018
+  # * Reviewed By: Sunil
+  #
+  # @return [String]
+  #
   def self.get_cookie_value(user_id, default_client_id, password, browser_user_agent = '')
     current_ts = Time.now.to_i
     token_e = get_cookie_token(user_id, default_client_id, password, browser_user_agent, current_ts)
     "#{user_id}:#{default_client_id}:#{current_ts}:#{token_e}"
   end
 
+  # generate login cookie token
+  #
+  # * Author: Puneet
+  # * Date: 01/02/2018
+  # * Reviewed By: Sunil
+  #
+  # @return [String]
+  #
   def self.get_cookie_token(user_id, client_id, password, browser_user_agent, current_ts)
     string_to_sign = "#{user_id}:#{password}:#{browser_user_agent}:#{current_ts}"
     key="#{user_id}:#{current_ts}:#{browser_user_agent}:#{password[-12..-1]}:#{GlobalConstant::SecretEncryptor.cookie_key}"

@@ -27,7 +27,7 @@ class Client::LoginController < Client::BaseController
   #
   # * Author: Alpesh
   # * Date: 15/01/2018
-  # * Reviewed By:
+  # * Reviewed By: Sunil
   #
   def sign_up
     service_response = UserManagement::SignUp.new(

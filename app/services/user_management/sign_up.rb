@@ -6,7 +6,7 @@ module UserManagement
     #
     # * Author: Alpesh
     # * Date: 11/01/2018
-    # * Reviewed By:
+    # * Reviewed By: Sunil
     #
     # @param [String] email (mandatory) - the email of the user which is to be signed up
     # @param [String] password (mandatory) - user password
@@ -14,6 +14,7 @@ module UserManagement
     # @param [Integer] client_creation_needed (mandatory) - 1 if new client creation is needed
     # @param [String] token_name (mandatory) - token name
     # @param [String] token_symbol (mandatory) - token symbol
+    # @param [String] token_icon (optional) - token symbol icon color code, until backend generate image
     # @param [String] agreed_terms_of_service (mandatory) - agreed_terms_of_service
     #
     # @return [UserManagement::SignUp]
@@ -28,14 +29,13 @@ module UserManagement
       @client_creation_needed = @params[:client_creation_needed]
       @token_name = @params[:token_name]
       @token_symbol = @params[:token_symbol]
+      @token_symbol_icon = @params[:token_icon]
       @agreed_terms_of_service = @params[:agreed_terms_of_service]
 
       @client_id = nil
       @client_token_id = nil
 
       @login_salt_hash = nil
-      @info_salt_hash = nil
-      @user_secret = nil
       @user = nil
       @cookie_value = nil
 
@@ -45,7 +45,7 @@ module UserManagement
     #
     # * Author: Alpesh
     # * Date: 11/01/2018
-    # * Reviewed By:
+    # * Reviewed By: Sunil
     #
     # @return [Result::Base]
     #
@@ -61,18 +61,13 @@ module UserManagement
 
       create_client_manager
 
-      create_client_api_credentials
-
       create_client_token
 
       set_cookie_value
 
-      # TODO: Move this part in sidekiq
-      create_user_email_service_api_call_hook
-
-      UserManagement::SendDoubleOptInLink.new(email: @email).perform
-
       clear_cache
+
+      enqueue_job
 
       success_with_data(
         cookie_value: @cookie_value
@@ -86,13 +81,15 @@ module UserManagement
     #
     # * Author: Alpesh
     # * Date: 11/01/2018
-    # * Reviewed By:
+    # * Reviewed By: Sunil
     #
     # @return [Result::Base]
     #
     def validate_and_sanitize
 
       @email = @email.to_s.downcase.strip
+      @token_name = @token_name.to_s.strip
+      @token_symbol = @token_symbol.to_s.strip
 
       validation_errors = {}
       validation_errors[:email] = 'Please enter a valid email address' unless Util::CommonValidator.is_valid_email?(@email)
@@ -125,8 +122,8 @@ module UserManagement
         !Util::CommonValidator.is_boolean_string?(@client_creation_needed) ||
         (@client_creation_needed && !@is_client_manager)
 
-      @is_client_manager = @is_client_manager.to_i==1
-      @client_creation_needed = @client_creation_needed.to_i==1
+      @is_client_manager = (@is_client_manager.to_i==1)
+      @client_creation_needed = (@client_creation_needed.to_i==1)
 
       # NOTE: To be on safe side, check for generic errors as well
       r = validate
@@ -140,7 +137,7 @@ module UserManagement
     #
     # * Author: Puneet
     # * Date: 02/02/2018
-    # * Reviewed By:
+    # * Reviewed By: Sunil
     #
     # @return [Result::Base]
     #
@@ -148,16 +145,11 @@ module UserManagement
 
       validation_errors = {}
 
-      client_tokens = ClientToken.where(status: GlobalConstant::ClientToken.active_status).
-          where('name = ? OR symbol = ?', @token_name, @token_symbol).all
-
-      client_token_by_name = client_tokens.select{ |client_token| client_token.name == @token_name}
-      if client_token_by_name.any?
+      if ClientToken.where('name = ?', @token_name).first.present?
         validation_errors[:token_name] = 'Token name already exists.'
       end
 
-      client_token_by_symbol = client_tokens.select{ |client_token| client_token.symbol == @token_symbol}
-      if client_token_by_symbol.any?
+      if ClientToken.where('symbol = ?', @token_symbol).first.present?
         validation_errors[:token_symbol] = 'Token symbol already exists.'
       end
 
@@ -175,7 +167,7 @@ module UserManagement
     #
     # * Author: Alpesh
     # * Date: 11/01/2018
-    # * Reviewed By:
+    # * Reviewed By: Sunil
     #
     # @return [Result::Base]
     #
@@ -189,27 +181,19 @@ module UserManagement
           GlobalConstant::ErrorAction.default,
           {},
           {email: 'Email address is already registered.'}
-      ) if @user.present? &&
-        @is_client_manager &&
-        @user.send("#{GlobalConstant::User.is_client_manager_property}?")
+      ) if @user.present?
 
       r = init_user_obj_if_needed
-      Rails.logger.info("--------------------------------------------")
-      Rails.logger.info(r)
       return r unless r.success?
-
-      mark_user_as_client_manager
-
-      @user.save! if @user.new_record? || @user.changed?
 
       success
     end
 
-    # Init user object if needed
+    # Init user object
     #
     # * Author: Alpesh
     # * Date: 11/01/2018
-    # * Reviewed By:
+    # * Reviewed By: Sunil
     #
     # Sets @user
     #
@@ -229,44 +213,26 @@ module UserManagement
         login_salt: @login_salt_hash[:ciphertext_blob],
         status: GlobalConstant::User.active_status
       )
+      @user.save! if @user.new_record? || @user.changed?
 
       success
-    end
-
-    # Mark user as client manager
-    #
-    # * Author: Alpesh
-    # * Date: 11/01/2018
-    # * Reviewed By:
-    #
-    def mark_user_as_client_manager
-      return unless @is_client_manager
-
-      @user.send("set_#{GlobalConstant::User.is_client_manager_property}")
     end
 
     # Create client
     #
     # * Author: Alpesh
     # * Date: 11/01/2018
-    # * Reviewed By:
+    # * Reviewed By: Sunil
     #
     # Sets @client_id
     #
     def create_client
       return unless @client_creation_needed
 
-      generate_info_salt
-
       client = Client.new(
-        info_salt: @info_salt_hash[:ciphertext_blob],
         status: GlobalConstant::Client.active_status
       )
-
       client.save!
-
-      @user.default_client_id = client.id
-      @user.save!
 
       @client_id = client.id
     end
@@ -275,7 +241,7 @@ module UserManagement
     #
     # * Author: Alpesh
     # * Date: 11/01/2018
-    # * Reviewed By:
+    # * Reviewed By: Sunil
     #
     # Sets @is_client_manager
     #
@@ -287,34 +253,17 @@ module UserManagement
         user_id: @user.id,
         status: GlobalConstant::ClientManager.active_status
       )
-    end
 
-    # Create client Api credentials
-    #
-    # * Author: Pankaj
-    # * Date: 18/01/2018
-    # * Reviewed By:
-    #
-    #
-    #
-    def create_client_api_credentials
-      return unless @client_creation_needed
-
-      api_credential = ClientApiCredential.new(
-        client_id: @client_id,
-        api_key: ClientApiCredential.generate_random_app_id,
-        api_secret: ClientApiCredential.generate_encrypted_secret_key(@info_salt_hash[:plaintext])
-      )
-
-      api_credential.save!
-
+      @user.default_client_id = @client_id
+      @user.send("set_#{GlobalConstant::User.is_client_manager_property}")
+      @user.save!
     end
 
     # Create Client Token
     #
     # * Author: Puneet
     # * Date: 02/02/2018
-    # * Reviewed By:
+    # * Reviewed By: Sunil
     #
     # Sets @client_token_id
     #
@@ -324,6 +273,7 @@ module UserManagement
           client_id: @client_id,
           name: @token_name,
           symbol: @token_symbol,
+          symbol_icon: @token_symbol_icon,
           status: GlobalConstant::ClientToken.active_status
       )
 
@@ -337,16 +287,12 @@ module UserManagement
     #
     # * Author: Alpesh
     # * Date: 11/01/2018
-    # * Reviewed By:
+    # * Reviewed By: Sunil
     #
     # Sets @cookie_value
     #
     def set_cookie_value
-      @cookie_value = User.get_cookie_value(
-        @user.id,
-        @user.default_client_id,
-        @user.password
-      )
+      @cookie_value = User.get_cookie_value(@user.id, @user.default_client_id, @user.password)
 
       success
     end
@@ -355,7 +301,7 @@ module UserManagement
     #
     # * Author: Alpesh
     # * Date: 11/01/2018
-    # * Reviewed By:
+    # * Reviewed By: Sunil
     #
     # Sets @login_salt_hash
     #
@@ -370,46 +316,11 @@ module UserManagement
       success
     end
 
-    # Generate info salt
-    #
-    # * Author: Alpesh
-    # * Date: 11/01/2018
-    # * Reviewed By:
-    #
-    # Sets @info_salt_hash
-    #
-    # @return [Result::Base]
-    #
-    def generate_info_salt
-      r = Aws::Kms.new('info', 'user').generate_data_key
-      return r unless r.success?
-
-      @info_salt_hash = r.data
-
-      success
-    end
-
-    # Create Hook to sync data in Email Service
-    #
-    # * Author: Pankaj
-    # * Date: 12/01/2018
-    # * Reviewed By:
-    #
-    def create_user_email_service_api_call_hook
-
-      Email::HookCreator::AddContact.new(
-          email: @user.email,
-          custom_attributes: {
-              GlobalConstant::PepoCampaigns.user_registered_attribute => GlobalConstant::PepoCampaigns.user_registered_value
-          }
-      ).perform
-
-    end
-
+    # Clear cache
     #
     # * Author: Puneet
     # * Date: 11/01/2018
-    # * Reviewed By
+    # * Reviewed By: Sunil
     #
     # @return [Result::Base]
     #
@@ -417,6 +328,26 @@ module UserManagement
       CacheManagement::User.new([@user.id]).clear
       CacheManagement::Client.new([@client_id]).clear
       CacheManagement::ClientToken.new([@client_token_id]).clear
+    end
+
+    # Enqueue Job
+    #
+    # * Author: Pankaj
+    # * Date: 14/02/2018
+    # * Reviewed By: Sunil
+    #
+    # @return [Result::Base]
+    #
+    def enqueue_job
+      BgJob.enqueue(
+          SignupJob,
+          {
+              user_id: @user.id,
+              client_id: @client_id,
+              client_api_needed: @client_creation_needed,
+              client_token_id: @client_token_id
+          }
+      )
     end
 
   end

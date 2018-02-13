@@ -84,7 +84,7 @@ module UserManagement
     # @return [Result::Base]
     #
     def create_double_opt_in_token
-      double_opt_in_token = Digest::MD5.hexdigest("#{@user.id}::#{@user.password}::#{Time.now.to_i}::double_optin::#{rand}")
+      double_opt_in_token = LocalCipher.get_sha_hashed_text("#{@user.id}::#{@user.password}::#{Time.now.to_i}::double_optin::#{rand}")
       db_row = UserValidationHash.create!(user_id: @user.id, kind: GlobalConstant::UserValidationHash.double_optin,
                                           validation_hash: double_opt_in_token, status: GlobalConstant::UserValidationHash.active_status)
 

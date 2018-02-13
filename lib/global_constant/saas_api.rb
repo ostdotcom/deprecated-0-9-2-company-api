@@ -20,6 +20,10 @@ module GlobalConstant
       'on-boarding/grant-test-ost'
     end
 
+    def self.setup_token_path
+      'on-boarding/setup-token'
+    end
+
     def self.approve_for_stake_api_path
       'stake/approve'
     end

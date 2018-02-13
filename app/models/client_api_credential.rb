@@ -1,4 +1,4 @@
-class ClientApiCredential < EstablishCompanyClientEconomyDbConnection
+class ClientApiCredential < EstablishCompanySaasSharedDbConnection
 
   def self.generate_encrypted_secret_key(salt)
     api_secret = Digest::SHA256.hexdigest SecureRandom.hex(12)

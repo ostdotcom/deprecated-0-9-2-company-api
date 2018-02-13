@@ -84,7 +84,7 @@ module UserManagement
     # @return [Result::Base]
     #
     def create_reset_password_token
-      reset_token = Digest::MD5.hexdigest("#{@user.id}::#{@user.password}::#{Time.now.to_i}::reset_password::#{rand}")
+      reset_token = LocalCipher.get_sha_hashed_text("#{@user.id}::#{@user.password}::#{Time.now.to_i}::reset_password::#{rand}")
       db_row = UserValidationHash.create!(user_id: @user.id, kind: GlobalConstant::UserValidationHash.reset_password,
                                           validation_hash: reset_token, status: GlobalConstant::UserValidationHash.active_status)
 
