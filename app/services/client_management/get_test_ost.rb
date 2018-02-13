@@ -26,7 +26,8 @@ module ClientManagement
 
       @client = nil
       @client_token = nil
-      @chain_interaction = nil
+      @client_chain_interaction = nil
+
     end
 
     # Perform
@@ -46,6 +47,8 @@ module ClientManagement
       if @eth_address.present?
         r = ClientManagement::SetupEthAddress.new(client_id: @client_id, eth_address: @eth_address).perform
         return r unless r.success?
+      else
+        fetch_client_reserve_address
       end
 
       # Validate, whether OST can be given or not
@@ -150,10 +153,12 @@ module ClientManagement
     # * Date: 12/02/2018
     # * Reviewed By:
     #
+    # Sets @client_chain_interaction
+    #
     # @return [Result::Base]
     #
     def insert_db
-      ClientChainInteraction.create!(client_id: @client_id, client_token_id: @client_token_id,
+      @client_chain_interaction = ClientChainInteraction.create!(client_id: @client_id, client_token_id: @client_token_id,
                                     activity_type: GlobalConstant::ClientChainInteraction.request_ost_activity_type,
                                     chain_type: GlobalConstant::ClientChainInteraction.value_chain_type,
                                     status: GlobalConstant::ClientChainInteraction.pending_status,
@@ -174,10 +179,9 @@ module ClientManagement
     end
 
     def fetch_client_reserve_address
-      # TODO:: This method would be called post saas api communication
       @client_token_s = CacheManagement::ClientTokenSecure.new([@client_token_id]).fetch[@client_token_id]
+      @eth_address = @client_token_s[:reserve_address]
     end
-
 
 
   end
