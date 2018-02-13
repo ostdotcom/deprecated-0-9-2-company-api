@@ -1,6 +1,6 @@
 class CreateClientManagers < DbMigrationConnection
 
-  def change
+  def up
 
     run_migration_for_db(EstablishCompanyClientDbConnection) do
 
@@ -11,6 +11,16 @@ class CreateClientManagers < DbMigrationConnection
         t.timestamps
       end
 
+      add_index :client_managers, [:client_id, :user_id], name: 'uk_1', unique: true
+
+    end
+
+  end
+
+  def down
+
+    run_migration_for_db(EstablishCompanyClientDbConnection) do
+      drop_table :client_managers
     end
 
   end
