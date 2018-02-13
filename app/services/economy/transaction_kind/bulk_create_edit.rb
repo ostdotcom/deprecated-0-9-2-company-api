@@ -41,7 +41,9 @@ module Economy
         r = sanitize_create_edit_params!
         return r unless r.success?
 
-        execute
+        r = execute
+
+        return r unless r.success?
 
         return_response
       end
@@ -56,18 +58,33 @@ module Economy
       #
       # Sets @response_hash
       #
+      # @return [Result::Base]
+      #
       def execute
+        data = {}
 
         @transaction_kinds.each do |key, transaction_kind|
           t_k = transaction_kind.permit(:client_transaction_id, :name, :kind, :value_currency_type, :value_in_bt, :commission_percent, :value_in_usd, :use_price_oracle)
-          if transaction_kind[:client_transaction_id].present?
-            response_hash = @ost_sdk_obj.edit(t_k.to_h)
-          else
-            response_hash = @ost_sdk_obj.create(t_k.to_h)
+          proc = Proc.new do
+            if t_k[:client_transaction_id].present?
+              response_hash = @ost_sdk_obj.edit(t_k.to_h)
+            else
+              response_hash = @ost_sdk_obj.create(t_k.to_h)
+            end
+
+            response_hash.to_json
           end
-          @response_hash[key] = response_hash.to_json
+
+          data[key] = proc
         end
 
+        parallelProcessed = ParallelProcessor.new(data).perform
+
+        return r unless parallelProcessed.success?
+
+        @response_hash = parallelProcessed.data
+
+        success
       end
 
       # return_response
