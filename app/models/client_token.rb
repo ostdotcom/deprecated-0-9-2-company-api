@@ -46,6 +46,22 @@ class ClientToken < EstablishCompanyClientEconomyDbConnection
     }
   end
 
+  # Format data to a format which goes into secure cache
+  #
+  # * Author: Puneet
+  # * Date: 01/02/2018
+  # * Reviewed By:
+  #
+  # @return [Hash]
+  #
+  def formated_secure_cache_data
+    {
+        id: id,
+        token_erc20_address: token_erc20_address,
+        reserve_uuid: reserve_uuid
+    }
+  end
+
   # Is registration done
   #
   # * Author: Puneet
