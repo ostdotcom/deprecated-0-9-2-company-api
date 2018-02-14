@@ -90,6 +90,19 @@ module Util
       email =~ REGEX_EMAIL
     end
 
+    # Does password contains allowed characters and size
+    #
+    # * Author: Pankaj
+    # * Date: 14/02/2018
+    # * Reviewed By:
+    #
+    # @return [Boolean] returns a boolean
+    #
+    def self.is_valid_password?(password)
+      # Password should be 8 characters
+      password.to_s.length > 8
+    end
+
     # Is alpha numeric string
     #
     # * Author: Aman

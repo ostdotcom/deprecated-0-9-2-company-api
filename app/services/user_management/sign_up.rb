@@ -94,8 +94,7 @@ module UserManagement
       validation_errors = {}
       validation_errors[:email] = 'Please enter a valid email address' unless Util::CommonValidator.is_valid_email?(@email)
 
-      # min char in password should be 8
-      validation_errors[:password] = 'Password should be minimum 8 characters' if @password.to_s.length < 8
+      validation_errors[:password] = 'Password should be minimum 8 characters' unless Util::CommonValidator.is_valid_password?(@password)
 
       validation_errors[:agreed_terms_of_service] = 'Tos not selected' unless @agreed_terms_of_service == 'on'
 

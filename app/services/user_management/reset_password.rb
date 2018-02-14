@@ -77,7 +77,7 @@ module UserManagement
 
       validation_errors = {}
 
-      validation_errors[:password] = 'Password should be minimum 8 characters' if @password.length < 8
+      validation_errors[:password] = 'Password should be minimum 8 characters' unless Util::CommonValidator.is_valid_password?(@password)
       validation_errors[:confirm_password] = 'Passwords do not match' if @confirm_password != @password
 
       return error_with_data(
