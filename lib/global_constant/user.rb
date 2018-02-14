@@ -15,8 +15,9 @@ module GlobalConstant
         'inactive'
       end
 
-      def blocked_status
-        'blocked'
+      # when user is auto blocked by system in case of multiple failed login events
+      def auto_blocked_status
+        'auto_blocked'
       end
 
       ### Status End ###

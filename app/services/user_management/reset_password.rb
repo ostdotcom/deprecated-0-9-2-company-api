@@ -121,7 +121,9 @@ module UserManagement
     # Sets @user_validation_hash_obj
     #
     def fetch_user_validation_record
-      @user_validation_hash_obj = UserValidationHash.where(id: @user_validation_hash_id).first
+      if @user_validation_hash_id > 0
+        @user_validation_hash_obj = UserValidationHash.where(id: @user_validation_hash_id).first
+      end
     end
 
     # Validate User Validation hash
@@ -140,7 +142,7 @@ module UserManagement
 
       return invalid_url_error('um_rp_6') if @user_validation_hash_obj.status != GlobalConstant::UserValidationHash.active_status
 
-      return invalid_url_error('um_rp_7')  if @user_validation_hash_obj.is_expired?
+      return invalid_url_error('um_rp_7') if @user_validation_hash_obj.is_expired?
 
       return invalid_url_error('um_rp_8') if @user_validation_hash_obj.kind != GlobalConstant::UserValidationHash.reset_password
 
@@ -159,11 +161,13 @@ module UserManagement
     # @return [Result::Base]
     #
     def fetch_user
+
       @user = User.where(id: @user_validation_hash_obj.user_id).first
-      return unauthorized_access_response('um_rp_9') unless @user.present? &&
-          (@user.status == GlobalConstant::User.active_status)
+
+      return unauthorized_access_response('um_rp_9') if @user.blank? || !@user.is_eligible_for_reset_passowrd?
 
       success
+
     end
 
     # Decrypt login salt
@@ -193,6 +197,11 @@ module UserManagement
     #
     def update_password
       @user.password = User.get_encrypted_password(@password, @login_salt_d)
+      if GlobalConstant::User.auto_blocked_status == @user.status
+        # if we had blocked a user for more than a threshhold failed login attemps we set status to blocked
+        # now we should reset it to active
+        @user.status = GlobalConstant::User.active_status
+      end
       @user.save!
     end
 
