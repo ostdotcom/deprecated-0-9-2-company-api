@@ -48,12 +48,15 @@ class LocalCipher
       success_with_data(
           plaintext: plaintext
       )
+
     rescue Exception => e
-      error_with_data('lc_2',
-                      "LocalCipher could not decrypt cipher with message => #{e.message}",
-                      'Something Went Wrong.',
-                      GlobalConstant::ErrorAction.default,
-                      {})
+      exception_with_data(
+          e, 'lc_2',
+          "LocalCipher could not decrypt cipher with message => #{e.message}",
+          'Something Went Wrong.',
+          GlobalConstant::ErrorAction.default,
+          {}
+      )
     end
   end
 
