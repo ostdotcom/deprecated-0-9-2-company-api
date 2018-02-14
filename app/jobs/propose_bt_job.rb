@@ -110,11 +110,17 @@ class ProposeBtJob < ApplicationJob
   def create_reserve_address
 
     # Create address with this passphrase on Chain
-    r = ClientManagement::GetClientApiCredentials.new(client_id: @client_id).perform
-    return r unless r.success?
+    result = CacheManagement::ClientApiCredentials.new([@client_id]).fetch[@client_id]
+    return error_with_data(
+        'pbj_3',
+        "Invalid client.",
+        'Something Went Wrong.',
+        GlobalConstant::ErrorAction.default,
+        {}
+    ) if result.blank?
 
     # Create OST Sdk Obj
-    credentials = OSTSdk::Util::APICredentials.new(r.data[:api_key], r.data[:api_secret])
+    credentials = OSTSdk::Util::APICredentials.new(result[:api_key], result[:api_secret])
     sdk_obj = OSTSdk::Saas::Addresses.new(GlobalConstant::Base.sub_env, credentials)
 
     r = sdk_obj.create
@@ -124,7 +130,7 @@ class ProposeBtJob < ApplicationJob
     company_address = CompanyManagedAddress.get_company_address_record(reserve_address)
 
     return error_with_data(
-        'pbj_3',
+        'pbj_4',
         'CLIENT ETH ADDRESS not found.',
         'CLIENT ETH ADDRESS not found.',
         GlobalConstant::ErrorAction.default,

@@ -13,11 +13,14 @@ module ClientManagement
     # @return [ClientManagement::GetClientApiCredentials]
     #
     def initialize(params)
+
       super
 
       @client_id = params[:client_id]
       @client = nil
-      @info_salt_d = nil
+      @client_api_credentials = nil
+      @api_secret_d = nil
+
     end
 
     # Perform
@@ -33,11 +36,13 @@ module ClientManagement
       r = validate_client
       return r unless r.success?
 
-      r = decrypt_info_salt
+      r = fetch_api_credentials
       return r unless r.success?
 
-      r = fetch_api_credentials
-      return r
+      r = decrypt_api_secret
+      return r unless r.success?
+
+      success_with_data(api_key: @client_api_credentials.api_key, api_secret: @api_secret_d)
 
     end
 
@@ -52,11 +57,14 @@ module ClientManagement
     # @return [Result::Base]
     #
     # Sets @client
+    #
     def validate_client
+
       r = validate
       return r unless r.success?
 
-      @client = Client.where(id: @client_id).first
+      @client = CacheManagement::Client.new([@client_id]).fetch[@client_id]
+
       return error_with_data('cm_gcac_1',
                              "Invalid client.",
                              'Something Went Wrong.',
@@ -73,17 +81,24 @@ module ClientManagement
     # * Date: 29/01/2018
     # * Reviewed By:
     #
-    # Sets @info_salt_d
+    # Sets @api_secret_d
     #
     # @return [Result::Base]
     #
-    def decrypt_info_salt
-      r = Aws::Kms.new('info','user').decrypt(@client.info_salt)
+    def decrypt_api_secret
+
+      r = Aws::Kms.new('info','user').decrypt(@client_api_credentials.api_salt)
       return r unless r.success?
 
-      @info_salt_d = r.data[:plaintext]
+      info_salt_d = r.data[:plaintext]
+
+      r = LocalCipher.new(info_salt_d).decrypt(@client_api_credentials.api_secret)
+      return r unless r.success?
+
+      @api_secret_d = r.data[:plaintext]
 
       success
+
     end
 
     # Fetch api credentials for client & decrypt client secret key
@@ -92,40 +107,22 @@ module ClientManagement
     # * Date: 29/01/2018
     # * Reviewed By:
     #
+    # Set @client_api_credentials
+    #
     # @return [Result::Base]
     #
     def fetch_api_credentials
-      client_api = ClientApiCredential.where(client_id: @client_id).first
+
+      @client_api_credentials = ClientApiCredential.where(client_id: @client_id).first
+
       return error_with_data('cm_gcac_2',
                              "Invalid client.",
                              'Something Went Wrong.',
                              GlobalConstant::ErrorAction.mandatory_params_missing,
-                             {}) unless client_api.present?
+                             {}) unless @client_api_credentials.present?
 
-      secret_key = decrypt_secret_key(client_api.api_secret)
-      return error_with_data('cm_gcac_3',
-                             "Invalid client.",
-                             'Something Went Wrong.',
-                             GlobalConstant::ErrorAction.mandatory_params_missing,
-                             {}) unless secret_key.present?
+      success
 
-      success_with_data(api_key: client_api.api_key, api_secret: secret_key)
-
-    end
-
-    # Decrypt api secret key with client info salt
-    #
-    # * Author: Pankaj
-    # * Date: 29/01/2018
-    # * Reviewed By:
-    #
-    # @return [String] secret Key
-    #
-    def decrypt_secret_key(api_secret)
-      decryptor_obj = LocalCipher.new(@info_salt_d)
-      r = decryptor_obj.decrypt(api_secret)
-
-      return (r.success? ? r.data[:plaintext] : nil)
     end
 
   end

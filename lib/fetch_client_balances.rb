@@ -98,10 +98,16 @@ class FetchClientBalances
   #
   def fetch_client_api_credentials
 
-    r = ClientManagement::GetClientApiCredentials.new(client_id: @client_id).perform
-    return r unless r.success?
+    result = CacheManagement::ClientApiCredentials.new([@client_id]).fetch[@client_id]
+    return error_with_data(
+        'e_tk_b_1',
+        "Invalid client.",
+        'Something Went Wrong.',
+        GlobalConstant::ErrorAction.default,
+        {}
+    ) if result.blank?
 
-    @api_credentials = r.data
+    @api_credentials = result
 
     success
 

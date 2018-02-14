@@ -11,13 +11,14 @@ module CacheManagement
     # * Date: 01/02/2018
     # * Reviewed By:
     #
-    # @return [Hash]
+    # @return [Result::Base]
     #
     def fetch_from_db(cache_miss_ids)
-      ::User.where(id: cache_miss_ids).select(:id, :password).inject({}) do |user_data, user|
+      data_to_cache = ::User.where(id: cache_miss_ids).select(:id, :password).inject({}) do |user_data, user|
         user_data[user.id] = user.formated_secure_cache_data
         user_data
       end
+      success_with_data(data_to_cache)
     end
 
     #

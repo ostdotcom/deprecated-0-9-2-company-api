@@ -53,11 +53,17 @@ module Economy
       #
       def instantiate_ost_sdk
 
-        r = ClientManagement::GetClientApiCredentials.new(client_id: @client_id).perform
-        return unless r.success?
+        result = CacheManagement::ClientApiCredentials.new([@client_id]).fetch[@client_id]
+        return error_with_data(
+            'e_tk_b_1',
+            "Invalid client.",
+            'Something Went Wrong.',
+            GlobalConstant::ErrorAction.default,
+            {}
+        ) if result.blank?
 
         # Create OST Sdk Obj
-        credentials = OSTSdk::Util::APICredentials.new(r.data[:api_key], r.data[:api_secret])
+        credentials = OSTSdk::Util::APICredentials.new(result[:api_key], result[:api_secret])
         @ost_sdk_obj = OSTSdk::Saas::TransactionKind.new(GlobalConstant::Base.sub_env, credentials)
 
         success

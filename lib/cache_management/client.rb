@@ -43,7 +43,7 @@ module CacheManagement
         clients_data
       end
 
-      aggregated_data
+      success_with_data(aggregated_data)
 
     end
 

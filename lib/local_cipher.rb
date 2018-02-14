@@ -24,11 +24,13 @@ class LocalCipher
           ciphertext_blob: encryptedString
       )
     rescue Exception => e
-      error_with_data('lc_1',
-                      "LocalCipher could not encrypt text with message => #{e.message}",
-                      'Something Went Wrong.',
-                      GlobalConstant::ErrorAction.default,
-                      {})
+      exception_with_data(
+          e,'lc_1',
+          "LocalCipher could not encrypt text with message => #{e.message}",
+          'Something Went Wrong.',
+          GlobalConstant::ErrorAction.default,
+          {}
+      )
     end
   end
 

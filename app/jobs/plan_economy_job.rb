@@ -67,11 +67,17 @@ class PlanEconomyJob < ApplicationJob
   #
   def generate_dummy_users
 
-    result = ClientManagement::GetClientApiCredentials.new(client_id: @client_token[:client_id]).perform
-    return result unless result.success?
+    result = CacheManagement::ClientApiCredentials.new([@client_token[:client_id]]).fetch[@client_token[:client_id]]
+    return error_with_data(
+        'grsj_2',
+        "Invalid client.",
+        'Something Went Wrong.',
+        GlobalConstant::ErrorAction.default,
+        {}
+    ) if result.blank?
 
     # Create OST Sdk Obj
-    credentials = OSTSdk::Util::APICredentials.new(result.data[:api_key], result.data[:api_secret])
+    credentials = OSTSdk::Util::APICredentials.new(result[:api_key], result[:api_secret])
     @ost_sdk_obj = OSTSdk::Saas::Users.new(GlobalConstant::Base.sub_env, credentials)
 
     failed_logs = {}

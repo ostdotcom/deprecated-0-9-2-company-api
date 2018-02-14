@@ -27,6 +27,7 @@ constants:
     cookie_secret_key: <%= ENV['CA_COOKIE_SECRET_KEY'] %>
     email_tokens_decriptor_key: <%= ENV['CA_EMAIL_TOKENS_DECRIPTOR_KEY'] %>
     generic_sha_key: <%= ENV['CA_GENERIC_SHA_KEY'] %>
+    cache_data_sha_key: <%= ENV['CA_CACHE_DATA_SHA_KEY'] %>
 
   memcached:
     instances: <%= ENV['CA_MEMCACHED_INSTANCES'] %>

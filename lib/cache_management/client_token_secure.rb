@@ -10,7 +10,7 @@ module CacheManagement
     # * Date: 01/02/2018
     # * Reviewed By:
     #
-    # @return [Hash]
+    # @return [Result::Base]
     #
     def fetch_from_db(cache_miss_ids)
 
@@ -43,7 +43,7 @@ module CacheManagement
 
       end
 
-      cache_data
+      success_with_data(cache_data)
 
     end
 

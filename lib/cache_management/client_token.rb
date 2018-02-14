@@ -10,16 +10,19 @@ module CacheManagement
     # * Date: 01/02/2018
     # * Reviewed By:
     #
-    # @return [Hash]
+    # @return [Result::Base]
     #
     def fetch_from_db(cache_miss_ids)
 
-      ::ClientToken.where(id: cache_miss_ids).all.inject({}) do |cache_data, client_token|
+      data_to_cache = ::ClientToken.where(id: cache_miss_ids).all.inject({}) do |cache_data, client_token|
 
         cache_data[client_token.id] = client_token.formated_cache_data
+
         cache_data
 
       end
+
+      success_with_data(data_to_cache)
 
     end
 
