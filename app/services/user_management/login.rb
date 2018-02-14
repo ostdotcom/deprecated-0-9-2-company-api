@@ -106,7 +106,7 @@ module UserManagement
       unless (evaluated_password_e == @user.password)
         user = User.where(id: @user.id).first # fetch again as KMS lookup might take time and we might have stale data
         user.failed_login_attempt_count = use.failed_login_attempt_count + 1
-        user.status = GlobalConstant::User.blocked_status if user.failed_login_attempt_count >= 5
+        user.status = GlobalConstant::User.auto_blocked_status if user.failed_login_attempt_count >= 5
         user.save
         return unauthorized_access_response('um_l_2')
       end

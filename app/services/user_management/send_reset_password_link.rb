@@ -13,6 +13,7 @@ module UserManagement
     # @return [UserManagement::SendResetPasswordLink]
     #
     def initialize(params)
+
       super
 
       @email = @params[:email]
@@ -59,6 +60,7 @@ module UserManagement
     # @return [Result::Base]
     #
     def fetch_user
+
       @user = User.where(email: @email).first
 
       return error_with_data(
@@ -68,9 +70,10 @@ module UserManagement
           GlobalConstant::ErrorAction.default,
           {},
           {email: 'This user is not registered or is blocked'}
-      ) unless @user.present? && (@user.status == GlobalConstant::User.active_status)
+      ) if @user.blank? || !@user.is_eligible_for_reset_passowrd?
 
       success
+
     end
 
     # Create Reset Password Token
@@ -84,9 +87,15 @@ module UserManagement
     # @return [Result::Base]
     #
     def create_reset_password_token
-      reset_token = LocalCipher.get_sha_hashed_text("#{@user.id}::#{@user.password}::#{Time.now.to_i}::reset_password::#{rand}")
-      db_row = UserValidationHash.create!(user_id: @user.id, kind: GlobalConstant::UserValidationHash.reset_password,
-                                          validation_hash: reset_token, status: GlobalConstant::UserValidationHash.active_status)
+
+      reset_token = LocalCipher.get_sha_hashed_text(
+          "#{@user.id}::#{@user.password}::#{Time.now.to_i}::reset_password::#{rand}"
+      )
+
+      db_row = UserValidationHash.create!(
+        user_id: @user.id, kind: GlobalConstant::UserValidationHash.reset_password,
+        validation_hash: reset_token, status: GlobalConstant::UserValidationHash.active_status
+      )
 
       reset_pass_token_str = "#{db_row.id.to_s}:#{reset_token}"
       encryptor_obj = LocalCipher.new(GlobalConstant::SecretEncryptor.email_tokens_key)
@@ -96,6 +105,7 @@ module UserManagement
       @reset_password_token = r.data[:ciphertext_blob]
 
       success
+
     end
 
     # Send forgot password_mail

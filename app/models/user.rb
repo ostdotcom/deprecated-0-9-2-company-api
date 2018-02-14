@@ -3,7 +3,7 @@ class User < EstablishCompanyUserDbConnection
   enum status: {
     GlobalConstant::User.active_status => 1,
     GlobalConstant::User.inactive_status => 2,
-    GlobalConstant::User.blocked_status => 3
+    GlobalConstant::User.auto_blocked_status => 3
   }
 
   def self.properties_config
@@ -50,6 +50,21 @@ class User < EstablishCompanyUserDbConnection
   #
   def formated_secure_cache_data
     {id: id, password: password}
+  end
+
+  # Can this user rest password ?
+  #
+  # * Author: Puneet
+  # * Date: 01/02/2018
+  # * Reviewed By:
+  #
+  # @return [Boolean]
+  #
+  def is_eligible_for_reset_passowrd?
+    [
+        GlobalConstant::User.active_status,
+        GlobalConstant::User.auto_blocked_status
+    ].include?(status)
   end
 
   # Generate encrypted password
