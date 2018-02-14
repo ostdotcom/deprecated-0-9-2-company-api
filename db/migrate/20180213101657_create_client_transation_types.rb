@@ -2,7 +2,7 @@ class CreateClientTransationTypes < DbMigrationConnection
   def up
     run_migration_for_db(EstablishSaasClientEconomyDbConnection) do
 
-      create_table :client_transation_types do |t|
+      create_table :client_transaction_types do |t|
         t.column :client_id, :integer, null: false
         t.column :name, :string, null: false
         t.column :kind, :tinyint, null: false, limit: 1 # 1: user_to_user, 2: user_to_company, 3: company_to_user
@@ -14,7 +14,7 @@ class CreateClientTransationTypes < DbMigrationConnection
         t.timestamps
       end
 
-      add_index :client_transation_types, [:client_id, :name], name: 'uniq_client_id_name', unique:true
+      add_index :client_transaction_types, [:client_id, :name], name: 'uniq_client_id_name', unique:true
 
     end
   end
@@ -22,7 +22,7 @@ class CreateClientTransationTypes < DbMigrationConnection
   def down
     run_migration_for_db(EstablishSaasClientEconomyDbConnection) do
 
-      drop_table :client_transation_types
+      drop_table :client_transaction_types
 
     end
   end
