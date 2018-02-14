@@ -193,6 +193,11 @@ module UserManagement
     #
     def update_password
       @user.password = User.get_encrypted_password(@password, @login_salt_d)
+      if GlobalConstant::User.blocked_status == @user.status
+        # if we had blocked a user for more than a threshhold failed login attemps we set status to blocked
+        # now we should reset it to active
+        @user.status = GlobalConstant::User.active_status
+      end
       @user.save!
     end
 
