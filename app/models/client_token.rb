@@ -37,7 +37,6 @@ class ClientToken < EstablishCompanyClientEconomyDbConnection
     {
         id: id,
         client_id: client_id,
-        company_managed_addresses_id: company_managed_addresses_id,
         name: name,
         symbol: symbol,
         symbol_icon: symbol_icon,
