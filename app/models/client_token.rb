@@ -42,10 +42,8 @@ class ClientToken < EstablishCompanyClientEconomyDbConnection
         symbol: symbol,
         symbol_icon: symbol_icon,
         status: status,
-        setup_steps: setup_steps.present? ? ClientToken.get_bits_set_for_setup_steps(setup_steps) : [],
         conversion_rate: conversion_rate,
-        airdrop_bt_per_user: airdrop_bt_per_user,
-        initial_number_of_users: initial_number_of_users
+        setup_steps: setup_steps.present? ? ClientToken.get_bits_set_for_setup_steps(setup_steps) : []
     }
   end
 
