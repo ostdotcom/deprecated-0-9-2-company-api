@@ -95,7 +95,7 @@ module UserManagement
       r = validate
       return r unless r.success?
 
-      decryptor_obj = LocalCipher.new(GlobalConstant::SecretEncryptor.email_tokens_key)
+      decryptor_obj = EmailTokenEncryptor.new(GlobalConstant::SecretEncryptor.email_tokens_key)
       r = decryptor_obj.decrypt(@r_t)
       return r unless r.success?
 

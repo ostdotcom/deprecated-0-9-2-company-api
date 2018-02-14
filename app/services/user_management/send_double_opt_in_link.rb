@@ -89,7 +89,7 @@ module UserManagement
                                           validation_hash: double_opt_in_token, status: GlobalConstant::UserValidationHash.active_status)
 
       double_opt_in_token_str = "#{db_row.id.to_s}:#{double_opt_in_token}"
-      encryptor_obj = LocalCipher.new(GlobalConstant::SecretEncryptor.email_tokens_key)
+      encryptor_obj = EmailTokenEncryptor.new(GlobalConstant::SecretEncryptor.email_tokens_key)
       r = encryptor_obj.encrypt(double_opt_in_token_str)
       return r unless r.success?
 

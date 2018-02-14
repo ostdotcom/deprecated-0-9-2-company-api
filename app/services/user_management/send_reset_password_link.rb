@@ -89,7 +89,7 @@ module UserManagement
                                           validation_hash: reset_token, status: GlobalConstant::UserValidationHash.active_status)
 
       reset_pass_token_str = "#{db_row.id.to_s}:#{reset_token}"
-      encryptor_obj = LocalCipher.new(GlobalConstant::SecretEncryptor.email_tokens_key)
+      encryptor_obj = EmailTokenEncryptor.new(GlobalConstant::SecretEncryptor.email_tokens_key)
       r = encryptor_obj.encrypt(reset_pass_token_str)
       return r unless r.success?
 
