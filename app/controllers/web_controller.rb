@@ -1,5 +1,7 @@
 class WebController < ApplicationController
 
+  before_action :append_csrf_token_in_params
+
   unless GlobalConstant::Base.postman_testing?
     include ActionController::RequestForgeryProtection
     protect_from_forgery with: :exception
@@ -114,6 +116,16 @@ class WebController < ApplicationController
 
     end
 
+  end
+
+  # As FE send authenticity_token in headers set it in params for verification to happen
+  #
+  # * Author: Puneet
+  # * Date: 12/02/2018
+  # * Reviewed By:
+  #
+  def append_csrf_token_in_params
+    params[:authenticity_token] = request.headers.env['HTTP_X_CSRF_TOKEN']
   end
 
 end
