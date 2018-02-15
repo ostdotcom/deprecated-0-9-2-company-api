@@ -12,9 +12,6 @@ gem 'mysql2', '0.4.9'
 gem 'oj', '3.3.8'
 gem 'rake', '12.3.0'
 
-#TODO - check this gem's use
-gem 'maxminddb', '0.1.15'
-
 gem 'dalli', '2.7.6'
 
 gem 'sanitize', '4.5.0'
@@ -29,7 +26,6 @@ gem 'aws-sdk-s3', '1.8.0'
 gem 'sidekiq', '5.0.5'
 gem 'redis-namespace', '1.6.0'
 
-#TODO - why is listen needed
 gem 'listen', '>= 3.0.5', '< 3.2'
 
 gem 'http', '3.0.0'
