@@ -1,10 +1,7 @@
 class ApplicationController < ActionController::API
 
-  [
-      ActionController::Cookies
-  ].each do |mdl|
-    include mdl
-  end
+  # this is the top-most wrapper - to catch all the exceptions at any level
+  prepend_around_action :handle_exceptions_gracefully
 
   # Sanitize URL params
   include Sanitizer
@@ -37,6 +34,17 @@ class ApplicationController < ActionController::API
     request.remote_ip.to_s
   end
 
+  def set_response_headers
+    response.headers["X-Robots-Tag"] = 'noindex, nofollow'
+    response.headers["Content-Type"] = 'application/json; charset=utf-8'
+  end
+
+  # Render API response
+  #
+  # * Author: Kedar
+  # * Date: 24/01/2018
+  # * Reviewed By: Aman
+  #
   def render_api_response(service_response)
     # calling to_json of Result::Base
     response_hash = service_response.to_json
@@ -60,13 +68,35 @@ class ApplicationController < ActionController::API
     (render plain: Oj.dump(response_hash, mode: :compat), status: http_status_code)
   end
 
-  def set_response_headers
-    response.headers["X-Robots-Tag"] = 'noindex, nofollow'
-    response.headers["Content-Type"] = 'application/json; charset=utf-8'
-  end
+  # Handle exceptions gracefully
+  #
+  # * Author: Kedar
+  # * Date: 24/01/2018
+  # * Reviewed By: Aman
+  #
+  def handle_exceptions_gracefully
+    begin
+      yield
+    rescue => se
+      Rails.logger.error("Exception in API: #{se.message}")
+      ApplicationMailer.notify(
+          body: {exception: {message: se.message, backtrace: se.backtrace}},
+          data: {
+              'params' => params
+          },
+          subject: 'Exception in API'
+      ).deliver
 
-  def delete_cookie(cookie_name)
-    cookies.delete(cookie_name.to_sym, domain: :all, secure: !Rails.env.development?, same_site: :strict)
+      r = Result::Base.exception(
+          se,
+          {
+              error: 'swr',
+              error_message: 'Something Went Wrong',
+              data: params
+          }
+      )
+      render_api_response(r)
+    end
   end
 
 end
