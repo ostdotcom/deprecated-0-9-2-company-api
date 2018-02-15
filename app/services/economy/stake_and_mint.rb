@@ -10,7 +10,7 @@ module Economy
     #
     # @param [Integer] client_id (mandatory) - client id
     # @param [Integer] user_id (mandatory) - user id
-    # @param [String] token_name (mandatory) - token name
+    # @params [Integer] client_token_id (mandatory) - client token id
     # @param [Number] to_stake_amount (mandatory) - this is the amount of OST to stake
     #
     # @return [Economy::StakeAndMint]
@@ -21,7 +21,7 @@ module Economy
 
       @user_id = @params[:user_id]
       @client_id = @params[:client_id]
-      @token_name = @params[:token_name]
+      @client_token_id = @params[:client_token_id]
       @to_stake_amount = @params[:to_stake_amount]
 
       @user = nil
@@ -68,12 +68,8 @@ module Economy
       r = validate_user
       return r unless r.success?
 
-      # sanitize
-      @token_name = @token_name.to_s.strip
-
       @client_token = ClientToken.where(
-        name: @token_name,
-        client_id: @client_id,
+        id: @client_token_id,
         status: GlobalConstant::ClientToken.active_status
       ).first
 
@@ -178,8 +174,13 @@ module Economy
             }
         )
 
-      # start registration process for client
       else
+
+        # start registration process for client
+
+        @client_token.send("set_#{GlobalConstant::ClientToken.propose_initiated_setup_step}")
+        @client_token.save!
+
         BgJob.enqueue(
             ProposeBtJob,
             {
@@ -190,6 +191,7 @@ module Economy
                 stake_params: stake_params
             }
         )
+
       end
 
     end

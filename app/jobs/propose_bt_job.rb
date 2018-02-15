@@ -29,8 +29,6 @@ class ProposeBtJob < ApplicationJob
     r = propose
     return unless r.success?
 
-    update_client_token
-
     Rails.logger.info("propose initiated with transaction hash:: #{@transaction_hash}")
 
     # enqueue the get registration status job
@@ -167,19 +165,6 @@ class ProposeBtJob < ApplicationJob
 
     success
 
-  end
-
-  # Update client token
-  #
-  # * Author: Kedar
-  # * Date: 24/01/2018
-  # * Reviewed By:
-  #
-  # @return [Result::Base]
-  #
-  def update_client_token
-    @client_token.send("set_#{GlobalConstant::ClientToken.propose_initiated_setup_step}")
-    @client_token.save!
   end
 
   # Enqueue job

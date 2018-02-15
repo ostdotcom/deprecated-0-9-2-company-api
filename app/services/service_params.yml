@@ -95,7 +95,7 @@
   :mandatory:
     - :client_id
     - :user_id
-    - :token_name
+    - :client_token_id
     - :to_stake_amount
   :optional:
 
