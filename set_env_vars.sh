@@ -10,7 +10,7 @@ export CA_SHARED_DB_PASSWORD=root
 export CA_SHARED_DB_HOST=127.0.0.1
 
 # Core ENV Details
-export CA_SUB_ENV='sandbox'
+export CA_SUB_ENV='main'
 export CA_POSTMAN_TESTING='1'
 
 # Redis Details
