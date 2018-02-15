@@ -5,7 +5,7 @@ class CreateClientTokenPlanners < DbMigrationConnection
 
       create_table :client_token_planners do |t|
         t.column :client_token_id, :integer, null: false
-        t.column :token_worth_in_usd, :decimal, precision: 12, scale: 6, null: true
+        t.column :token_worth_in_usd, :decimal, precision: 15, scale: 5, null: true
         t.column :initial_no_of_users, :integer, null: true
         t.column :initial_airdrop_in_wei, :decimal, precision: 30, scale: 0, null: true
         t.timestamps

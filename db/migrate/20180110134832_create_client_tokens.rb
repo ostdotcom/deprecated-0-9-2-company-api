@@ -9,7 +9,7 @@ class CreateClientTokens < DbMigrationConnection
         t.column :name, :string, null: false
         t.column :symbol, :string, null: false
         t.column :symbol_icon, :string, null: true
-        t.column :conversion_rate, :decimal, precision: 30, scale: 10, null: true
+        t.column :conversion_rate, :decimal, precision: 15, scale: 5, null: true
         t.column :reserve_uuid, :string, null: true
         t.column :token_erc20_address, :string, null: true
         t.column :setup_steps, :tinyint, null: true
