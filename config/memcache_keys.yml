@@ -19,6 +19,9 @@ client:
   api_credentials:
     key_template: 'c_api_crd_%{id}'
     expiry_in_seconds: 60
+  token_planner_details:
+    key_template: 'c_td_p_%{id}'
+    expiry_in_seconds: 60
 
 mics:
   ost_fiat_conversion_factors:

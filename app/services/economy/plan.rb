@@ -121,11 +121,14 @@ module Economy
         {}
       ) unless ct.present?
 
-      ct.conversion_rate = @conversion_rate
-      ct.initial_number_of_users = @initial_number_of_users
-      ct.airdrop_bt_per_user = @airdrop_bt_per_user
+      ctp = ClientTokenPlanner.find_or_initialize_by(client_token_id: @client_token_id)
 
+      ct.conversion_rate = @conversion_rate
       ct.save!
+
+      ctp.initial_no_of_users = @initial_number_of_users
+      ctp.initial_airdrop_in_wei = @airdrop_bt_per_user
+      ctp.save!
 
       bit_value = ClientToken.setup_steps_config[GlobalConstant::ClientToken.set_conversion_rate_setup_step]
 
@@ -137,6 +140,7 @@ module Economy
       @is_first_time_set = updated_row_cnt == 1
 
       CacheManagement::ClientToken.new([ct.id]).clear
+      CacheManagement::ClientTokenPlanner.new([ctp.id]).clear
 
       success
 
