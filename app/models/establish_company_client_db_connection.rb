@@ -7,7 +7,7 @@ class EstablishCompanyClientDbConnection < ApplicationRecord
 
   def self.applicable_sub_environments
     [
-        GlobalConstant::Environment.sandbox_sub_env
+        GlobalConstant::Environment.main_sub_environment
     ]
   end
 
