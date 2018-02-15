@@ -17,6 +17,8 @@ class GetRegistrationStatusJob < ApplicationJob
   #
   def perform(params)
 
+    puts("registration status start :: #{params.inspect}")
+
     init_params(params)
 
     r = fetch_client_token
@@ -25,7 +27,7 @@ class GetRegistrationStatusJob < ApplicationJob
     r = get_registration_status
     return unless r.success?
 
-    Rails.logger.info("registration status:: #{@registration_status.inspect}")
+    puts("registration status:: #{@registration_status.inspect}")
 
     save_registration_status
 
@@ -96,16 +98,19 @@ class GetRegistrationStatusJob < ApplicationJob
   # @return [Result::Base]
   #
   def get_registration_status
+
     params = {
       transaction_hash: @transaction_hash
     }
 
     r = SaasApi::OnBoarding::GetRegistrationStatus.new.perform(params)
+
     return r unless r.success?
 
     @registration_status = r.data[:registration_status]
 
     success
+
   end
 
   # Save registration status
@@ -136,7 +141,7 @@ class GetRegistrationStatusJob < ApplicationJob
 
     if registration_done?
 
-      @stake_params[:uuid] = @client_token.uuid
+      @stake_params[:uuid] = @registration_status[:uuid]
 
       BgJob.enqueue(
         Stake::ApproveJob,
@@ -182,6 +187,9 @@ class GetRegistrationStatusJob < ApplicationJob
         token_erc20_address: @registration_status[:erc20_address],
         token_uuid: @registration_status[:uuid]
     )
+
+    puts("registration EditBt rsp :: #{r.inspect}")
+
     return r unless r.success?
 
     @client_token.token_erc20_address = @registration_status[:erc20_address]

@@ -14,9 +14,6 @@ class PlanEconomyJob < ApplicationJob
 
     init_params(params)
 
-    r = validate_client_token
-    return r unless r.success?
-
     generate_dummy_users
 
     notify_devs
@@ -33,6 +30,7 @@ class PlanEconomyJob < ApplicationJob
   #
   def init_params(params)
     @client_token_id = params[:client_token_id].to_i
+    @client_token = CacheManagement::ClientToken.new([@client_token_id]).fetch[@client_token_id]
     @client_token_planner_details = CacheManagement::ClientTokenPlanner.new([@client_token_id]).fetch[@client_token_id]
     @failed_logs = {}
   end

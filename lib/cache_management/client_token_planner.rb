@@ -14,9 +14,9 @@ module CacheManagement
     #
     def fetch_from_db(cache_miss_ids)
 
-      data_to_cache = ::ClientTokenPlanner.where(client_id: cache_miss_ids).all.inject({}) do |cache_data, client_token|
+      data_to_cache = ::ClientTokenPlanner.where(client_token_id: cache_miss_ids).all.inject({}) do |cache_data, client_token|
 
-        cache_data[client_token.client_id] = client_token.formated_cache_data
+        cache_data[client_token.client_token_id] = client_token.formated_cache_data
 
         cache_data
 
