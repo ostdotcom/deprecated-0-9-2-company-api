@@ -29,7 +29,7 @@ gem 'http', '3.0.0'
 
 gem 'jwt', '2.1.0'
 
-gem 'ost-sdk-ruby', :git => 'git@github.com:OpenSTFoundation/ost-sdk-ruby.git'
+gem 'ost-sdk-ruby', git: "https://github.com/OpenSTFoundation/ost-sdk-ruby.git"
 
 # Build JSON APIs with ease. Read more: https://github.com/rails/jbuilder
 # gem 'jbuilder', '~> 2.5'
