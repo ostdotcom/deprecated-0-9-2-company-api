@@ -165,7 +165,11 @@ class SignupJob < ApplicationJob
   # @return [Result::Base]
   #
   def setup_token_on_saas
-    r = SaasApi::OnBoarding::SetupBt.new.perform(symbol: @client_token.symbol, client_id: @client_id)
+    r = SaasApi::OnBoarding::SetupBt.new.perform(
+        symbol: @client_token.symbol, name: @client_token.name,
+        symbol_icon: @client_token.symbol_icon
+        client_id: @client_id
+    )
     notify_devs(r) unless r.success?
     r
   end
