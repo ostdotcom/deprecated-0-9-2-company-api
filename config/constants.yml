@@ -5,6 +5,12 @@ constants:
   redis:
     url: <%= ENV['CA_REDIS_ENDPOINT'] %>
 
+  aws:
+    region: <%= ENV['CA_DEFAULT_AWS_REGION']%>
+    user:
+      access_key: <%= ENV['CA_USER_AWS_ACCESS_KEY']%>
+      secret_key: <%= ENV['CA_USER_AWS_SECRET_KEY']%>
+
   kms:
     login:
       arn: <%= ENV['CA_LOGIN_KMS_ARN']%>
@@ -13,30 +19,24 @@ constants:
       arn: <%= ENV['CA_INFO_KMS_ARN']%>
       id: <%= ENV['CA_INFO_KMS_ID']%>
 
-  aws:
-    region: <%= ENV['CA_DEFAULT_AWS_REGION']%>
-    user:
-      access_key: <%= ENV['CA_USER_AWS_ACCESS_KEY']%>
-      secret_key: <%= ENV['CA_USER_AWS_SECRET_KEY']%>
-
-  recaptcha:
-    site_key: <%= ENV['CA_RECAPTCHA_SITE_KEY'] %>
-    secret_key: <%= ENV['CA_RECAPTCHA_SECRET'] %>
-
   secret_encryptor:
     cookie_secret_key: <%= ENV['CA_COOKIE_SECRET_KEY'] %>
     email_tokens_decriptor_key: <%= ENV['CA_EMAIL_TOKENS_DECRIPTOR_KEY'] %>
     generic_sha_key: <%= ENV['CA_GENERIC_SHA_KEY'] %>
     cache_data_sha_key: <%= ENV['CA_CACHE_DATA_SHA_KEY'] %>
 
+  recaptcha:
+    site_key: <%= ENV['CA_RECAPTCHA_SITE_KEY'] %>
+    secret_key: <%= ENV['CA_RECAPTCHA_SECRET'] %>
+
   memcached:
     instances: <%= ENV['CA_MEMCACHED_INSTANCES'] %>
 
   pepo_campaigns:
     api:
-      key: <%= ENV['STA_CAMPAIGN_CLIENT_KEY']%>
-      secret: <%= ENV['STA_CAMPAIGN_CLIENT_SECRET']%>
-      base_url: <%= ENV['STA_CAMPAIGN_BASE_URL']%>
+      key: <%= ENV['CA_CAMPAIGN_CLIENT_KEY']%>
+      secret: <%= ENV['CA_CAMPAIGN_CLIENT_SECRET']%>
+      base_url: <%= ENV['CA_CAMPAIGN_BASE_URL']%>
       version: 'v2'
     list_ids:
-      master_list: <%= ENV['STA_CAMPAIGN_MASTER_LIST']%>
+      master_list: <%= ENV['CA_CAMPAIGN_MASTER_LIST']%>

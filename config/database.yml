@@ -5,42 +5,51 @@ default: &default
   encoding: utf8
   collation: utf8_unicode_ci
   reconnect: true
+
+default_db_identifier: &default_db
+  <<: *default
   username: <%= ENV['CA_DEFAULT_DB_USER']%>
   password: <%= ENV['CA_DEFAULT_DB_PASSWORD']%>
   host: <%= ENV['CA_DEFAULT_DB_HOST']%>
 
-<%= Rails.env%>:
+shared_db_identifier: &shared_db
   <<: *default
+  username: <%= ENV['CA_SHARED_DB_USER']%>
+  password: <%= ENV['CA_SHARED_DB_PASSWORD']%>
+  host: <%= ENV['CA_SHARED_DB_HOST']%>
+
+<%= Rails.env%>:
+  <<: *default_db
   database: company_<%= GlobalConstant::Base.sub_env%>_<%= Rails.env%>
 
 company_client_<%= Rails.env%>:
-  <<: *default
+  <<: *default_db
   database: company_client_<%= Rails.env%>
 
 company_user_<%= Rails.env%>:
-  <<: *default
+  <<: *default_db
   database: company_user_<%= Rails.env%>
 
 company_async_hooks_<%= GlobalConstant::Base.sub_env%>_<%= Rails.env%>:
-  <<: *default
+  <<: *default_db
   database: company_async_hooks_<%= GlobalConstant::Base.sub_env%>_<%= Rails.env%>
 
 company_client_economy_<%= GlobalConstant::Base.sub_env%>_<%= Rails.env%>:
-  <<: *default
+  <<: *default_db
   database: company_client_economy_<%= GlobalConstant::Base.sub_env%>_<%= Rails.env%>
 
 company_big_<%= GlobalConstant::Base.sub_env%>_<%= Rails.env%>:
-  <<: *default
+  <<: *default_db
   database: company_big_<%= GlobalConstant::Base.sub_env%>_<%= Rails.env%>
 
 saas_client_economy_<%= GlobalConstant::Base.sub_env%>_<%= Rails.env%>:
-  <<: *default
+  <<: *default_db
   database: saas_client_economy_<%= GlobalConstant::Base.sub_env%>_<%= Rails.env%>
 
 saas_transaction_<%= GlobalConstant::Base.sub_env%>_<%= Rails.env%>:
-  <<: *default
+  <<: *default_db
   database: saas_transaction_<%= GlobalConstant::Base.sub_env%>_<%= Rails.env%>
 
 company_saas_shared_<%= GlobalConstant::Base.sub_env%>_<%= Rails.env%>:
-  <<: *default
+  <<: *shared_db
   database: company_saas_shared_<%= GlobalConstant::Base.sub_env%>_<%= Rails.env%>
