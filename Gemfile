@@ -17,9 +17,6 @@ gem 'dalli', '2.7.6'
 gem 'sanitize', '4.5.0'
 gem 'exception_notification', '4.2.2'
 
-#TODO - check this gem's use
-gem 'hkdf', '0.3.0'
-
 gem 'aws-sdk-kms', '1.4.0'
 gem 'aws-sdk-s3', '1.8.0'
 

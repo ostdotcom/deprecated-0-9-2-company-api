@@ -1,5 +1,5 @@
 #Note this secret has to be same for comapny-web & comapny-api in order to make CSRF work
-export SECRET_KEY_BASE='a8e9609c826bfa8141ed299e37d73f150134d610260d73922c06969e8c0c50036d2d44f241ef0b530992ad580fdb78cca9a21fbccdd067ad81cace6ab18d8ebf'
+export COMPANY_SECRET_KEY_BASE='a8e9609c826bfa8141ed299e37d73f150134d610260d73922c06969e8c0c50036d2d44f241ef0b530992ad580fdb78cca9a21fbccdd067ad81cace6ab18d8ebf'
 
 # Database details
 export CA_DEFAULT_DB_USER=root
