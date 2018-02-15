@@ -24,6 +24,10 @@ module GlobalConstant
       'on-boarding/setup-token'
     end
 
+    def self.edit_token_path
+      'on-boarding/edit-token'
+    end
+
     def self.approve_for_stake_api_path
       'stake/approve'
     end

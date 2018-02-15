@@ -171,12 +171,21 @@ class GetRegistrationStatusJob < ApplicationJob
   # * Reviewed By:
   #
   def set_propose_done
+
     @client_token.send(
       "set_#{GlobalConstant::ClientToken.propose_done_setup_step}"
     )
 
-    @client_token.uuid = @registration_status[:uuid]
-    @client_token.erc20_address = @registration_status[:erc20_address]
+    r = SaasApi::OnBoarding::EditBt.new.perform(
+        symbol: @client_token.symbol,
+        client_id: @client_id,
+        token_erc20_address: @registration_status[:erc20_address],
+        token_uuid: @registration_status[:uuid]
+    )
+    return r unless r.success?
+
+    @client_token.token_erc20_address = @registration_status[:erc20_address]
+
   end
 
   # set registered on uc
