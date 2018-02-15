@@ -23,9 +23,6 @@ class ProposeBtJob < ApplicationJob
     r = fetch_client_details
     return unless r.success?
 
-    r = create_reserve_address
-    return unless r.success?
-
     r = propose
     return unless r.success?
 
@@ -48,6 +45,7 @@ class ProposeBtJob < ApplicationJob
   #
   def init_params(params)
     @client_id = params[:client_id]
+    @client_token_id = params[:client_token_id]
     @token_symbol = params[:token_symbol]
     @token_name = params[:token_name]
     @token_conversion_rate = params[:token_conversion_rate].to_f
@@ -79,11 +77,7 @@ class ProposeBtJob < ApplicationJob
         {}
     ) if @client.blank? || @client[:status] != GlobalConstant::Client.active_status
 
-    @client_token = ClientToken.where(
-      name: @token_name,
-      client_id: @client_id,
-      status: GlobalConstant::ClientToken.active_status
-    ).first
+    @client_token = ClientToken.where(id: @client_token_id).first
 
     return error_with_data(
       'pbj_2',
@@ -91,52 +85,7 @@ class ProposeBtJob < ApplicationJob
       'Token not found.',
       GlobalConstant::ErrorAction.default,
       {}
-    ) unless @client_token.present?
-
-    success
-
-  end
-
-  # Create an address on UC which would act as Reserve address for this BT
-  #
-  # * Author: Puneet
-  # * Date: 29/01/2018
-  # * Reviewed By:
-  #
-  # @return [Result::Base]
-  #
-  def create_reserve_address
-
-    # Create address with this passphrase on Chain
-    result = CacheManagement::ClientApiCredentials.new([@client_id]).fetch[@client_id]
-    return error_with_data(
-        'pbj_3',
-        "Invalid client.",
-        'Something Went Wrong.',
-        GlobalConstant::ErrorAction.default,
-        {}
-    ) if result.blank?
-
-    # Create OST Sdk Obj
-    credentials = OSTSdk::Util::APICredentials.new(result[:api_key], result[:api_secret])
-    sdk_obj = OSTSdk::Saas::Addresses.new(GlobalConstant::Base.sub_env, credentials)
-
-    r = sdk_obj.create
-    return r unless r.success?
-    reserve_address = r.data['ethereum_address']
-
-    company_address = CompanyManagedAddress.get_company_address_record(reserve_address)
-
-    return error_with_data(
-        'pbj_4',
-        'CLIENT ETH ADDRESS not found.',
-        'CLIENT ETH ADDRESS not found.',
-        GlobalConstant::ErrorAction.default,
-        {}
-    ) unless company_address.present?
-
-    @client_token.company_managed_addresses_id = company_address.id
-    @client_token.save
+    ) if @client_token.blank? || @client_token.status != GlobalConstant::ClientToken.active_status
 
     success
 
