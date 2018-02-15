@@ -140,7 +140,7 @@ module Economy
       @is_first_time_set = updated_row_cnt == 1
 
       CacheManagement::ClientToken.new([ct.id]).clear
-      CacheManagement::ClientTokenPlanner.new([ctp.id]).clear
+      CacheManagement::ClientTokenPlanner.new([ct.id]).clear
 
       success
 

@@ -32,32 +32,9 @@ class PlanEconomyJob < ApplicationJob
   # @param [Hash] params
   #
   def init_params(params)
-    @client_token_id = params[:client_token_id]
-    @client_token = nil
+    @client_token_id = params[:client_token_id].to_i
+    @client_token_planner_details = CacheManagement::ClientTokenPlanner.new([@client_token_id]).fetch[@client_token_id]
     @failed_logs = {}
-  end
-
-  #
-  # * Author: Puneet
-  # * Date: 02/02/2018
-  # * Reviewed By:
-  #
-  # @return [Result::Base]
-  #
-  def validate_client_token
-
-    @client_token = ClientToken.where(id: @client_token_id).first
-
-    return error_with_data(
-        'grsj_1',
-        'Token invalid.',
-        'Token not invalid.',
-        GlobalConstant::ErrorAction.default,
-        {}
-    ) if @client_token.blank? || @client_token.send("#{GlobalConstant::ClientToken.configure_transactions_setup_step}?")
-
-    success
-
   end
 
   #
@@ -82,7 +59,7 @@ class PlanEconomyJob < ApplicationJob
 
     failed_logs = {}
 
-    Array(1..@client_token.initial_number_of_users).each do |id|
+    Array(1..@client_token_planner_details[:initial_no_of_users]).each do |id|
       name = "User #{id}"
       service_response = @ost_sdk_obj.create(name: name)
       failed_logs[name] = service_response.to_json unless service_response.success?
