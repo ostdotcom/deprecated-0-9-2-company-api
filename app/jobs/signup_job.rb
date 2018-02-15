@@ -34,7 +34,7 @@ class SignupJob < ApplicationJob
     r = setup_token_on_saas
 
     if r.success?
-      @client_token.reserve_uuid = r.data.reserve_uuid
+      @client_token.reserve_uuid = r.data['reserveUuid']
       @client_token.save
     end
 

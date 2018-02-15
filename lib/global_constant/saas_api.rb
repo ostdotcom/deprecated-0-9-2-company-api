@@ -5,7 +5,7 @@ module GlobalConstant
 
     def self.base_url
       #TODO - move this to env vars
-      'http://127.0.0.1:3000/'
+      'http://127.0.0.1:4001/'
     end
 
     def self.propose_bt_api_path
