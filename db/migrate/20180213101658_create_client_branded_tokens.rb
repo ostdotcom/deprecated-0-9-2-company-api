@@ -5,10 +5,12 @@ class CreateClientBrandedTokens < DbMigrationConnection
       create_table :client_branded_tokens do |t|
         t.column :client_id, :integer, null: false
         t.column :reserve_managed_address_id, :integer
-        t.column :symbol, :string
+        t.column :name, :string, null: false
+        t.column :symbol, :string, null: false
+        t.column :symbol_icon, :string, null: true
         t.column :token_erc20_address, :string
         t.column :token_uuid, :string
-        t.column :conversion_rate, :decimal, null: true, precision: 12, scale: 6
+        t.column :conversion_rate, :decimal, precision: 30, scale: 10, null: true
         t.timestamps
       end
 
