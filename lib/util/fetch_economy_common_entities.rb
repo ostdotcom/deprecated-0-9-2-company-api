@@ -126,13 +126,12 @@ module Util
       balance_types = [
         GlobalConstant::BalanceTypes.ost_balance_type,
         GlobalConstant::BalanceTypes.ost_prime_balance_type,
-        GlobalConstant::BalanceTypes.branded_token_balance_type
+        @client_token[:symbol]
       ]
 
       r = FetchClientBalances.new(
         client_id: @client_token[:client_id],
-        address: @client_token_s[:reserve_address],
-        erc20_address: @client_token_s[:erc20_address]
+        address_uuid: @client_token_s[:reserve_uuid]
       ).perform(balance_types)
 
       if r.success?
