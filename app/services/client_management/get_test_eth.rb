@@ -1,6 +1,6 @@
 module ClientManagement
 
-  class GetTestOst < ServicesBase
+  class GetTestEth < ServicesBase
 
     # Initialize
     #
@@ -9,23 +9,18 @@ module ClientManagement
     # * Reviewed By:
     #
     # @param [Integer] client_id (mandatory) - Client Id to get Test Ost
-    # @param [Integer] client_token_id (mandatory) - Client Token Id to get Test Ost.
-    # @param [Float] requested_amount (mandatory) - Amount of Test OST requested by client.
-    # @param [String] eth_address (Optional) - eth address for first time in client set up flow
     #
-    # @return [ClientManagement::GetTestOst]
+    # @return [ClientManagement::GetTestEth]
     #
     def initialize(params)
 
       super
 
       @client_id = @params[:client_id]
-      @client_token_id = @params[:client_token_id]
-      @amount = @params[:requested_amount] || 500
-      @eth_address = @params[:eth_address]
+      @amount = 0.1
 
+      @eth_address = nil
       @client = nil
-      @client_token = nil
       @client_chain_interaction = nil
 
     end
@@ -43,17 +38,11 @@ module ClientManagement
       r = validate_and_sanitize
       return r unless r.success?
 
-      # Set up Eth address if its given in input
-      if @eth_address.present?
-        r = ClientManagement::SetupEthAddress.new(client_id: @client_id, eth_address: @eth_address).perform
-        return r unless r.success?
-      else
-        r = fetch_client_eth_address
-        return r unless r.success?
-      end
+      r = fetch_client_eth_address
+      return r unless r.success?
 
       # Validate, whether OST can be given or not
-      r = validate_ost_given
+      r = validate_eth_given
       return r unless r.success?
 
       insert_db
@@ -88,16 +77,6 @@ module ClientManagement
           {}
       ) if @client.blank?
 
-      @client_token = ClientToken.where(id: @client_token_id).first
-
-      return error_with_data(
-          'cm_gto_2',
-          'Invalid Client Token.',
-          'Invalid Client Token.',
-          GlobalConstant::ErrorAction.default,
-          {}
-      ) if @client_token.blank? or @client_token.client_id != @client_id
-
       success
 
     end
@@ -111,9 +90,9 @@ module ClientManagement
     #
     # @return [Result::Base]
     #
-    def validate_ost_given
+    def validate_eth_given
       client_chain_interactions = CriticalChainInteractionLog.of_activity_type(GlobalConstant::CriticalChainInteractions.
-          request_ost_activity_type).where(client_id: @client_id).order('created_at DESC').group_by(&:status)
+          grant_eth).where(client_id: @client_id).order('created_at DESC').group_by(&:status)
 
       # No requests present
       return success if client_chain_interactions.blank?
@@ -121,8 +100,8 @@ module ClientManagement
       # Pending requests present then send error
       return error_with_data(
           'cm_gto_3',
-          'Pending Test OST requests.',
-          'Pending Test OST requests.',
+          'Pending Test Eth requests.',
+          'Pending Test Eth requests.',
           GlobalConstant::ErrorAction.default,
           {}
       ) if client_chain_interactions.keys.include?(GlobalConstant::CriticalChainInteractions.pending_status)
@@ -134,8 +113,8 @@ module ClientManagement
       # Check last processed record created_at is less than 1 day
       return error_with_data(
           'cm_gto_4',
-          'Test OST cannot be given before 24 hours from last given.',
-          'Test OST cannot be given before 24 hours from last given.',
+          'Test Eth cannot be given before 24 hours from last given.',
+          'Test Eth cannot be given before 24 hours from last given.',
           GlobalConstant::ErrorAction.default,
           {}
       ) if (Time.now - 1.day).to_i < processed_records.first.created_at.to_i
@@ -156,7 +135,7 @@ module ClientManagement
     #
     def insert_db
       @chain_interaction = CriticalChainInteractionLog.create!(client_id: @client_id, client_token_id: @client_token_id,
-                                    activity_type: GlobalConstant::CriticalChainInteractions.request_ost_activity_type,
+                                    activity_type: GlobalConstant::CriticalChainInteractions.grant_eth,
                                     chain_type: GlobalConstant::CriticalChainInteractions.value_chain_type,
                                     status: GlobalConstant::CriticalChainInteractions.pending_status,
                                     debug_data: {amount: @amount})
@@ -171,7 +150,7 @@ module ClientManagement
     # @return [Result::Base]
     #
     def make_saas_api_call
-      r = SaasApi::OnBoarding::GrantTestOst.new.perform(ethereum_address: @eth_address, amount: @amount)
+      r = SaasApi::OnBoarding::GrantEth.new.perform(ethereum_address: @eth_address, amount: @amount)
       return r unless r.success?
 
       @chain_interaction.transaction_uuid = r.data[:transaction_uuid]

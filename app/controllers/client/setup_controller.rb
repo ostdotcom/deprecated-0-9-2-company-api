@@ -28,4 +28,18 @@ class Client::SetupController < Client::BaseController
 
   end
 
+  # Get Test Eth
+  #
+  # * Author: Pankaj
+  # * Date: 16/02/2018
+  # * Reviewed By:
+  #
+  def get_test_eth
+
+    service_response = ClientManagement::GetTestEth.new(params).perform
+
+    render_api_response(service_response)
+
+  end
+
 end

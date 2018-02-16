@@ -68,6 +68,11 @@
     - :eth_address
     - :requested_amount
 
+'ClientManagement::GetTestEth':
+  :mandatory:
+    - :client_id
+  :optional:
+
 'Economy::CreateToken':
   :mandatory:
     - :client_id

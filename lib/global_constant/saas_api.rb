@@ -20,6 +20,10 @@ module GlobalConstant
       'on-boarding/grant-test-ost'
     end
 
+    def self.grant_eth_path
+      'on-boarding/grant-eth'
+    end
+
     def self.setup_token_path
       'on-boarding/setup-token'
     end

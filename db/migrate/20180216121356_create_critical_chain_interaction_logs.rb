@@ -5,7 +5,7 @@ class CreateCriticalChainInteractionLogs < DbMigrationConnection
       create_table :critical_chain_interaction_logs do |t|
         t.column :client_id, :integer, null: false
         t.column :activity_type, :tinyint, size: 2, null: false
-        t.column :client_token_id, :integer, null: false
+        t.column :client_token_id, :integer, null: true
         t.column :chain_type, :tinyint, size: 1, null: false
         t.column :transaction_uuid, :string, null: true
         t.column :transaction_hash, :string, null: true
@@ -18,7 +18,7 @@ class CreateCriticalChainInteractionLogs < DbMigrationConnection
   end
 
   def down
-    run_migration_for_db(EstablishCompanyClientEconomyDbConnection) do
+    run_migration_for_db(EstablishCompanyBigDbConnection) do
       drop_table :critical_chain_interaction_logs
     end
   end

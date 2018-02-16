@@ -15,6 +15,10 @@ module GlobalConstant
         'transfer_to_staker'
       end
 
+      def grant_eth
+        'grant_eth'
+      end
+
       ########## chain_types #############
 
       def utility_chain_type

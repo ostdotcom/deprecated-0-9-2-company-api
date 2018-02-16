@@ -2,7 +2,8 @@ class CriticalChainInteractionLog < EstablishCompanyBigDbConnection
 
   enum activity_type: {
       GlobalConstant::CriticalChainInteractions.request_ost_activity_type => 1,
-      GlobalConstant::CriticalChainInteractions.transfer_to_staker_activity_type => 2
+      GlobalConstant::CriticalChainInteractions.transfer_to_staker_activity_type => 2,
+      GlobalConstant::CriticalChainInteractions.grant_eth => 3
   }
 
   enum chain_type: {
