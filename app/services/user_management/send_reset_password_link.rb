@@ -44,7 +44,7 @@ module UserManagement
 
       send_forgot_password_mail
 
-      success_with_data(reset_token: @reset_password_token)
+      success
     end
 
     private
