@@ -39,6 +39,7 @@ module UserManagement
     # @return [Result::Base]
     #
     def perform
+
       r = validate
       return r unless r.success?
 
@@ -108,7 +109,7 @@ module UserManagement
 
       @user_s = CacheManagement::UserSecure.new([@user_id]).fetch[@user_id]
 
-      evaluated_token = User.get_cookie_token(@user_id, @client_id, @user_s[:password], '', @created_ts)
+      evaluated_token = User.get_cookie_token(@user_id, @client_id, @user_s[:password], @browser_user_agent, @created_ts)
       return unauthorized_access_response('um_vc_7') unless (evaluated_token == @token)
 
       @client = CacheManagement::Client.new([@client_id]).fetch[@client_id]

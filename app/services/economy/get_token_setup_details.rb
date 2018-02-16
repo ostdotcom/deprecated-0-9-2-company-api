@@ -125,8 +125,13 @@ module Economy
     #
     def fetch_supporting_data
 
-      @api_response_data[:client_token] = @client_token
-      @api_response_data[:user] = CacheManagement::User.new([@user_id]).fetch[@user_id]
+      r = Util::FetchEconomyCommonEntities.new(
+          user_id: @user_id,
+          client_token: @client_token
+      ).perform
+
+      return r unless r.success?
+      @api_response_data.merge!(r.data)
 
       success
 

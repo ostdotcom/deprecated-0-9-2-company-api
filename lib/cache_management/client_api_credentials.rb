@@ -14,6 +14,8 @@ module CacheManagement
 
       data_from_cache = super
 
+      data_from_cache = data_from_cache.deep_dup ## Deep DUP is important here
+
       # as cache has local cypher encrypted value of API Secret, we would need to decrypt it before sending it out
       data_from_cache.each do |client_id, api_credentials|
 
