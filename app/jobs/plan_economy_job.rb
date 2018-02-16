@@ -73,7 +73,7 @@ class PlanEconomyJob < ApplicationJob
     return unless @is_first_time_set
 
     r = SaasApi::OnBoarding::CreateDummyUsers.new.perform(
-      client_id: @client_id,
+      client_id: @client_token[:client_id],
       number_of_users: @client_token_planner_details[:initial_no_of_users] || 25
     )
 
