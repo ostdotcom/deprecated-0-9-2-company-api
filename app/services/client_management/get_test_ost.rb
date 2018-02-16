@@ -9,6 +9,7 @@ module ClientManagement
     # * Reviewed By:
     #
     # @param [Integer] client_id (mandatory) - Client Id to get Test Ost
+    # @param [Integer] client_token_id (mandatory) - Client Token Id to get Test Ost.
     # @param [Float] requested_amount (mandatory) - Amount of Test OST requested by client.
     # @param [String] eth_address (Optional) - eth address for first time in client set up flow
     #
@@ -42,12 +43,13 @@ module ClientManagement
       r = validate_and_sanitize
       return r unless r.success?
 
-      # Set up Eth address if its present
+      # Set up Eth address if its given in input
       if @eth_address.present?
         r = ClientManagement::SetupEthAddress.new(client_id: @client_id, eth_address: @eth_address).perform
         return r unless r.success?
       else
-        fetch_client_reserve_address
+        r = fetch_client_eth_address
+        return r unless r.success?
       end
 
       # Validate, whether OST can be given or not
@@ -58,8 +60,6 @@ module ClientManagement
 
       r = make_saas_api_call
       return r
-
-      # TODO:: Make transaction UUID and transaction hash table.
 
     end
 
@@ -103,7 +103,7 @@ module ClientManagement
     end
 
     # Validate, Whether OST is given to client before or not.
-    # TODO:: Put duration checks id required. For now one day check is kept.
+    # TODO:: Put duration checks if required. For now one day check is kept.
     #
     # * Author: Pankaj
     # * Date: 12/02/2018
@@ -112,7 +112,7 @@ module ClientManagement
     # @return [Result::Base]
     #
     def validate_ost_given
-      client_chain_interactions = ClientChainInteraction.of_activity_type(GlobalConstant::ClientChainInteraction.
+      client_chain_interactions = CriticalChainInteractionLog.of_activity_type(GlobalConstant::CriticalChainInteractions.
           request_ost_activity_type).where(client_token_id: @client_token_id).order('created_at DESC').group_by(&:status)
 
       # No requests present
@@ -125,10 +125,10 @@ module ClientManagement
           'Pending Test OST requests.',
           GlobalConstant::ErrorAction.default,
           {}
-      ) if client_chain_interactions.keys.include?(GlobalConstant::ClientChainInteraction.pending_status)
+      ) if client_chain_interactions.keys.include?(GlobalConstant::CriticalChainInteractions.pending_status)
 
       # Check for last processed request time
-      processed_records = client_chain_interactions[GlobalConstant::ClientChainInteraction.processed_status]
+      processed_records = client_chain_interactions[GlobalConstant::CriticalChainInteractions.processed_status]
       return success if processed_records.blank?
 
       # Check last processed record created_at is less than 1 day
@@ -150,15 +150,15 @@ module ClientManagement
     # * Date: 12/02/2018
     # * Reviewed By:
     #
-    # Sets @client_chain_interaction
+    # Sets @chain_interaction
     #
     # @return [Result::Base]
     #
     def insert_db
-      @client_chain_interaction = ClientChainInteraction.create!(client_id: @client_id, client_token_id: @client_token_id,
-                                    activity_type: GlobalConstant::ClientChainInteraction.request_ost_activity_type,
-                                    chain_type: GlobalConstant::ClientChainInteraction.value_chain_type,
-                                    status: GlobalConstant::ClientChainInteraction.pending_status,
+      @chain_interaction = CriticalChainInteractionLog.create!(client_id: @client_id, client_token_id: @client_token_id,
+                                    activity_type: GlobalConstant::CriticalChainInteractions.request_ost_activity_type,
+                                    chain_type: GlobalConstant::CriticalChainInteractions.value_chain_type,
+                                    status: GlobalConstant::CriticalChainInteractions.pending_status,
                                     debug_data: {amount: @amount})
     end
 
@@ -173,11 +173,61 @@ module ClientManagement
     def make_saas_api_call
       r = SaasApi::OnBoarding::GrantTestOst.new.perform(ethereum_address: @eth_address, amount: @amount)
       return r unless r.success?
+
+      @chain_interaction.transaction_uuid = r.data[:transaction_uuid]
+      @chain_interaction.transaction_hash = r.data[:transaction_hash]
+      @chain_interaction.save!
+
+      r
     end
 
-    def fetch_client_reserve_address
-      @client_token_s = CacheManagement::ClientTokenSecure.new([@client_token_id]).fetch[@client_token_id]
-      @eth_address = @client_token_s[:reserve_address]
+    # Fetch Eth Address of client
+    #
+    # * Author: Pankaj
+    # * Date: 16/02/2018
+    # * Reviewed By:
+    #
+    # Sets @client_address, @eth_address
+    #
+    # @return [Result::Base]
+    #
+    def fetch_client_eth_address
+      @client_address = ClientAddress.where(client_id: @client_id, status: GlobalConstant::ClientAddress.active_status).first
+      return error_with_data(
+          'cm_gto_5',
+          'Ethereum Address not associated.',
+          'Ethereum Address not associated.',
+          GlobalConstant::ErrorAction.default,
+          {}
+      ) if @client_address.blank?
+
+      @eth_address = decrypt_client_eth_address
+      return error_with_data(
+          'cm_gto_6',
+          'Ethereum Address is Invalid.',
+          'Ethereum Address is Invalid.',
+          GlobalConstant::ErrorAction.default,
+          {}
+      ) if @eth_address.blank?
+
+      success
+    end
+
+    # Decrypt Client Eth address
+    #
+    # * Author: Pankaj
+    # * Date: 16/02/2018
+    # * Reviewed By:
+    #
+    # @return [String]
+    #
+    def decrypt_client_eth_address
+      r = Aws::Kms.new('info','user').decrypt(@client_address.address_salt)
+      return nil unless r.success?
+      info_salt_d = r.data[:plaintext]
+
+      r = LocalCipher.new(info_salt_d).decrypt(@client_address.ethereum_address)
+      return (r.success? ? r.data[:plaintext] : nil)
     end
 
 

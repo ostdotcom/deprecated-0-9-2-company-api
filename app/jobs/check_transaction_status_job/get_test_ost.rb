@@ -22,7 +22,7 @@ module CheckTransactionStatusJob
     # * Date: 12/02/2018
     # * Reviewed By:
     #
-    # @param [Integer] client_chain_interaction_id (mandatory) - Client Chain Interaction Id
+    # @param [Integer] critical_chain_interaction_id (mandatory) - Client Chain Interaction Id
     # @param [Integer] first_enqueue_timestmap (mandatory) - timestamp when this job was first enqueued
     # @param [String] transaction_uuid (optional) - uuid on basis of which we could look up tx status from SAAS
     # @param [String] transaction_hash (optional) - hash on basis of which we could look up tx status from SAAS
@@ -31,7 +31,7 @@ module CheckTransactionStatusJob
 
       super
 
-      @client_chain_interaction_id = @params[:client_chain_interaction_id]
+      @critical_chain_interaction_id = @params[:critical_chain_interaction_id]
 
     end
 
@@ -74,10 +74,10 @@ module CheckTransactionStatusJob
     # * Date: 12/02/2018
     # * Reviewed By:
     #
-    # @return [ClientChainInteraction]
+    # @return [CriticalChainInteractionLog]
     #
-    def client_chain_interaction
-      @c_c_i ||= ClientChainInteraction.where(id: @client_chain_interaction_id).first
+    def chain_interaction_log
+      @c_c_i ||= CriticalChainInteractionLog.where(id: @critical_chain_interaction_id).first
     end
 
     # Handle case where tx was succesfully mined
@@ -89,9 +89,9 @@ module CheckTransactionStatusJob
     # @return [Result::Base]
     #
     def handle_tx_success
-      client_chain_interaction.status = GlobalConstant::ClientChainInteraction.processed_status
-      client_chain_interaction.debug_data = {} # fill in data here cherrypicking keys from @tx_details
-      client_chain_interaction.save
+      chain_interaction_log.status = GlobalConstant::CriticalChainInteractions.processed_status
+      chain_interaction_log.debug_data = {} # fill in data here cherrypicking keys from @tx_details
+      chain_interaction_log.save
     end
 
     # Handle case where tx failed
@@ -106,8 +106,8 @@ module CheckTransactionStatusJob
     #
     def handle_tx_failure(r)
       #TODO: Log or mail error ?
-      client_chain_interaction.status = GlobalConstant::ClientChainInteraction.failed_status
-      client_chain_interaction.save
+      chain_interaction_log.status = GlobalConstant::CriticalChainInteractions.failed_status
+      chain_interaction_log.save
     end
 
     # Max allowed time till which we would wait or else mark tx as failed

@@ -155,7 +155,7 @@ module Economy
       # Registration was already complete, we would directly start staking process
       if @client_token.registration_done?
 
-        beneficiary = @client_token.get_reserve_address
+        beneficiary = @client_token.get_reserve_address # TODO:: Invalid call
         return error_with_data(
             'e_sam_4',
             'Beneficiary not found.',

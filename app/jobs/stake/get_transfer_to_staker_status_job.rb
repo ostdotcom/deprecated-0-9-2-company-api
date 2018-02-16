@@ -11,7 +11,7 @@ class Stake::GetTransferToStakerStatusJob < ApplicationJob
   # * Reviewed By:
   #
   # @param [String] transaction_hash (mandatory) - hash
-  # @param [Integer] client_chain_interaction_id (mandatory) - id of ClientChainInteraction
+  # @param [Integer] critical_chain_interaction_log_id (mandatory) - id of ClientChainInteraction
   # @param [Integer] started_at (mandatory) - timestamp when this job was first enqueued
   #
   def perform(params)
@@ -35,10 +35,10 @@ class Stake::GetTransferToStakerStatusJob < ApplicationJob
   def init_params(params)
 
     @transaction_hash = params[:transaction_hash]
-    @client_chain_interaction_id = params[:client_chain_interaction_id]
+    @chain_interaction_log_id = params[:critical_chain_interaction_log_id]
     @started_at = params[:started_at]
 
-    @client_chain_interaction = nil
+    @chain_interaction_log = nil
 
     @max_allowed_wait_time = 20.minutes # Across multiple instances of this job for a
     # given hash we would wait only for this time for it to mined
@@ -54,7 +54,7 @@ class Stake::GetTransferToStakerStatusJob < ApplicationJob
   #
   def validate
 
-    @client_chain_interaction = ClientChainInteraction.where(id: @client_chain_interaction_id).first
+    @chain_interaction_log = CriticalChainInteractionLog.where(id: @chain_interaction_log_id).first
 
     return error_with_data(
         'j_s_gttssj_1',
@@ -62,7 +62,7 @@ class Stake::GetTransferToStakerStatusJob < ApplicationJob
         'Client Setup Log Not Found.',
         GlobalConstant::ErrorAction.default,
         {}
-    ) if @client_chain_interaction.blank?
+    ) if @chain_interaction_log.blank?
 
   end
 

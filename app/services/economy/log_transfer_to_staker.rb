@@ -26,7 +26,7 @@ module Economy
 
       @user = nil
       @client_token = nil
-      @client_chain_interaction_id = nil
+      @chain_interaction_log_id = nil
 
     end
 
@@ -133,22 +133,22 @@ module Economy
     # * Date: 29/01/2018
     # * Reviewed By:
     #
-    # Sets @client_chain_interaction_id
+    # Sets @chain_interaction_log_id
     #
     # @return [Result::Base]
     #
     def log_transfer
 
-      db_record = ClientChainInteraction.create!(
+      db_record = CriticalChainInteractionLog.create!(
         client_id: @client_id,
         client_token_id: @client_token_id,
-        activity_type: GlobalConstant::ClientChainInteraction.transfer_to_staker_activty_type,
-        chain_type: GlobalConstant::ClientChainInteraction.value_chain_type,
-        status: GlobalConstant::ClientChainInteraction.pending_status,
+        activity_type: GlobalConstant::CriticalChainInteractions.transfer_to_staker_activty_type,
+        chain_type: GlobalConstant::CriticalChainInteractions.value_chain_type,
+        status: GlobalConstant::CriticalChainInteractions.pending_status,
         transaction_hash: @transaction_hash
       )
 
-      @client_chain_interaction_id = db_record.id
+      @chain_interaction_log_id = db_record.id
 
       success
 
@@ -168,7 +168,7 @@ module Economy
           Stake::GetTransferToStakerStatusJob,
           {
               transaction_hash: @transaction_hash,
-              client_chain_interaction_id: @client_chain_interaction_id,
+              critical_chain_interaction_log_id: @chain_interaction_log_id,
               started_at: current_timestamp
           },
           {
