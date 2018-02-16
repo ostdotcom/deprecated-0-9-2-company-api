@@ -17,6 +17,8 @@
 > brew install memcached
 ```
 
+# Start Services
+
 * Start redis
 ```main
 > sudo redis-server --requirepass 'st123'
@@ -32,15 +34,22 @@
 > memcached -p 11211 -d
 ```
 
-# Start Services
-
+* Run migration or install new packages
 ```bash
-> source set_env_vars.sh
-> sidekiq -C ./config/sidekiq.yml -q sk_api_high_task  -q sk_api_med_task -q sk_api_default
-
 > source set_env_vars.sh
 > bundle install
 > rake db:migrate
+```
+
+* Start SideKiq
+```bash
+> source set_env_vars.sh
+> sidekiq -C ./config/sidekiq.yml -q sk_api_high_task  -q sk_api_med_task -q sk_api_default
+```
+
+* Start server
+```bash
+> source set_env_vars.sh
 > rails s -p 4000
 ```
 
