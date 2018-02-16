@@ -79,9 +79,10 @@
   :mandatory:
     - :client_token_id
     - :conversion_rate
-    - :initial_number_of_users
     - :airdrop_bt_per_user
+    - :token_worth_in_usd
   :optional:
+    - :initial_number_of_users
 
 'Economy::LogTransferToStaker':
   :mandatory:

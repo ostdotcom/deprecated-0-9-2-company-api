@@ -10,6 +10,10 @@ module Economy
     #
     # @params [Integer] client_token_id (mandatory) - client token id
     # @params [Decimal] conversion_rate (mandatory) - how many branded tokens are there in one OST
+    # @params [Decimal] token_worth_in_usd (mandatory) - approx worth of BT in USD
+    # @params [Integer] airdrop_bt_per_user (mandatory) - how many BT are to given to each user
+    # @params [Integer] initial_number_of_users (optional) - init number of users
+    #
     #
     # @return [Economy::Plan]
     #
@@ -21,6 +25,7 @@ module Economy
       @conversion_rate = @params[:conversion_rate]
       @initial_number_of_users = @params[:initial_number_of_users]
       @airdrop_bt_per_user = @params[:airdrop_bt_per_user]
+      @token_worth_in_usd = @params[:token_worth_in_usd]
 
       @is_first_time_set = nil
 
@@ -128,6 +133,7 @@ module Economy
 
       ctp.initial_no_of_users = @initial_number_of_users
       ctp.initial_airdrop_in_wei = @airdrop_bt_per_user
+      ctp.token_worth_in_usd = @token_worth_in_usd
       ctp.save!
 
       bit_value = ClientToken.setup_steps_config[GlobalConstant::ClientToken.set_conversion_rate_setup_step]
