@@ -61,6 +61,8 @@ class PlanEconomyJob < ApplicationJob
 
   end
 
+  # This will trigger a fire & forget API call to SAAS
+  # Request would terminate but the users would be created in background in SAAS
   #
   # * Author: Puneet
   # * Date: 02/02/2018
@@ -71,7 +73,7 @@ class PlanEconomyJob < ApplicationJob
     return unless @is_first_time_set
 
     r = SaasApi::OnBoarding::CreateDummyUsers.new.perform(
-      client_id: @client_id,
+      client_id: @client_token[:client_id],
       number_of_users: @client_token_planner_details[:initial_no_of_users] || 25
     )
 
