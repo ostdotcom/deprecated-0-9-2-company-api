@@ -115,14 +115,13 @@
 'Economy::TransactionKind::Create':
   :mandatory:
     - :client_id
+    - :client_token_id
     - :name
     - :kind
-    - :value_currency_type
+    - :currency_type
+    - :currency_value
     - :commission_percent
-    - :use_price_oracle
   :optional:
-    - :value_in_usd
-    - :value_in_bt
 
 'Economy::TransactionKind::Edit':
   :mandatory:
@@ -131,11 +130,9 @@
   :optional:
     - :name
     - :kind
-    - :value_currency_type
-    - :value_in_usd
-    - :value_in_bt
+    - :currency_type
+    - :currency_value
     - :commission_percent
-    - :use_price_oracle
 
 'Economy::TransactionKind::BulkCreateEdit':
   :mandatory:
