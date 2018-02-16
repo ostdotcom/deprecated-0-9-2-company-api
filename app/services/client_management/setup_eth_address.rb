@@ -21,7 +21,8 @@ module ClientManagement
       @eth_address = @params[:eth_address]
 
       @client = nil
-      @info_salt_d = nil
+      @client_address = nil
+      @address_salt = nil
       @hashed_eth_address = nil
       @encrypted_eth_address = nil
 
@@ -38,27 +39,9 @@ module ClientManagement
     def perform
 
       r = validate_and_sanitize
-      return r unless r.success?
+      return r if (r.failed? || @client_address.present?)
 
-      existing_db_record = ClientAddress.where(client_id: @client_id).last
-
-      @hashed_eth_address = LocalCipher.get_sha_hashed_text(@eth_address)
-
-      if existing_db_record.present?
-        if existing_db_record.hashed_ethereum_address == @hashed_eth_address
-          return success
-        else
-          return error_with_data(
-              'cm_sea_1',
-              'Client Already Has ETH address associated',
-              'Client Already Has ETH address associated',
-              GlobalConstant::ErrorAction.default,
-              {}
-          )
-        end
-      end
-
-      r = decrypt_info_salt
+      r = generate_address_salt
       return r unless r.success?
 
       r = encrypt_eth_address
@@ -76,12 +59,42 @@ module ClientManagement
     # * Date: 29/01/2018
     # * Reviewed By:
     #
+    # Sets @hashed_eth_address, @client_address
+    #
     # @return [Result::Base]
     #
     def validate_and_sanitize
 
       r = validate
       return r unless r.success?
+
+      @client = CacheManagement::Client.new([@client_id]).fetch[@client_id]
+
+      return error_with_data(
+          'cm_sea_1',
+          'Invalid Client.',
+          'Invalid Client.',
+          GlobalConstant::ErrorAction.default,
+          {}
+      ) if @client.blank?
+
+      @client_address = ClientAddress.where(client_id: @client_id).last
+
+      @hashed_eth_address = LocalCipher.get_sha_hashed_text(@eth_address)
+
+      if @client_address.present?
+        if @client_address.hashed_ethereum_address == @hashed_eth_address
+          return success
+        else
+          return error_with_data(
+              'cm_sea_2',
+              'Client Already Has ETH address associated',
+              'Client Already Has ETH address associated',
+              GlobalConstant::ErrorAction.default,
+              {}
+          )
+        end
+      end
 
       # sanitize
       #TODO: Do we need to convert this to checksum ETH Address
@@ -90,36 +103,26 @@ module ClientManagement
       r = ClientManagement::ValidateEthAddress.new(client_id: @client_id, eth_address: @eth_address).perform
       return r unless r.success?
 
-      @client = Client.where(id: @client_id).first
-
-      return error_with_data(
-          'cm_sea_2',
-          'Invalid Client.',
-          'Invalid Client.',
-          GlobalConstant::ErrorAction.default,
-          {}
-      ) if @client.blank?
-
       success
 
     end
 
-    # Decrypt client Info salt
+    # Generate Address Salt for client.
     #
-    # * Author: Puneet
-    # * Date: 29/01/2018
+    # * Author: Pankaj
+    # * Date: 16/02/2018
     # * Reviewed By:
     #
-    # Sets @info_salt_d
+    # Sets @address_salt
     #
     # @return [Result::Base]
     #
-    def decrypt_info_salt
+    def generate_address_salt
 
-      r = Aws::Kms.new('info','user').decrypt(@client.info_salt)
+      r = Aws::Kms.new('info','user').generate_data_key
       return r unless r.success?
 
-      @info_salt_d = r.data[:plaintext]
+      @address_salt = r.data
 
       success
 
@@ -137,7 +140,7 @@ module ClientManagement
     #
     def encrypt_eth_address
 
-      encryptor_obj = LocalCipher.new(@info_salt_d)
+      encryptor_obj = LocalCipher.new(@address_salt[:plaintext])
       r = encryptor_obj.encrypt(@eth_address)
       return r unless r.success?
 
@@ -161,6 +164,7 @@ module ClientManagement
           client_id: @client_id,
           ethereum_address: @encrypted_eth_address,
           hashed_ethereum_address: @hashed_eth_address,
+          address_salt: @address_salt[:ciphertext_blob],
           status: GlobalConstant::ClientAddress.active_status
       )
 
