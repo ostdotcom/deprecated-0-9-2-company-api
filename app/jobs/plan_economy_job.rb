@@ -61,6 +61,8 @@ class PlanEconomyJob < ApplicationJob
 
   end
 
+  # This will trigger a fire & forget API call to SAAS
+  # Request would terminate but the users would be created in background in SAAS
   #
   # * Author: Puneet
   # * Date: 02/02/2018
