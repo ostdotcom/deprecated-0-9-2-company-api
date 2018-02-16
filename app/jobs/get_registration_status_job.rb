@@ -122,13 +122,18 @@ class GetRegistrationStatusJob < ApplicationJob
   # @return [Result::Base]
   #
   def save_registration_status
+
     set_propose_done if @registration_status[:is_proposal_done] == 1
 
     set_registered_on_uc if @registration_status[:is_registered_on_uc] == 1
 
     set_registered_on_vc if @registration_status[:is_registered_on_vc] == 1
 
-    @client_token.save! if @client_token.changed?
+    if @client_token.changed?
+      @client_token.save!
+      CacheManagement::ClientToken.new([@client_token.id]).clear
+    end
+
   end
 
   # Enqueue job
