@@ -38,7 +38,7 @@ export CA_RECAPTCHA_SITE_KEY=''
 export CA_RECAPTCHA_SECRET=''
 
 # Memcached Details
-export CA_MEMCACHED_INSTANCES=''
+export CA_MEMCACHED_INSTANCES='127.0.0.1:11211'
 
 # Pepo Campaigns Details
 export CA_CAMPAIGN_CLIENT_KEY="f395013cc8715f72ecef978248d933e6"
