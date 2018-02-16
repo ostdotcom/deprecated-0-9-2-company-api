@@ -273,7 +273,8 @@ module UserManagement
           name: @token_name,
           symbol: @token_symbol,
           symbol_icon: @token_symbol_icon,
-          status: GlobalConstant::ClientToken.active_status
+          status: GlobalConstant::ClientToken.active_status,
+          setup_steps: 0
       )
 
       ct.save!

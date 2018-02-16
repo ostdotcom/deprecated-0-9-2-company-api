@@ -156,11 +156,12 @@ module Economy
     #
     def enqueue_job
 
-      return unless @is_first_time_set
-
       BgJob.enqueue(
         PlanEconomyJob,
-        {client_token_id: @client_token_id}
+        {
+            client_token_id: @client_token_id,
+            is_first_time_set: @is_first_time_set
+        }
       )
 
     end

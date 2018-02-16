@@ -14,6 +14,8 @@ class PlanEconomyJob < ApplicationJob
 
     init_params(params)
 
+    sync_data_in_saas
+
     generate_dummy_users
 
     notify_devs
@@ -30,9 +32,32 @@ class PlanEconomyJob < ApplicationJob
   #
   def init_params(params)
     @client_token_id = params[:client_token_id].to_i
+    @is_first_time_set = params[:is_first_time_set]
     @client_token = CacheManagement::ClientToken.new([@client_token_id]).fetch[@client_token_id]
     @client_token_planner_details = CacheManagement::ClientTokenPlanner.new([@client_token_id]).fetch[@client_token_id]
     @failed_logs = {}
+  end
+
+  # Sync changes in Saas DB
+  #
+  # * Author: Puneet
+  # * Date: 02/02/2018
+  # * Reviewed By:
+  #
+  def sync_data_in_saas
+
+    r = SaasApi::OnBoarding::EditBt.new.perform(
+        name: @client_token[:name],
+        symbol: @client_token[:symbol],
+        symbol_icon: @client_token[:symbol_icon],
+        conversion_rate: @client_token[:conversion_rate],
+        client_id: @client_token[:client_id]
+    )
+
+    unless r.success?
+      puts "error in sync_data_in_saas: #{r.to_json}"
+    end
+
   end
 
   #
@@ -41,6 +66,8 @@ class PlanEconomyJob < ApplicationJob
   # * Reviewed By:
   #
   def generate_dummy_users
+
+    return unless @is_first_time_set
 
     result = CacheManagement::ClientApiCredentials.new([@client_token[:client_id]]).fetch[@client_token[:client_id]]
     return error_with_data(

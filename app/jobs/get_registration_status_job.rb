@@ -183,6 +183,7 @@ class GetRegistrationStatusJob < ApplicationJob
 
     r = SaasApi::OnBoarding::EditBt.new.perform(
         symbol: @client_token.symbol,
+        symbol_icon: @client_token.symbol_icon,
         client_id: @client_id,
         token_erc20_address: @registration_status[:erc20_address],
         token_uuid: @registration_status[:uuid]
