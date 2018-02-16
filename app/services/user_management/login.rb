@@ -10,6 +10,7 @@ module UserManagement
     #
     # @param [String] email (mandatory) - the email of the user which is to be signed up
     # @param [String] password (mandatory) - user password
+    # @params [String] browser_user_agent (mandatory) - browser user agent
     #
     # @return [UserManagement::Login]
     #
@@ -18,6 +19,7 @@ module UserManagement
 
       @email = @params[:email]
       @password = @params[:password]
+      @browser_user_agent = @params[:browser_user_agent]
 
       @user = nil
       @login_salt_d = nil
@@ -125,7 +127,7 @@ module UserManagement
     # @return [Result::Base]
     #
     def set_cookie_value
-      cookie_value = User.get_cookie_value(@user.id, @user.default_client_id, @user.password)
+      cookie_value = User.get_cookie_value(@user.id, @user.default_client_id, @user.password, @browser_user_agent)
 
       success_with_data(cookie_value: cookie_value)
     end

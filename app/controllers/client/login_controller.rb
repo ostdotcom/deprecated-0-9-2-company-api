@@ -5,10 +5,10 @@ class Client::LoginController < Client::BaseController
   end
 
   before_action :authenticate_request, except: [
-    :sign_up,
-    :login,
-    :logout,
-    :send_reset_password_link, :reset_password
+      :sign_up,
+      :login,
+      :logout,
+      :send_reset_password_link, :reset_password
   ]
 
   # Verify Login Cookie
@@ -19,7 +19,7 @@ class Client::LoginController < Client::BaseController
   #
   def verify_cookie
     render_api_response(Result::Base.success(data: {
-      client_token: CacheManagement::ClientToken.new([params[:client_token_id]]).fetch[params[:client_token_id]]
+        client_token: CacheManagement::ClientToken.new([params[:client_token_id]]).fetch[params[:client_token_id]]
     }))
   end
 
@@ -31,16 +31,20 @@ class Client::LoginController < Client::BaseController
   #
   def sign_up
     service_response = UserManagement::SignUp.new(
-      params.merge(is_client_manager: 1, client_creation_needed: 1)
+        params.merge({
+                         is_client_manager: 1,
+                         client_creation_needed: 1,
+                         browser_user_agent: http_user_agent
+                     })
     ).perform
 
     if service_response.success?
       # NOTE: delete cookie value from data
       cookie_value = service_response.data.delete(:cookie_value)
       set_cookie(
-        GlobalConstant::Cookie.user_cookie_name,
-        cookie_value,
-        GlobalConstant::Cookie.user_expiry.from_now
+          GlobalConstant::Cookie.user_cookie_name,
+          cookie_value,
+          GlobalConstant::Cookie.user_expiry.from_now
       )
     end
 
@@ -54,15 +58,15 @@ class Client::LoginController < Client::BaseController
   # * Reviewed By:
   #
   def login
-    service_response = UserManagement::Login.new(params).perform
+    service_response = UserManagement::Login.new(params.merge(browser_user_agent: http_user_agent)).perform
 
     if service_response.success?
       # NOTE: delete cookie value from data
       cookie_value = service_response.data.delete(:cookie_value)
       set_cookie(
-        GlobalConstant::Cookie.user_cookie_name,
-        cookie_value,
-        GlobalConstant::Cookie.user_expiry.from_now
+          GlobalConstant::Cookie.user_cookie_name,
+          cookie_value,
+          GlobalConstant::Cookie.user_expiry.from_now
       )
     end
 

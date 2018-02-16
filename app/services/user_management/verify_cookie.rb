@@ -9,6 +9,7 @@ module UserManagement
     # * Reviewed By:
     #
     # @param [String] cookie_value (mandatory) - cookie value
+    # @params [String] browser_user_agent (mandatory) - browser user agent
     #
     # @return [UserManagement::VerifyCookie]
     #
@@ -16,6 +17,7 @@ module UserManagement
       super
 
       @cookie_value = @params[:cookie_value]
+      @browser_user_agent = @params[:browser_user_agent]
 
       @user_id = nil
       @client_id = nil
@@ -131,7 +133,7 @@ module UserManagement
     #
     def set_extended_cookie_value
       #return if (@created_ts + 29.days.to_i) >= Time.now.to_i
-      @extended_cookie_value = User.get_cookie_value(@user_id, @client_id, @user_s[:password])
+      @extended_cookie_value = User.get_cookie_value(@user_id, @client_id, @user_s[:password], @browser_user_agent)
     end
 
     # Unauthorized access response

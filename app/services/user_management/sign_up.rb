@@ -10,6 +10,7 @@ module UserManagement
     #
     # @param [String] email (mandatory) - the email of the user which is to be signed up
     # @param [String] password (mandatory) - user password
+    # @params [String] browser_user_agent (mandatory) - browser user agent
     # @param [Integer] is_client_manager (mandatory) - 1 if the user is to be added as a client manager
     # @param [Integer] client_creation_needed (mandatory) - 1 if new client creation is needed
     # @param [String] token_name (mandatory) - token name
@@ -25,6 +26,7 @@ module UserManagement
 
       @email = @params[:email]
       @password = @params[:password]
+      @browser_user_agent = @params[:browser_user_agent]
       @is_client_manager = @params[:is_client_manager]
       @client_creation_needed = @params[:client_creation_needed]
       @token_name = @params[:token_name]
@@ -292,7 +294,7 @@ module UserManagement
     # Sets @cookie_value
     #
     def set_cookie_value
-      @cookie_value = User.get_cookie_value(@user.id, @user.default_client_id, @user.password)
+      @cookie_value = User.get_cookie_value(@user.id, @user.default_client_id, @user.password, @browser_user_agent)
 
       success
     end

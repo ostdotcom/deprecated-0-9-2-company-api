@@ -2,6 +2,7 @@
   :mandatory:
     - :email
     - :password
+    - :browser_user_agent
     - :is_client_manager
     - :client_creation_needed
     - :token_name
@@ -14,11 +15,13 @@
   :mandatory:
     - :email
     - :password
+    - :browser_user_agent
   :optional:
 
 'UserManagement::VerifyCookie':
   :mandatory:
     - :cookie_value
+    - :browser_user_agent
   :optional:
 
 'UserManagement::SendResetPasswordLink':

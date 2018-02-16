@@ -37,13 +37,18 @@ module GlobalConstant
 
 
       def user_registered_attribute
-        'token_sale_registered'
+        'user_registered'
+      end
+
+      def double_optin_done_attribute
+        'double_optin_done'
       end
 
 
       def allowed_custom_attributes
         [
-          user_registered_attribute
+          user_registered_attribute,
+          double_optin_done_attribute
         ]
       end
 
@@ -57,39 +62,39 @@ module GlobalConstant
         'subscribe_status'
       end
 
-      def hardbounce_status_user_setting
-        'hardbounce_status'
-      end
-
-      def complaint_status_user_setting
-        'complaint_status'
-      end
+      # def hardbounce_status_user_setting
+      #   'hardbounce_status'
+      # end
+      #
+      # def complaint_status_user_setting
+      #   'complaint_status'
+      # end
 
       ########### User Setting : Possible Values ############
 
-      def blacklisted_value
-        'blacklisted'
-      end
-
-      def unblacklisted_value
-        'unblacklisted'
-      end
-
+      # def blacklisted_value
+      #   'blacklisted'
+      # end
+      #
+      # def unblacklisted_value
+      #   'unblacklisted'
+      # end
+      #
       def verified_value
         'verified'
       end
-
-      def pending_value
-        'pending'
-      end
+      #
+      # def pending_value
+      #   'pending'
+      # end
 
       def subscribed_value
         'subscribed'
       end
 
-      def unsubscribed_value
-        'unsubscribed'
-      end
+      # def unsubscribed_value
+      #   'unsubscribed'
+      # end
 
       ########### Transaction Email Templates ############
 
@@ -99,11 +104,15 @@ module GlobalConstant
         1
       end
 
+      def double_optin_done_value
+        1
+      end
+
       ############# Custom Attribute Values ################
 
       # double optin email - sent when user is adding email for the first time
       def double_opt_in_template
-        'token_sale_double_opt'
+        'ost_kit_double_optin'
       end
 
       # reset password email - sent when user clicks on forgot password

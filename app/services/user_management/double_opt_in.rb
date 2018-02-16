@@ -120,7 +120,7 @@ module UserManagement
 
       return invalid_url_error('um_doi_5') if @user_validation_hash_obj.status != GlobalConstant::UserValidationHash.active_status
 
-      return invalid_url_error('um_doi_6')  if @user_validation_hash_obj.is_expired?
+      return invalid_url_error('um_doi_6') if @user_validation_hash_obj.is_expired?
 
       return invalid_url_error('um_doi_7') if @user_validation_hash_obj.kind != GlobalConstant::UserValidationHash.double_optin
 
@@ -153,9 +153,11 @@ module UserManagement
     # * Reviewed By:
     #
     def create_update_contact_email_service_hook
-
       Email::HookCreator::UpdateContact.new(
           email: @user.email,
+          custom_attributes: {
+              GlobalConstant::PepoCampaigns.double_optin_done_attribute => GlobalConstant::PepoCampaigns.double_optin_done_value
+          },
           user_settings: {
               GlobalConstant::PepoCampaigns.double_opt_in_status_user_setting => GlobalConstant::PepoCampaigns.verified_value
           }
