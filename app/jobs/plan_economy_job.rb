@@ -56,6 +56,7 @@ class PlanEconomyJob < ApplicationJob
 
     unless r.success?
       puts "error in sync_data_in_saas: #{r.to_json}"
+      @failed_logs[:data_sync_in_saas] = r.to_json
     end
 
   end
@@ -69,28 +70,15 @@ class PlanEconomyJob < ApplicationJob
 
     return unless @is_first_time_set
 
-    result = CacheManagement::ClientApiCredentials.new([@client_token[:client_id]]).fetch[@client_token[:client_id]]
-    return error_with_data(
-        'grsj_2',
-        "Invalid client.",
-        'Something Went Wrong.',
-        GlobalConstant::ErrorAction.default,
-        {}
-    ) if result.blank?
+    r = SaasApi::OnBoarding::CreateDummyUsers.new.perform(
+      client_id: @client_id,
+      number_of_users: @client_token_planner_details[:initial_no_of_users] || 25
+    )
 
-    # Create OST Sdk Obj
-    credentials = OSTSdk::Util::APICredentials.new(result[:api_key], result[:api_secret])
-    @ost_sdk_obj = OSTSdk::Saas::Users.new(GlobalConstant::Base.sub_env, credentials)
-
-    failed_logs = {}
-
-    Array(1..@client_token_planner_details[:initial_no_of_users]).each do |id|
-      name = "User #{id}"
-      service_response = @ost_sdk_obj.create(name: name)
-      failed_logs[name] = service_response.to_json unless service_response.success?
+    unless r.success?
+      puts "error in generate_dummy_users: #{r.to_json}"
+      @failed_logs[:generate_dummy_users] = r.to_json
     end
-
-    @failed_logs[:dummy_users] = failed_logs if failed_logs.present?
 
   end
 

@@ -28,6 +28,10 @@ module GlobalConstant
       'on-boarding/edit-token'
     end
 
+    def self.create_dummy_users_path
+      'on-boarding/create-dummy-users'
+    end
+
     def self.approve_for_stake_api_path
       'stake/approve'
     end
