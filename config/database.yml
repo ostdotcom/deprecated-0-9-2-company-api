@@ -8,27 +8,32 @@ default: &default
 
 default_db_identifier: &default_db
   <<: *default
+  host: <%= ENV['CA_DEFAULT_DB_HOST']%>
   username: <%= ENV['CA_DEFAULT_DB_USER']%>
   password: <%= ENV['CA_DEFAULT_DB_PASSWORD']%>
-  host: <%= ENV['CA_DEFAULT_DB_HOST']%>
-
-shared_db_identifier: &shared_db
+  
+sub_env_shared_db_identifier: &sub_env_shared_db
   <<: *default
-  username: <%= ENV['CA_SHARED_DB_USER']%>
-  password: <%= ENV['CA_SHARED_DB_PASSWORD']%>
-  host: <%= ENV['CA_SHARED_DB_HOST']%>
+  host: <%= ENV['CA_SUB_ENV_SHARED_DB_HOST']%>
+  username: <%= ENV['CA_SUB_ENV_SHARED_DB_USER']%>
+  password: <%= ENV['CA_SUB_ENV_SHARED_DB_PASSWORD']%>
 
+saas_and_api_shared_db_identifier: &saas_and_api_shared_db
+  <<: *default
+  host: <%= ENV['CA_SAAS_SHARED_DB_HOST']%>
+  username: <%= ENV['CA_SAAS_SHARED_DB_USER']%>
+  password: <%= ENV['CA_SAAS_SHARED_DB_PASSWORD']%>
+
+saas_default_db_identifier: &saas_default_db
+  <<: *default
+  host: <%= ENV['CA_SAAS_DEFAULT_DB_HOST']%>
+  username: <%= ENV['CA_SAAS_DEFAULT_DB_USER']%>
+  password: <%= ENV['CA_SAAS_DEFAULT_DB_PASSWORD']%>
+
+# NOTE: Sub env specific databases
 <%= Rails.env%>:
   <<: *default_db
   database: company_<%= GlobalConstant::Base.sub_env%>_<%= Rails.env%>
-
-company_client_<%= Rails.env%>:
-  <<: *default_db
-  database: company_client_<%= Rails.env%>
-
-company_user_<%= Rails.env%>:
-  <<: *default_db
-  database: company_user_<%= Rails.env%>
 
 company_async_hooks_<%= GlobalConstant::Base.sub_env%>_<%= Rails.env%>:
   <<: *default_db
@@ -42,14 +47,26 @@ company_big_<%= GlobalConstant::Base.sub_env%>_<%= Rails.env%>:
   <<: *default_db
   database: company_big_<%= GlobalConstant::Base.sub_env%>_<%= Rails.env%>
 
+# NOTE: Databases shared between sub environments
+company_client_<%= Rails.env%>:
+  <<: *sub_env_shared_db
+  database: company_client_<%= Rails.env%>
+
+company_user_<%= Rails.env%>:
+  <<: *sub_env_shared_db
+  database: company_user_<%= Rails.env%>
+
+# NOTE: Database shared between saas and company api
+company_saas_shared_<%= GlobalConstant::Base.sub_env%>_<%= Rails.env%>:
+  <<: *saas_and_api_shared_db
+  database: company_saas_shared_<%= GlobalConstant::Base.sub_env%>_<%= Rails.env%>
+
+
+# NOTE: TEMP LOCATION - Until sass has it's own DB migration management
 saas_client_economy_<%= GlobalConstant::Base.sub_env%>_<%= Rails.env%>:
-  <<: *default_db
+  <<: *saas_default_db
   database: saas_client_economy_<%= GlobalConstant::Base.sub_env%>_<%= Rails.env%>
 
 saas_transaction_<%= GlobalConstant::Base.sub_env%>_<%= Rails.env%>:
-  <<: *default_db
+  <<: *saas_default_db
   database: saas_transaction_<%= GlobalConstant::Base.sub_env%>_<%= Rails.env%>
-
-company_saas_shared_<%= GlobalConstant::Base.sub_env%>_<%= Rails.env%>:
-  <<: *shared_db
-  database: company_saas_shared_<%= GlobalConstant::Base.sub_env%>_<%= Rails.env%>
