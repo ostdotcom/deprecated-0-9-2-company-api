@@ -64,7 +64,7 @@ module Economy
         data = {}
 
         @transaction_kinds.each do |key, transaction_kind|
-          t_k = transaction_kind.permit(:client_transaction_id, :name, :kind, :value_currency_type, :value_in_bt, :commission_percent, :value_in_usd, :use_price_oracle)
+          t_k = transaction_kind.permit(:client_transaction_id, :name, :kind, :value_currency_type, :value_in_bt, :commission_percent, :value_in_usd)
           proc = Proc.new do
             if t_k[:client_transaction_id].present?
               response_hash = @ost_sdk_obj.edit(t_k.to_h)

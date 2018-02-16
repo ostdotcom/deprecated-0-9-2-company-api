@@ -25,6 +25,8 @@ module Economy
 
         super
 
+        @client_token_id = @params[:client_token_id]
+
       end
 
       # Perform
@@ -43,9 +45,14 @@ module Economy
         r = sanitize_create_edit_params!
         return r unless r.success?
 
-        execute
+        response = execute
+
+        edit_client_token_status
+
+        return response
 
       end
+
 
       private
 
@@ -61,6 +68,12 @@ module Economy
 
         @ost_sdk_obj.create(@params)
 
+      end
+
+      def edit_client_token_status
+        bit_value = ClientToken.setup_steps_config[GlobalConstant::ClientToken.configure_transactions_setup_step]
+        ClientToken.where(id: @client_token_id).
+          where("setup_steps is NULL OR (setup_steps & #{bit_value} = 0)").update_all("setup_steps = setup_steps | #{bit_value}")
       end
 
     end
