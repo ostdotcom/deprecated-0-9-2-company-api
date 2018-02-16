@@ -176,6 +176,7 @@ module ClientManagement
 
       @chain_interaction.transaction_uuid = r.data[:transaction_uuid]
       @chain_interaction.transaction_hash = r.data[:transaction_hash]
+      @chain_interaction.status = GlobalConstant::CriticalChainInteractions.processed_status
       @chain_interaction.save!
 
       r
