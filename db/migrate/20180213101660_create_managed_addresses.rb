@@ -13,7 +13,7 @@ class CreateManagedAddresses < DbMigrationConnection
         t.timestamps
       end
 
-      add_index :managed_addresses, [:client_id, :uuid], name: 'uniq_client_id_uuid'
+      add_index :managed_addresses, [:client_id, :uuid], name: 'uniq_client_id_uuid', unique: true
     end
   end
 

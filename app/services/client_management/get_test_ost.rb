@@ -179,6 +179,9 @@ module ClientManagement
       @chain_interaction.status = GlobalConstant::CriticalChainInteractions.processed_status
       @chain_interaction.save!
 
+      @client_token.send("set_#{GlobalConstant::ClientToken.received_test_ost_setup_step}")
+      @client_token.save!
+
       r
     end
 

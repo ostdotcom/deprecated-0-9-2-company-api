@@ -43,6 +43,10 @@ module GlobalConstant
         'registered_on_vc'
       end
 
+      def received_test_ost_setup_step
+        'received_test_ost'
+      end
+
       ### Setup Steps End ###
 
     end
