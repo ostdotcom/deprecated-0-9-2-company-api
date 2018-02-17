@@ -10,11 +10,12 @@ class ClientTokenPlanner < EstablishCompanyClientEconomyDbConnection
   #
   def formated_cache_data
     {
-        id: id,
-        client_token_id: client_token_id,
-        token_worth_in_usd: token_worth_in_usd,
-        initial_no_of_users: initial_no_of_users,
-        initial_airdrop_in_wei: initial_airdrop_in_wei
+      id: id,
+      client_token_id: client_token_id,
+      token_worth_in_usd: token_worth_in_usd.to_s,
+      initial_no_of_users: initial_no_of_users,
+      initial_airdrop_in_wei: initial_airdrop_in_wei,
+      initial_airdrop: Util::Converter.from_wei_value(initial_airdrop_in_wei)
     }
   end
 

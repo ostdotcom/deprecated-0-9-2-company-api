@@ -108,13 +108,31 @@
     - :to_stake_amount
   :optional:
 
-'Economy::GetTokenSetupDetails':
+'Economy::TokenSetupDetails::StepOne':
+  :mandatory:
+    - :client_token_id
+    - :user_id
+  :optional:
+
+'Economy::TokenSetupDetails::StepTwo':
+  :mandatory:
+    - :client_token_id
+    - :user_id
+  :optional:
+
+'Economy::TokenSetupDetails::StepThree':
   :mandatory:
     - :client_token_id
     - :user_id
   :optional:
 
 'Economy::GetTokenSupplyDetails':
+  :mandatory:
+    - :client_token_id
+    - :user_id
+  :optional:
+
+'Economy::GetDashboardDetails':
   :mandatory:
     - :client_token_id
     - :user_id

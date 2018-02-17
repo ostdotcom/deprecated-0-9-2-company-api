@@ -33,14 +33,25 @@ class Economy::TokenController < Economy::BaseController
     render_api_response(service_response)
   end
 
+  # Get Step One Status
+  #
+  # * Author: Puneet
+  # * Date: 31/01/2018
+  # * Reviewed By:
+  #
+  def get_step_one_details
+    service_response = Economy::TokenSetupDetails::StepOne.new(params).perform
+    render_api_response(service_response)
+  end
+
   # Get Setup Status
   #
   # * Author: Puneet
   # * Date: 31/01/2018
   # * Reviewed By:
   #
-  def get_setup_details
-    service_response = Economy::GetTokenSetupDetails.new(params).perform
+  def get_step_two_details
+    service_response = Economy::TokenSetupDetails::StepTwo.new(params).perform
     render_api_response(service_response)
   end
 
@@ -50,8 +61,18 @@ class Economy::TokenController < Economy::BaseController
   # * Date: 31/01/2018
   # * Reviewed By:
   #
-  def get_supply_details
-    service_response = Economy::GetTokenSupplyDetails.new(params).perform
+  def get_step_three_details
+    service_response = Economy::TokenSetupDetails::StepThree.new(params).perform
+    render_api_response(service_response)
+  end
+
+  #
+  # * Author: Puneet
+  # * Date: 31/01/2018
+  # * Reviewed By:
+  #
+  def get_dashboard_details
+    service_response = Economy::GetDashboardDetails.new(params).perform
     render_api_response(service_response)
   end
 

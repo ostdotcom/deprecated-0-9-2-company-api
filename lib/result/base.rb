@@ -41,7 +41,8 @@ module Result
                   :message,
                   :data,
                   :exception,
-                  :http_code
+                  :http_code,
+                  :go_to
 
     # Initialize
     #
@@ -55,6 +56,7 @@ module Result
       set_error(params)
       set_message(params[:message])
       set_http_code(params[:http_code])
+      set_go_to(params[:go_to])
       @data = params[:data] || {}
     end
 
@@ -68,6 +70,18 @@ module Result
     #
     def set_http_code(h_c)
       @http_code = h_c || GlobalConstant::ErrorCode.ok
+    end
+
+    # Set Go To
+    #
+    # * Author: Puneet
+    # * Date: 19/02/2018
+    # * Reviewed By:
+    #
+    # @param [Hash]
+    #
+    def set_go_to(go_to)
+      @go_to = (go_to.blank? || !go_to.is_a?(Hash)) ? {} : go_to
     end
 
     # Set Error
@@ -290,7 +304,7 @@ module Result
     # @return [Array] returns Array object
     #
     def self.fields
-      error_fields + [:data, :message]
+      error_fields + [:data, :message, :go_to]
     end
 
     # Error Fields
@@ -363,7 +377,8 @@ module Result
                 action: hash[:error_action] || GlobalConstant::ErrorAction.default,
                 display_text: hash[:error_display_text].to_s,
                 display_heading: hash[:error_display_heading].to_s,
-                error_data: hash[:error_data] || {}
+                error_data: hash[:error_data] || {},
+                go_to: hash[:go_to] || {}
             },
             data: hash[:data]
         }

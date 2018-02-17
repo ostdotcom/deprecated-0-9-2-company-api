@@ -89,7 +89,7 @@ module Economy
       ) if @initial_number_of_users <= 0
 
 
-      @airdrop_bt_per_user = @airdrop_bt_per_user.to_f
+      @airdrop_bt_per_user = @airdrop_bt_per_user.to_i
 
       return error_with_data(
         'e_p_3',
@@ -132,7 +132,7 @@ module Economy
       ct.save!
 
       ctp.initial_no_of_users = @initial_number_of_users
-      ctp.initial_airdrop_in_wei = @airdrop_bt_per_user
+      ctp.initial_airdrop_in_wei = Util::Converter.to_wei_value(@airdrop_bt_per_user)
       ctp.token_worth_in_usd = @token_worth_in_usd
       ctp.save!
 

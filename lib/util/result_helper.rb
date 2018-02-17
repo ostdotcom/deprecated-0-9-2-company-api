@@ -35,6 +35,20 @@ module Util
                            })
     end
 
+    # Success with Go TO
+    #
+    # * Author: Puneet
+    # * Date: 19/02/2018
+    # * Reviewed By:
+    #
+    # @param [Hash] data (mandatory) - data to be sent in the response
+    #
+    # @return [Result::Base]
+    #
+    def success_with_go_to(go_to)
+      Result::Base.success(go_to: go_to)
+    end
+
     # Error with Action
     #
     # * Author: Kedar
@@ -91,6 +105,30 @@ module Util
         error_display_heading: display_heading,
         data: data
       })
+    end
+
+    # Error with Go TO
+    #
+    # * Author: Puneet
+    # * Date: 19/02/2018
+    # * Reviewed By:
+    #
+    # @param [String] code (mandatory) - error code
+    # @param [String] message (mandatory) - error message
+    # @param [String] display_text (mandatory) - display heading
+    # @param [Hash] go_to (mandatory) - go_to to be sent in the response
+    #
+    # @return [Result::Base]
+    #
+    def error_with_go_to(code, message, display_text, go_to)
+      Result::Base.error(
+          {
+              error: code,
+              error_message: message,
+              error_display_text: display_text,
+              go_to: go_to
+          }
+      )
     end
 
     # Current Time
