@@ -77,6 +77,7 @@ module UserManagement
 
       decryptor_obj = EmailTokenEncryptor.new(GlobalConstant::SecretEncryptor.email_tokens_key)
       r = decryptor_obj.decrypt(@r_t)
+
       return r unless r.success?
 
       decripted_t = r.data[:plaintext]

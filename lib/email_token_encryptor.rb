@@ -23,7 +23,7 @@ class EmailTokenEncryptor
   private
 
   def client
-    ActiveSupport::MessageEncryptor.new(GlobalConstant::SecretEncryptor.email_tokens_key)
+    ActiveSupport::MessageEncryptor.new(@key)
   end
 
   def handle_exeption(task)
