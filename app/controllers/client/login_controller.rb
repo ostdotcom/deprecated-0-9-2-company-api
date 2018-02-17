@@ -118,4 +118,15 @@ class Client::LoginController < Client::BaseController
     render_api_response(service_response)
   end
 
+  # Send Email Verification Link
+  #
+  # * Author: Puneet
+  # * Date: 15/02/2018
+  # * Reviewed By:
+  #
+  def send_verify_email_link
+    service_response = UserManagement::SendDoubleOptInLink.new(params).perform
+    render_api_response(service_response)
+  end
+
 end

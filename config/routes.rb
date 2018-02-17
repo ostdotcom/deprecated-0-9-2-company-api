@@ -9,6 +9,7 @@ Rails.application.routes.draw do
     match 'reset-password' => :reset_password, via: :POST
     match 'send-reset-password-link' => :send_reset_password_link, via: :POST
     match 'verify-email' => :verify_email, via: :POST
+    match 'send-verify-email-link' => :send_verify_email_link, via: :POST
   end
 
   scope 'api/client', controller: 'client/setup' do
