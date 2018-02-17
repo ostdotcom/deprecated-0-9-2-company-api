@@ -105,7 +105,9 @@
     - :client_id
     - :user_id
     - :client_token_id
-    - :to_stake_amount
+    - :bt_to_mint
+    - :st_prime_to_mint
+    - :transaction_hash
   :optional:
 
 'Economy::TokenSetupDetails::StepOne':

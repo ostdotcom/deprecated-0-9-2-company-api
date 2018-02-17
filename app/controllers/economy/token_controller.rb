@@ -26,7 +26,7 @@ class Economy::TokenController < Economy::BaseController
   #
   # * Author: Kedar
   # * Date: 24/01/2018
-  # * Reviewed By:
+  # * Reviewed By: Sunil
   #
   def stake_and_mint
     service_response = Economy::StakeAndMint.new(params).perform

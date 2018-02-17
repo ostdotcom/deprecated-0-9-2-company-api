@@ -14,7 +14,7 @@ class ProposeBtJob < ApplicationJob
   # @param [String] token_symbol (mandatory) - token symbol
   # @param [String] token_name (mandatory) - token name
   # @param [String] token_conversion_rate (mandatory) - token conversion rate
-  # @param [Hash] stake_params (mandatory) - stake params - to_stake_amount and beneficiary should be present
+  # @param [Integer] critical_log_id (mandatory) - chain log id
   #
   def perform(params)
 
@@ -27,6 +27,7 @@ class ProposeBtJob < ApplicationJob
     return unless r.success?
 
     Rails.logger.info("propose initiated with transaction hash:: #{@transaction_hash}")
+    update_critical_log
 
     # enqueue the get registration status job
     enqueue_job
@@ -49,10 +50,11 @@ class ProposeBtJob < ApplicationJob
     @token_symbol = params[:token_symbol]
     @token_name = params[:token_name]
     @token_conversion_rate = params[:token_conversion_rate].to_f
-    @stake_params = params[:stake_params]
+    @critical_log_id = params[:critical_log_id]
 
     @transaction_hash = nil
     @client_token = nil
+    @critical_chain_interaction_log_obj = nil
 
   end
 
@@ -67,6 +69,8 @@ class ProposeBtJob < ApplicationJob
   # @return [Result::Base]
   #
   def fetch_client_details
+
+    @critical_chain_interaction_log_obj = CriticalChainInteractionLog.where(id: @critical_log_id)
 
     @client = CacheManagement::Client.new([@client_id]).fetch[@client_id]
     return error_with_data(
@@ -108,12 +112,33 @@ class ProposeBtJob < ApplicationJob
     }
 
     r = SaasApi::OnBoarding::ProposeBt.new.perform(params)
+
+
+    @critical_chain_interaction_log_obj.debug_data = r
+    @critical_chain_interaction_log_obj.status = GlobalConstant::CriticalChainInteractions.failed_status unless r.success?
+    @critical_chain_interaction_log_obj.save!
+
     return r unless r.success?
 
+
     @transaction_hash =  r.data[:transaction_hash]
+    @transaction_uuid =  r.data[:transaction_uuid]
 
     success
 
+  end
+
+  # Update Critical log.
+  #
+  # * Author: Alpesh
+  # * Date: 17/02/2018
+  # * Reviewed By:
+  #
+  def update_critical_log
+    @critical_chain_interaction_log_obj.transaction_hash = @transaction_hash
+    @critical_chain_interaction_log_obj.transaction_uuid = @transaction_uuid
+    @critical_chain_interaction_log_obj.status = GlobalConstant::CriticalChainInteractions.pending_status
+    @critical_chain_interaction_log_obj.save!
   end
 
   # Enqueue job
@@ -128,8 +153,9 @@ class ProposeBtJob < ApplicationJob
       {
         transaction_hash: @transaction_hash,
         client_id: @client_id,
-        token_name: @token_name,
-        stake_params: @stake_params
+        client_token_id: @client_token_id,
+        critical_log_id: @critical_log_id,
+        started_job_at: Time.now.to_i
       },
       {
         wait: 100.seconds

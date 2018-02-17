@@ -48,6 +48,10 @@ module GlobalConstant
       'stake/start'
     end
 
+    def self.get_tx_receipt
+      'transaction/get-receipt'
+    end
+
     def self.secret_key
       #TODO - move this to env vars
       '1somethingsarebetterkeptinenvironemntvariables'

@@ -13,7 +13,6 @@ class GetRegistrationStatusJob < ApplicationJob
   # @param [Integer] client_id (mandatory) - client id
   # @param [String] token_name (mandatory) - token name
   # @param [String] transation_hash (mandatory) - transaction hash of the proposal transaction
-  # @param [Hash] stake_params (mandatory) - stake params
   #
   def perform(params)
 
@@ -31,7 +30,7 @@ class GetRegistrationStatusJob < ApplicationJob
 
     save_registration_status
 
-    enqueue_job
+    check_and_enqueue_job
 
   end
 
@@ -46,13 +45,18 @@ class GetRegistrationStatusJob < ApplicationJob
   # @param [Hash] params
   #
   def init_params(params)
+    @max_run_time_delta = 30.minutes.to_i
     @transaction_hash = params[:transaction_hash]
     @client_id = params[:client_id]
-    @token_name = params[:token_name]
-    @stake_params = params[:stake_params]
+    @client_token_id = params[:client_token_id]
+    @critical_log_id = params[:critical_log_id]
+    @started_job_at = params[:started_job_at]
 
     @registration_status = nil
     @client_token = nil
+    @critical_chain_interaction_log_obj = nil
+
+    @max_allowed_wait_time = 30.minutes
   end
 
   # Fetch client token
@@ -61,14 +65,15 @@ class GetRegistrationStatusJob < ApplicationJob
   # * Date: 24/01/2018
   # * Reviewed By:
   #
+  # Sets @critical_chain_interaction_log_obj, @client_token
+  #
   # @return [Result::Base]
   #
   def fetch_client_token
-    @client_token = ClientToken.where(
-      name: @token_name,
-      client_id: @client_id,
-      status: GlobalConstant::ClientToken.active_status
-    ).first
+    @critical_chain_interaction_log_obj = CriticalChainInteractionLog.where(id: @critical_log_id)
+
+    @started_job_at ||= @critical_chain_interaction_log_obj.created_at.to_i
+    @client_token = ClientToken.where(id: @client_token_id).first
 
     return error_with_data(
       'grsj_1',
@@ -76,7 +81,7 @@ class GetRegistrationStatusJob < ApplicationJob
       'Token not found.',
       GlobalConstant::ErrorAction.default,
       {}
-    ) unless @client_token.present?
+    ) if @client_token.blank? || @client_token.status != GlobalConstant::ClientToken.active_status
 
     return error_with_data(
       'grsj_2',
@@ -104,6 +109,10 @@ class GetRegistrationStatusJob < ApplicationJob
     }
 
     r = SaasApi::OnBoarding::GetRegistrationStatus.new.perform(params)
+
+    @critical_chain_interaction_log_obj.debug_data = r
+    @critical_chain_interaction_log_obj.status = GlobalConstant::CriticalChainInteractions.failed_status unless r.success?
+    @critical_chain_interaction_log_obj.save!
 
     return r unless r.success?
 
@@ -142,18 +151,19 @@ class GetRegistrationStatusJob < ApplicationJob
   # * Date: 24/01/2018
   # * Reviewed By:
   #
-  def enqueue_job
+  def check_and_enqueue_job
 
     if registration_done?
 
-      @stake_params[:uuid] = @registration_status[:uuid]
+      @critical_chain_interaction_log_obj.status = GlobalConstant::CriticalChainInteractions.processed_status
+      @critical_chain_interaction_log_obj.save!
+      return
 
-      BgJob.enqueue(
-        Stake::ApproveJob,
-        {
-          stake_params: @stake_params
-        }
-      )
+    elsif Time.now.to_i - @started_job_at > @max_run_time_delta
+
+      @critical_chain_interaction_log_obj.status = GlobalConstant::CriticalChainInteractions.timeout_status
+      @critical_chain_interaction_log_obj.save!
+      return
 
     else
 
@@ -162,8 +172,9 @@ class GetRegistrationStatusJob < ApplicationJob
         {
           transaction_hash: @transaction_hash,
           client_id: @client_id,
-          token_name: @token_name,
-          stake_params: @stake_params
+          client_token_id: @client_token_id,
+          critical_log_id: @critical_log_id,
+          started_job_at: @started_job_at
         },
         {
           wait: 30.seconds
