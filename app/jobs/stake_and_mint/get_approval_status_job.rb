@@ -250,6 +250,9 @@ class StakeAndMint::GetApprovalStatusJob < ApplicationJob
         critical_log_id: critical_log_obj.id,
         parent_id: @parent_id,
         existing_balance: existing_balance
+      },
+      {
+        wait: 10.seconds
       }
     ) if critical_log_obj.is_pending?
 
@@ -304,6 +307,9 @@ class StakeAndMint::GetApprovalStatusJob < ApplicationJob
         critical_log_id: critical_log_obj.id,
         parent_id: @parent_id,
         existing_balance: existing_balance
+      },
+      {
+        wait: 10.seconds
       }
     ) if critical_log_obj.is_pending?
 

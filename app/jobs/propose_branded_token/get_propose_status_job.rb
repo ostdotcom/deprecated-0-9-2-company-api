@@ -155,7 +155,7 @@ class ProposeBrandedToken::GetProposeStatusJob < ApplicationJob
         critical_log_id: @critical_log_id,
       },
       {
-        wait: 30.seconds
+        wait: 10.seconds
       }
     )
   end

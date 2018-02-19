@@ -35,6 +35,7 @@ class BgJob
 
   rescue => e
     Rails.logger.error("Resque enqueue failed with params #{enqueue_params}. Exception: #{e.message}")
+    sleep(options[:wait]) if options[:wait].present?
 
     perform_job_synchronously(klass, enqueue_params, q_name) if options[:fallback_run_sync]
 
