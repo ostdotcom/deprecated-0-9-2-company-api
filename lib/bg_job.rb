@@ -23,6 +23,7 @@ class BgJob
 
     # if force_run_sync or if it is dev env, run the job synchronously
     if options[:force_run_sync]
+      sleep(options[:wait]) if options[:wait].present?
       return perform_job_synchronously(klass, enqueue_params, q_name)
     else
       enqueue_params = hashify_params_recursively(enqueue_params)
@@ -39,17 +40,17 @@ class BgJob
 
     perform_job_synchronously(klass, enqueue_params, q_name) if options[:fallback_run_sync]
 
-      Rails.logger.error { e }
+    Rails.logger.error {e}
 
-      ApplicationMailer.notify(
-        body: {exception: {message: e.message, backtrace: e.backtrace}},
-        data: {
-          'enqueue_params' => enqueue_params,
-          'class_name' => klass,
-          'options' => options,
-        },
-        subject: 'Exception in Resque enqueue'
-      ).deliver
+    ApplicationMailer.notify(
+      body: {exception: {message: e.message, backtrace: e.backtrace}},
+      data: {
+        'enqueue_params' => enqueue_params,
+        'class_name' => klass,
+        'options' => options,
+      },
+      subject: 'Exception in Resque enqueue'
+    ).deliver
   end
 
   # Perform job synchronously
