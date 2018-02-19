@@ -108,12 +108,15 @@ class StakeAndMint::GetStakeStatusJob < ApplicationJob
     else
       @client_balances = r.data['balances']
 
+      Rails.logger.debug("1-----#{@critical_chain_interaction_log.activity_type == GlobalConstant::CriticalChainInteractions.stake_bt_started_activity_type}")
       if @critical_chain_interaction_log.activity_type == GlobalConstant::CriticalChainInteractions.stake_bt_started_activity_type
+        Rails.logger.debug("2----@client_token[:symbol]---#{@client_token[:symbol]}-------------#{@client_balances[@client_token[:symbol]]}")
         new_balance = @client_balances[@client_token[:symbol]]
       else
         new_balance = @client_balances[GlobalConstant::BalanceTypes.ost_prime_balance_type]
       end
 
+      Rails.logger.debug("3--#{new_balance > @existing_balance}--new_balance-----#{new_balance}==========@existing_balance----#{@existing_balance}")
       if new_balance > @existing_balance
         # processed
         @critical_chain_interaction_log.status = GlobalConstant::CriticalChainInteractions.processed_status
