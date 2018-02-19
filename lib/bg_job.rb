@@ -14,11 +14,13 @@ class BgJob
   #
   def self.enqueue(klass, enqueue_params, options = {})
     # Set default values to options
-    options.reverse_merge!(emails: '',
-                           subject: "[#{Rails.env}]: Exception occurred while trying to enqueue job to resque",
-                           safe: true,
-                           fallback_run_sync: true,
-                           force_run_sync: Rails.env.development?)
+    options.reverse_merge!({
+                             emails: '',
+                             subject: "[#{Rails.env}]: Exception occurred while trying to enqueue job to resque",
+                             safe: true,
+                             fallback_run_sync: true,
+                             force_run_sync: false #Rails.env.development?
+                           })
     q_name = options[:queue] || klass.queue_name
 
     # if force_run_sync or if it is dev env, run the job synchronously
