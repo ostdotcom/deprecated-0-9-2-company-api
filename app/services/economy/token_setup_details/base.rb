@@ -23,6 +23,7 @@ module Economy
         @client_token_id = @params[:client_token_id]
 
         @client_token = nil
+        @client_id = nil
         @api_response_data = {}
 
       end
@@ -89,6 +90,8 @@ module Economy
             GlobalConstant::ErrorAction.default,
             {}
         ) if @client_token.blank?
+
+        @client_id = @client_token[:client_id]
 
         success
 
@@ -172,6 +175,18 @@ module Economy
       def is_client_step_two_complete?
         return @i_s_t_c unless @i_s_t_c.nil?
         @i_s_t_c = @client_token[:setup_steps].include?(GlobalConstant::ClientToken.configure_transactions_setup_step)
+      end
+
+      # Fetch Chain Interaction params from Saas API
+      #
+      # * Author: Puneet
+      # * Date: 31/01/2018
+      # * Reviewed By:
+      #
+      # @return [Result::Base]
+      #
+      def fetch_chain_interaction_params
+        SaasApi::OnBoarding::FetchChainInteractionParams.new.perform({client_id: @client_id})
       end
 
     end

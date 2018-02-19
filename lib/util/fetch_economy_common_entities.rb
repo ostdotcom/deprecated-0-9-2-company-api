@@ -154,7 +154,8 @@ module Util
       success_with_data(
         client_token: @client_token,
         user: @user,
-        client_balances: @client_balances
+        client_balances: @client_balances || {},
+        oracle_price_points: FetchOraclePricePoints.perform
       )
 
     end
