@@ -52,7 +52,7 @@ class BgJob
         'options' => options,
       },
       subject: 'Exception in Resque enqueue'
-    ).deliver
+    ).deliver unless Rails.env.development?
   end
 
   # Perform job synchronously
