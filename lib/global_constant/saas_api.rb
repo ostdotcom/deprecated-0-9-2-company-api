@@ -48,12 +48,20 @@ module GlobalConstant
       'stake/approval-status'
     end
 
-    def self.start_stake
-      'stake/start'
+    def self.start_stake_bt
+      'stake/start-bt'
+    end
+
+    def self.start_stake_st_prime
+      'stake/start-st-prime'
     end
 
     def self.get_tx_receipt
-      'transaction/get-receipt'
+      'stake/get-receipt'
+    end
+
+    def self.get_uuid_balances
+      'addresses/fetch-balances'
     end
 
     def self.secret_key

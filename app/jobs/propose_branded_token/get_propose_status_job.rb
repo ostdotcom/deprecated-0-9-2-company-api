@@ -1,4 +1,4 @@
-class GetRegistrationStatusJob < ApplicationJob
+class ProposeBrandedToken::GetProposeStatusJob < ApplicationJob
 
   include Util::ResultHelper
 
@@ -8,11 +8,9 @@ class GetRegistrationStatusJob < ApplicationJob
   #
   # * Author: Kedar
   # * Date: 24/01/2018
-  # * Reviewed By:
+  # * Reviewed By: Sunil
   #
-  # @param [Integer] client_id (mandatory) - client id
-  # @param [String] token_name (mandatory) - token name
-  # @param [String] transation_hash (mandatory) - transaction hash of the proposal transaction
+  # @param [Integer] critical_log_id (mandatory) - chain log id
   #
   def perform(params)
 
@@ -20,7 +18,7 @@ class GetRegistrationStatusJob < ApplicationJob
 
     init_params(params)
 
-    r = fetch_client_token
+    r = validate_and_sanitize
     return unless r.success?
 
     r = get_registration_status
@@ -28,9 +26,11 @@ class GetRegistrationStatusJob < ApplicationJob
 
     puts("registration status:: #{@registration_status.inspect}")
 
-    save_registration_status
+    if @critical_chain_interaction_log.is_pending?
+      enqueue_self
+    end
 
-    check_and_enqueue_job
+    success
 
   end
 
@@ -40,56 +40,50 @@ class GetRegistrationStatusJob < ApplicationJob
   #
   # * Author: Kedar
   # * Date: 24/01/2018
-  # * Reviewed By:
+  # * Reviewed By: Sunil
   #
   # @param [Hash] params
   #
   def init_params(params)
-    @max_run_time_delta = 30.minutes.to_i
-    @transaction_hash = params[:transaction_hash]
-    @client_id = params[:client_id]
-    @client_token_id = params[:client_token_id]
     @critical_log_id = params[:critical_log_id]
-    @started_job_at = params[:started_job_at]
 
-    @registration_status = nil
+    @critical_chain_interaction_log = nil
+    @client_id = nil
+    @client_token_id = nil
+    @transaction_hash = nil
+
     @client_token = nil
-    @critical_chain_interaction_log_obj = nil
+    @registration_status = nil
 
-    @max_allowed_wait_time = 30.minutes
   end
 
-  # Fetch client token
+  # Validate and sanitize params
   #
-  # * Author: Kedar
-  # * Date: 24/01/2018
-  # * Reviewed By:
+  # * Author: Puneet
+  # * Date: 01/02/2018
+  # * Reviewed By: Sunil
   #
-  # Sets @critical_chain_interaction_log_obj, @client_token
+  # Sets @critical_chain_interaction_log, @client_id, @client_token_id, @transaction_hash, @client_token
   #
   # @return [Result::Base]
   #
-  def fetch_client_token
-    @critical_chain_interaction_log_obj = CriticalChainInteractionLog.where(id: @critical_log_id)
+  def validate_and_sanitize
 
-    @started_job_at ||= @critical_chain_interaction_log_obj.created_at.to_i
+    @critical_chain_interaction_log = CriticalChainInteractionLog.where(id: @critical_log_id).first
+
+    return error_with_data(
+      'j_s_grsj_1',
+      'Critical chain interation log id not found.',
+      'Critical chain interation log id not found.',
+      GlobalConstant::ErrorAction.default,
+      {}
+    ) if @critical_chain_interaction_log.blank?
+
+    @client_id = @critical_chain_interaction_log.client_id
+    @client_token_id = @critical_chain_interaction_log.client_token_id
+    @transaction_hash = @critical_chain_interaction_log.transaction_hash
+
     @client_token = ClientToken.where(id: @client_token_id).first
-
-    return error_with_data(
-      'grsj_1',
-      'Token not found.',
-      'Token not found.',
-      GlobalConstant::ErrorAction.default,
-      {}
-    ) if @client_token.blank? || @client_token.status != GlobalConstant::ClientToken.active_status
-
-    return error_with_data(
-      'grsj_2',
-      'Propose not yet initiated.',
-      'Propose not yet initiated.',
-      GlobalConstant::ErrorAction.default,
-      {}
-    ) unless propose_initiated?
 
     success
   end
@@ -98,35 +92,77 @@ class GetRegistrationStatusJob < ApplicationJob
   #
   # * Author: Kedar
   # * Date: 24/01/2018
-  # * Reviewed By:
+  # * Reviewed By: Sunil
   #
   # @return [Result::Base]
   #
   def get_registration_status
 
-    params = {
-      transaction_hash: @transaction_hash
-    }
+    r = SaasApi::OnBoarding::GetRegistrationStatus.new.perform({
+                                                                 transaction_hash: @transaction_hash
+                                                               })
 
-    r = SaasApi::OnBoarding::GetRegistrationStatus.new.perform(params)
+    if @critical_chain_interaction_log.can_be_marked_timeout?
+      # Timeout
+      @critical_chain_interaction_log.status = GlobalConstant::CriticalChainInteractions.timeout_status
+    elsif !r.success? || !r.data.present?
+      # failed - service failure
+      @critical_chain_interaction_log.status = GlobalConstant::CriticalChainInteractions.failed_status
+    elsif r.data.present?
 
-    @critical_chain_interaction_log_obj.debug_data = r
-    @critical_chain_interaction_log_obj.status = GlobalConstant::CriticalChainInteractions.failed_status unless r.success?
-    @critical_chain_interaction_log_obj.save!
+      # Save registration status
+      @registration_status = r.data[:registration_status]
+      save_registration_status
 
-    return r unless r.success?
+      if registration_done?
+        # processed
+        @critical_chain_interaction_log.status = GlobalConstant::CriticalChainInteractions.processed_status
+      else
+        # pending
+        @critical_chain_interaction_log.status = GlobalConstant::CriticalChainInteractions.pending_status
+      end
+    end
 
-    @registration_status = r.data[:registration_status]
+    @critical_chain_interaction_log.response_data = r
+    @critical_chain_interaction_log.save!
 
-    success
+    if @critical_chain_interaction_log.is_pending? || @critical_chain_interaction_log.is_processed?
+      return success
+    else
+      return error_with_data(
+        'j_s_grsj_2',
+        'BT Registration failed.',
+        'BT Registration failed.',
+        GlobalConstant::ErrorAction.default,
+        {}
+      )
+    end
 
+  end
+
+  # Enqueue job
+  #
+  # * Author: Kedar
+  # * Date: 24/01/2018
+  # * Reviewed By: Sunil
+  #
+  def enqueue_self
+    BgJob.enqueue(
+      ProposeBrandedToken::GetProposeStatusJob,
+      {
+        critical_log_id: @critical_log_id,
+      },
+      {
+        wait: 30.seconds
+      }
+    )
   end
 
   # Save registration status
   #
   # * Author: Kedar
   # * Date: 24/01/2018
-  # * Reviewed By:
+  # * Reviewed By: Sunil
   #
   # @return [Result::Base]
   #
@@ -145,53 +181,16 @@ class GetRegistrationStatusJob < ApplicationJob
 
   end
 
-  # Enqueue job
-  #
-  # * Author: Kedar
-  # * Date: 24/01/2018
-  # * Reviewed By:
-  #
-  def check_and_enqueue_job
-
-    if registration_done?
-
-      @critical_chain_interaction_log_obj.status = GlobalConstant::CriticalChainInteractions.processed_status
-      @critical_chain_interaction_log_obj.save!
-      return
-
-    elsif Time.now.to_i - @started_job_at > @max_run_time_delta
-
-      @critical_chain_interaction_log_obj.status = GlobalConstant::CriticalChainInteractions.timeout_status
-      @critical_chain_interaction_log_obj.save!
-      return
-
-    else
-
-      BgJob.enqueue(
-        GetRegistrationStatusJob,
-        {
-          transaction_hash: @transaction_hash,
-          client_id: @client_id,
-          client_token_id: @client_token_id,
-          critical_log_id: @critical_log_id,
-          started_job_at: @started_job_at
-        },
-        {
-          wait: 30.seconds
-        }
-      )
-
-    end
-
-  end
-
   # set propose done
   #
   # * Author: Kedar
   # * Date: 24/01/2018
-  # * Reviewed By:
+  # * Reviewed By: Sunil
   #
   def set_propose_done
+
+    # if already propose done, don't proceed further.
+    return if propose_done?
 
     @client_token.send(
       "set_#{GlobalConstant::ClientToken.propose_done_setup_step}"
@@ -217,7 +216,7 @@ class GetRegistrationStatusJob < ApplicationJob
   #
   # * Author: Kedar
   # * Date: 24/01/2018
-  # * Reviewed By:
+  # * Reviewed By: Sunil
   #
   def set_registered_on_uc
     @client_token.send(
@@ -229,7 +228,7 @@ class GetRegistrationStatusJob < ApplicationJob
   #
   # * Author: Kedar
   # * Date: 24/01/2018
-  # * Reviewed By:
+  # * Reviewed By: Sunil
   #
   def set_registered_on_vc
     @client_token.send(
@@ -241,7 +240,7 @@ class GetRegistrationStatusJob < ApplicationJob
   #
   # * Author: Kedar
   # * Date: 24/01/2018
-  # * Reviewed By:
+  # * Reviewed By: Sunil
   #
   # @return [Boolean]
   #
@@ -249,23 +248,11 @@ class GetRegistrationStatusJob < ApplicationJob
     propose_done? && registered_on_uc? && registered_on_vc?
   end
 
-  # Is propose initiated
-  #
-  # * Author: Kedar
-  # * Date: 24/01/2018
-  # * Reviewed By:
-  #
-  # @return [Boolean]
-  #
-  def propose_initiated?
-    @client_token.send("#{GlobalConstant::ClientToken.propose_initiated_setup_step}?")
-  end
-
   # Is propose done
   #
   # * Author: Kedar
   # * Date: 24/01/2018
-  # * Reviewed By:
+  # * Reviewed By: sunil
   #
   # @return [Boolean]
   #
@@ -277,7 +264,7 @@ class GetRegistrationStatusJob < ApplicationJob
   #
   # * Author: Kedar
   # * Date: 24/01/2018
-  # * Reviewed By:
+  # * Reviewed By: Sunil
   #
   # @return [Boolean]
   #
@@ -289,7 +276,7 @@ class GetRegistrationStatusJob < ApplicationJob
   #
   # * Author: Kedar
   # * Date: 24/01/2018
-  # * Reviewed By:
+  # * Reviewed By: Sunil
   #
   # @return [Boolean]
   #

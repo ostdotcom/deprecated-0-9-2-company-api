@@ -64,9 +64,9 @@ class Stake::StartJob < ApplicationJob
 
     @critical_chain_interaction_log_obj = CriticalChainInteractionLog.where(id: @critical_log_id).first
 
-    r = SaasApi::Stake::Start.new.perform(params)
+    r = SaasApi::StakeAndMint::Start.new.perform(params)
 
-    @critical_chain_interaction_log_obj.debug_data = r
+    @critical_chain_interaction_log_obj.response_data = r
     @critical_chain_interaction_log_obj.status = GlobalConstant::CriticalChainInteractions.failed_status
     @critical_chain_interaction_log_obj.save!
 

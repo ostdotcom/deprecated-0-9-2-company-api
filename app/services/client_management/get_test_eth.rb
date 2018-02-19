@@ -92,7 +92,7 @@ module ClientManagement
     #
     def validate_eth_given
       client_chain_interactions = CriticalChainInteractionLog.of_activity_type(GlobalConstant::CriticalChainInteractions.
-          grant_eth).where(client_id: @client_id).order('created_at DESC').group_by(&:status)
+          grant_eth_activity_type).where(client_id: @client_id).order('created_at DESC').group_by(&:status)
 
       # No requests present
       return success if client_chain_interactions.blank?
@@ -135,10 +135,10 @@ module ClientManagement
     #
     def insert_db
       @chain_interaction = CriticalChainInteractionLog.create!(client_id: @client_id, client_token_id: @client_token_id,
-                                    activity_type: GlobalConstant::CriticalChainInteractions.grant_eth,
+                                    activity_type: GlobalConstant::CriticalChainInteractions.grant_eth_activity_type,
                                     chain_type: GlobalConstant::CriticalChainInteractions.value_chain_type,
                                     status: GlobalConstant::CriticalChainInteractions.pending_status,
-                                    debug_data: {amount: @amount})
+                                                               response_data: {amount: @amount})
     end
 
     # Make SAAS API call

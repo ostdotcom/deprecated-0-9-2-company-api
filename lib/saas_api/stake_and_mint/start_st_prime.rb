@@ -1,8 +1,8 @@
 module SaasApi
 
-  module Stake
+  module StakeAndMint
 
-    class Start < SaasApi::Base
+    class StartStPrime < SaasApi::Base
 
       # Initialize
       #
@@ -10,7 +10,7 @@ module SaasApi
       # * Date: 29/01/2018
       # * Reviewed By:
       #
-      # @return [SaasApi::Stake::Start]
+      # @return [SaasApi::StakeAndMint::StartStPrime]
       #
       def initialize
         super
@@ -32,7 +32,7 @@ module SaasApi
       def perform(params = {})
         send_request_of_type(
           'post',
-          GlobalConstant::SaasApi.start_stake,
+          GlobalConstant::SaasApi.start_stake_st_prime,
           params
         )
       end

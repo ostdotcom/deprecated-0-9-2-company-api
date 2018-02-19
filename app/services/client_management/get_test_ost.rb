@@ -159,7 +159,7 @@ module ClientManagement
                                     activity_type: GlobalConstant::CriticalChainInteractions.request_ost_activity_type,
                                     chain_type: GlobalConstant::CriticalChainInteractions.value_chain_type,
                                     status: GlobalConstant::CriticalChainInteractions.pending_status,
-                                    debug_data: {amount: @amount})
+                                                               response_data: {amount: @amount})
     end
 
     # Make SAAS API call

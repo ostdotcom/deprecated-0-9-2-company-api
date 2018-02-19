@@ -1,6 +1,6 @@
 module SaasApi
 
-  module Transaction
+  module StakeAndMint
 
     class GetReceipt < SaasApi::Base
 
@@ -10,7 +10,7 @@ module SaasApi
       # * Date: 12/02/2018
       # * Reviewed By:
       #
-      # @return [SaasApi::OnBoarding::GetTestOst]
+      # @return [SaasApi::StakeAndMint::GetReceipt]
       #
       def initialize
         super
