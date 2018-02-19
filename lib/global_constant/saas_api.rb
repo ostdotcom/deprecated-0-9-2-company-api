@@ -4,8 +4,11 @@ module GlobalConstant
   class SaasApi
 
     def self.base_url
-      #TODO - move this to env vars
-      'http://127.0.0.1:4001/'
+      GlobalConstant::Base.company_restful_api[:endpoint]
+    end
+
+    def self.secret_key
+      GlobalConstant::Base.company_restful_api[:secret_key]
     end
 
     def self.propose_bt_api_path
@@ -58,11 +61,6 @@ module GlobalConstant
 
     def self.get_tx_receipt
       'stake/get-receipt'
-    end
-
-    def self.secret_key
-      #TODO - move this to env vars
-      '1somethingsarebetterkeptinenvironemntvariables'
     end
 
   end

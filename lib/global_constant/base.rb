@@ -3,72 +3,48 @@ module GlobalConstant
 
   class Base
 
+    def self.environment_name
+      Rails.env
+    end
+
     def self.sub_env
       @sub_env ||= fetch_config.fetch('sub_env')
     end
 
-    def self.memcache_config
-      @memcache_config ||= fetch_config.fetch('memcached', {}).with_indifferent_access
-    end
-
-    def self.kms
-      @kms ||= fetch_config.fetch('kms', {}).with_indifferent_access
-    end
-
-    def self.aws
-      @aws ||= fetch_config.fetch('aws', {}).with_indifferent_access
-    end
-
-    def self.cynopsis
-      @cynopsis ||= fetch_config.fetch('cynopsis', {}).with_indifferent_access
-    end
-
-    def self.pepo_campaigns_config
-      @pepo_campaigns_config ||= fetch_config.fetch('pepo_campaigns', {}).with_indifferent_access
-    end
-
-    def self.s3
-      @s3 ||= fetch_config.fetch('s3', {})
+    def self.postman_testing?
+      Rails.env.development? && ENV['CA_POSTMAN_TESTING']=='1'
     end
 
     def self.redis_config
       @redis_config ||= fetch_config.fetch('redis', {})
     end
 
-    def self.st_token_sale
-      @st_token_sale ||= fetch_config.fetch('st_token_sale', {}).with_indifferent_access
+    def self.aws
+      @aws ||= fetch_config.fetch('aws', {}).with_indifferent_access
     end
 
-    def self.st_foundation_contracts
-      @st_foundation_contracts ||= fetch_config.fetch('st_foundation_contracts', {}).with_indifferent_access
-    end
-
-    def self.local_path
-      @local_path ||= fetch_config.fetch('local_path', {}).with_indifferent_access
-    end
-
-    def self.recaptcha
-      @recaptcha ||= fetch_config.fetch('recaptcha', {}).with_indifferent_access
+    def self.kms
+      @kms ||= fetch_config.fetch('kms', {}).with_indifferent_access
     end
 
     def self.secret_encryptor
       @secret_encryptor_key ||= fetch_config.fetch('secret_encryptor', {}).with_indifferent_access
     end
 
-    def self.private_ops
-      @private_ops ||= fetch_config.fetch('private_ops', {}).with_indifferent_access
+    def self.recaptcha
+      @recaptcha ||= fetch_config.fetch('recaptcha', {}).with_indifferent_access
     end
 
-    def self.public_ops
-      @public_ops ||= fetch_config.fetch('public_ops', {}).with_indifferent_access
+    def self.memcache_config
+      @memcache_config ||= fetch_config.fetch('memcached', {}).with_indifferent_access
     end
 
-    def self.environment_name
-      Rails.env
+    def self.pepo_campaigns_config
+      @pepo_campaigns_config ||= fetch_config.fetch('pepo_campaigns', {}).with_indifferent_access
     end
 
-    def self.postman_testing?
-      Rails.env.development? && ENV['CA_POSTMAN_TESTING']=='1'
+    def self.company_restful_api
+      @company_restful_api ||= fetch_config.fetch('company_restful_api', {}).with_indifferent_access
     end
 
     def self.explorer_api
