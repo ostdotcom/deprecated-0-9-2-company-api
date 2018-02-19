@@ -224,7 +224,7 @@ module Economy
           request_params: {
             token_symbol: @client_token.symbol,
             token_name: @client_token.name,
-            token_conversion_rate: @client_token.conversion_rate
+            token_conversion_rate: @client_token.conversion_rate.to_f
           },
           status: GlobalConstant::CriticalChainInteractions.queued_status
         }

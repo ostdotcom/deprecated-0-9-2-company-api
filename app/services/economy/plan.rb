@@ -22,7 +22,7 @@ module Economy
       super
 
       @client_token_id = @params[:client_token_id]
-      @conversion_rate = @params[:conversion_rate]
+      @conversion_rate = @params[:conversion_rate].to_f
       @initial_number_of_users = @params[:initial_number_of_users]
       @airdrop_bt_per_user = @params[:airdrop_bt_per_user]
       @token_worth_in_usd = @params[:token_worth_in_usd]

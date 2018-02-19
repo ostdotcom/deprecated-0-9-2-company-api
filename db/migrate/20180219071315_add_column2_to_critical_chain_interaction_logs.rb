@@ -3,7 +3,7 @@ class AddColumn2ToCriticalChainInteractionLogs < DbMigrationConnection
 
     run_migration_for_db(EstablishCompanyBigDbConnection) do
 
-      add_column :critical_chain_interaction_logs, :request_params, :text, null: true
+      add_column :critical_chain_interaction_logs, :request_params, :text, null: true, after: :transaction_hash
 
       rename_column :critical_chain_interaction_logs, :debug_data, :response_data
 
@@ -15,7 +15,7 @@ class AddColumn2ToCriticalChainInteractionLogs < DbMigrationConnection
 
     run_migration_for_db(EstablishCompanyBigDbConnection) do
 
-      remove_column :request_params, :request_params
+      remove_column :critical_chain_interaction_logs, :request_params
 
       rename_column :critical_chain_interaction_logs, :response_data, :debug_data
 

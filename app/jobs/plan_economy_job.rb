@@ -50,7 +50,7 @@ class PlanEconomyJob < ApplicationJob
         name: @client_token[:name],
         symbol: @client_token[:symbol],
         symbol_icon: @client_token[:symbol_icon],
-        conversion_rate: @client_token[:conversion_rate],
+        conversion_rate: @client_token[:conversion_rate].to_f,
         client_id: @client_token[:client_id]
     )
 

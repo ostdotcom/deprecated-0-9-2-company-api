@@ -210,7 +210,7 @@ class StakeAndMint::GetApprovalStatusJob < ApplicationJob
   def start_stake_bt_job
 
     # convert bt into ost.
-    ost_to_stake_amount = @bt_to_mint / @client_token.conversion_rate
+    ost_to_stake_amount = @bt_to_mint / @client_token.conversion_rate.to_f
     existing_balance = @existing_bt_balance
 
     params = {

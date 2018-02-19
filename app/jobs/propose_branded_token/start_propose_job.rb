@@ -105,7 +105,7 @@ class ProposeBrandedToken::StartProposeJob < ApplicationJob
     params = {
       token_symbol: @token_symbol,
       token_name: @token_name,
-      token_conversion_rate: @token_conversion_rate
+      token_conversion_rate: @token_conversion_rate.to_f
     }
 
     r = SaasApi::OnBoarding::ProposeBt.new.perform(params)
