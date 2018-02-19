@@ -71,6 +71,10 @@ module GlobalConstant
       Rails.env.development? && ENV['CA_POSTMAN_TESTING']=='1'
     end
 
+    def self.explorer_api
+      @explorer_api ||= fetch_config.fetch('ost_explorer', {}).with_indifferent_access
+    end
+
     private
 
     def self.fetch_config
