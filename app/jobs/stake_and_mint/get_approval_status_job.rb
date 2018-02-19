@@ -172,7 +172,7 @@ class StakeAndMint::GetApprovalStatusJob < ApplicationJob
       return r
     end
 
-    @client_balances = r.data[:client_balances]
+    @client_balances = r.data[:balances]
 
     @existing_st_prime_balance = @client_balances[GlobalConstant::BalanceTypes.ost_prime_balance_type]
     @existing_bt_balance = @client_balances[@client_token[:symbol]]
