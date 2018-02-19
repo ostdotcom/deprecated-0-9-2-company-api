@@ -56,7 +56,7 @@ class CriticalChainInteractionLog < EstablishCompanyBigDbConnection
 
   # check if interaction can be marked as time_out
   def can_be_marked_timeout?
-    Time.now.to_i - self.created_at > MARK_AS_TIMED_OUT_AFTER
+    (Time.now.to_i - self.created_at.to_i) > MARK_AS_TIMED_OUT_AFTER
   end
 
 end
