@@ -159,28 +159,41 @@ module ClientUsersManagement
     #
     def fetch_users
 
-      ar = ClientUser.where(client_id: @client_id)
+      @economy_users << {
+        id: 1,
+        name: 'PK 1',
+        total_airdropped_tokens_in_wei: 0,
+        total_airdropped_tokens: 0,
+        token_balance_in_wei: 0, #TODO: fix later
+        token_balance: 0 #TODO: fix later
+      }
 
-      case @filter
-        when newly_added_filter
-          ar = ar.where(total_airdropped_tokens_in_wei: 0)
-      end
-
-      offset = (@page_no-1) * @page_size
-      economy_users = ar.limit(@page_size+1).offset(offset).all
-      @has_more = economy_users[@page_size].present?
-      economy_users = economy_users[0...-1] if economy_users.length >= @page_size
-
-      @economy_users = economy_users.map do |object|
-        {
-          id: object.id,
-          name: object.name,
-          total_airdropped_tokens_in_wei: object.total_airdropped_tokens_in_wei,
-          total_airdropped_tokens: Util::Converter.from_wei_value(object.total_airdropped_tokens_in_wei),
+      @economy_users << {
+          id: 2,
+          name: 'PK 2',
+          total_airdropped_tokens_in_wei: 0,
+          total_airdropped_tokens: 0,
           token_balance_in_wei: 0, #TODO: fix later
-          token_balance: Util::Converter.from_wei_value(0) #TODO: fix later
-        }
-      end
+          token_balance: 0 #TODO: fix later
+      }
+
+      @economy_users << {
+          id: 3,
+          name: 'PK 3',
+          total_airdropped_tokens_in_wei: 0,
+          total_airdropped_tokens: 0,
+          token_balance_in_wei: 0, #TODO: fix later
+          token_balance: 0 #TODO: fix later
+      }
+
+      @economy_users << {
+          id: 4,
+          name: 'PK 4',
+          total_airdropped_tokens_in_wei: 0,
+          total_airdropped_tokens: 0,
+          token_balance_in_wei: 0, #TODO: fix later
+          token_balance: 0 #TODO: fix later
+      }
 
       success
 
@@ -200,13 +213,17 @@ module ClientUsersManagement
     #
     def api_response
 
+      next_page_payload = @has_more ? {
+          page_no: @page_no + 1,
+          filter: @filter
+      } : {}
+
       rsp = {
         result_type: result_type,
         result_type.to_sym => @economy_users,
-        next_page_payload: @has_more ? {
-          page_no: @page_no + 1,
-          filter: @filter
-        } : {}
+        meta: {
+          next_page_payload: next_page_payload
+        }
       }
 
       if @page_no == 1
