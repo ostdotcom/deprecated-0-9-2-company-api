@@ -60,10 +60,6 @@ module GlobalConstant
       'stake/get-receipt'
     end
 
-    def self.get_uuid_balances
-      'addresses/fetch-balances'
-    end
-
     def self.secret_key
       #TODO - move this to env vars
       '1somethingsarebetterkeptinenvironemntvariables'

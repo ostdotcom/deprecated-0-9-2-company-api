@@ -192,7 +192,7 @@ class StakeAndMint::GetTransferToStakerStatusJob < ApplicationJob
   #
   def enqueue_self
     BgJob.enqueue(
-      Stake::GetTransferToStakerStatusJob,
+      StakeAndMint::GetTransferToStakerStatusJob,
       {
         critical_log_id: @critical_log_id,
         parent_id: @parent_id,
