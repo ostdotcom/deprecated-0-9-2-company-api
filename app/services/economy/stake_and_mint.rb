@@ -80,7 +80,7 @@ module Economy
         'Invalid stake and mint parameters.',
         GlobalConstant::ErrorAction.default,
         {}
-      ) if @bt_to_mint.to_f <= 0 || @st_prime_to_mint.to_f <= 0 || @transaction_hash.blank?
+      ) if @bt_to_mint.to_f < 0 || @st_prime_to_mint.to_f < 0 || @transaction_hash.blank?
 
       r = validate_user
       return r unless r.success?
@@ -254,6 +254,8 @@ module Economy
     # @return [Result::Base]
     #
     def enqueue_stake_and_mint_job
+
+      return if @bt_to_mint.to_f <= 0 && @st_prime_to_mint.to_f <= 0
 
       critical_log_obj = CriticalChainInteractionLog.create!(
         {
