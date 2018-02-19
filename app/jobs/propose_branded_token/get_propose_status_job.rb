@@ -101,7 +101,6 @@ class ProposeBrandedToken::GetProposeStatusJob < ApplicationJob
     r = SaasApi::OnBoarding::GetRegistrationStatus.new.perform({
                                                                  transaction_hash: @transaction_hash
                                                                })
-
     if @critical_chain_interaction_log.can_be_marked_timeout?
       # Timeout
       @critical_chain_interaction_log.status = GlobalConstant::CriticalChainInteractions.timeout_status
@@ -112,9 +111,12 @@ class ProposeBrandedToken::GetProposeStatusJob < ApplicationJob
 
       # Save registration status
       @registration_status = r.data[:registration_status]
-      save_registration_status
+      save_response = save_registration_status
 
-      if registration_done?
+      if !save_response.success?
+        # failed
+        @critical_chain_interaction_log.status = GlobalConstant::CriticalChainInteractions.failed_status
+      elsif registration_done?
         # processed
         @critical_chain_interaction_log.status = GlobalConstant::CriticalChainInteractions.processed_status
       else
@@ -179,6 +181,34 @@ class ProposeBrandedToken::GetProposeStatusJob < ApplicationJob
       CacheManagement::ClientToken.new([@client_token.id]).clear
     end
 
+    # Update BT details in saas
+    saas_response = send_proposed_branded_token_to_saas
+    return saas_response
+
+  end
+
+  # Send proposed branded token details to SAAS
+  #
+  # * Author: Kedar
+  # * Date: 24/01/2018
+  # * Reviewed By: Sunil
+  #
+  # @return [Result::Base]
+  #
+  def send_proposed_branded_token_to_saas
+    return success unless registration_done?
+
+    r = SaasApi::OnBoarding::EditBt.new.perform(
+      symbol: @client_token.symbol,
+      symbol_icon: @client_token.symbol_icon,
+      client_id: @client_id,
+      token_erc20_address: @registration_status[:erc20_address],
+      token_uuid: @registration_status[:uuid]
+    )
+
+    puts("registration EditBt rsp :: #{r.inspect}")
+
+    return r
   end
 
   # set propose done
@@ -188,28 +218,9 @@ class ProposeBrandedToken::GetProposeStatusJob < ApplicationJob
   # * Reviewed By: Sunil
   #
   def set_propose_done
-
-    # if already propose done, don't proceed further.
-    return if propose_done?
-
     @client_token.send(
       "set_#{GlobalConstant::ClientToken.propose_done_setup_step}"
     )
-
-    r = SaasApi::OnBoarding::EditBt.new.perform(
-        symbol: @client_token.symbol,
-        symbol_icon: @client_token.symbol_icon,
-        client_id: @client_id,
-        token_erc20_address: @registration_status[:erc20_address],
-        token_uuid: @registration_status[:uuid]
-    )
-
-    puts("registration EditBt rsp :: #{r.inspect}")
-
-    return r unless r.success?
-
-    @client_token.token_erc20_address = @registration_status[:erc20_address]
-
   end
 
   # set registered on uc
@@ -234,6 +245,7 @@ class ProposeBrandedToken::GetProposeStatusJob < ApplicationJob
     @client_token.send(
       "set_#{GlobalConstant::ClientToken.registered_on_vc_setup_step}"
     )
+    @client_token.token_erc20_address = @registration_status[:erc20_address]
   end
 
   # Is registration done
