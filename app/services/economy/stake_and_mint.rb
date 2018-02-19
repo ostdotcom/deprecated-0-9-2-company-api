@@ -274,7 +274,7 @@ module Economy
       @stake_and_mint_init_chain_id ||= critical_log_obj.id
 
       BgJob.enqueue(
-        StakeAndMint::GetTransferToStakerStatusJob,
+        ::StakeAndMint::GetTransferToStakerStatusJob,
         {
           critical_log_id: critical_log_obj.id,
           parent_id: @stake_and_mint_init_chain_id
