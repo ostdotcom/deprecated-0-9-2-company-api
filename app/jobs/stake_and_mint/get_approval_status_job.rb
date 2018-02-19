@@ -172,12 +172,7 @@ class StakeAndMint::GetApprovalStatusJob < ApplicationJob
       return r
     end
 
-    Rails.logger.debug(r)
-    Rails.logger.debug(r.data)
-
     @client_balances = r.data['balances']
-    Rails.logger.debug("@client_balances----#{@client_balances}")
-    Rails.logger.debug("r.data['balances']----#{r.data[:balances]}")
 
     @existing_st_prime_balance = @client_balances[GlobalConstant::BalanceTypes.ost_prime_balance_type]
     @existing_bt_balance = @client_balances[@client_token[:symbol]]
