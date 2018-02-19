@@ -127,7 +127,7 @@ class StakeAndMint::GetTransferToStakerStatusJob < ApplicationJob
       end
     end
 
-    @critical_chain_interaction_log.response_data = r
+    @critical_chain_interaction_log.response_data = r.to_hash
     @critical_chain_interaction_log.save!
 
     if @critical_chain_interaction_log.is_pending? || @critical_chain_interaction_log.is_processed?

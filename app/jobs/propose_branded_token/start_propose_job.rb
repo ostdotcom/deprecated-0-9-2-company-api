@@ -120,7 +120,7 @@ class ProposeBrandedToken::StartProposeJob < ApplicationJob
       transaction_uuid = nil
     end
 
-    @critical_chain_interaction_log.response_data = r
+    @critical_chain_interaction_log.response_data = r.to_hash
     @critical_chain_interaction_log.transaction_hash = transaction_hash
     @critical_chain_interaction_log.transaction_uuid = transaction_uuid
     @critical_chain_interaction_log.status = propose_status

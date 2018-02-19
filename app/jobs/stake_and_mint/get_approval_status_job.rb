@@ -128,7 +128,7 @@ class StakeAndMint::GetApprovalStatusJob < ApplicationJob
       end
     end
 
-    @critical_chain_interaction_log.response_data = r
+    @critical_chain_interaction_log.response_data = r.to_hash
     @critical_chain_interaction_log.save!
 
     if @critical_chain_interaction_log.is_pending? || @critical_chain_interaction_log.is_processed?
@@ -167,7 +167,7 @@ class StakeAndMint::GetApprovalStatusJob < ApplicationJob
 
     if !r.success?
       @critical_chain_interaction_log.status = GlobalConstant::CriticalChainInteractions.failed_status
-      @critical_chain_interaction_log.response_data = r
+      @critical_chain_interaction_log.response_data = r.to_hash
       @critical_chain_interaction_log.save!
       return r
     end
