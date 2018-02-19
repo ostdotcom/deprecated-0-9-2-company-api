@@ -236,7 +236,7 @@ module Economy
       @client_token.save!
 
       BgJob.enqueue(
-        ProposeBrandedToken::StartProposeJob,
+        ::ProposeBrandedToken::StartProposeJob,
         {
           critical_log_id: propose_critical_log_obj.id
         }
