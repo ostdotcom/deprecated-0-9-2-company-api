@@ -257,7 +257,7 @@ module Economy
 
       critical_log_obj = CriticalChainInteractionLog.create!(
         {
-          parent_id: @stake_and_mint_init_chain_id.to_i,
+          parent_id: @stake_and_mint_init_chain_id,
           client_id: @client_id,
           client_token_id: @client_token_id,
           activity_type: GlobalConstant::CriticalChainInteractions.staker_initial_transfer_activity_type,
