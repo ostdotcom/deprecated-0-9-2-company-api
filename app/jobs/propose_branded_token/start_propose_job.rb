@@ -87,7 +87,7 @@ class ProposeBrandedToken::StartProposeJob < ApplicationJob
       'Propose not yet initiated.',
       GlobalConstant::ErrorAction.default,
       {}
-    ) unless propose_initiated?
+    ) unless @client_token.propose_initiated?
 
     success
   end

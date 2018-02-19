@@ -187,9 +187,7 @@ module Economy
         @client_token.symbol.blank? || @client_token.reserve_uuid.blank?
 
       # if propose was started but registeration not done yet we can not proceed
-      if @client_token.send("#{GlobalConstant::ClientToken.propose_initiated_setup_step}?") &&
-        !@client_token.registration_done?
-
+      if @client_token.propose_initiated? && !@client_token.registration_done?
         return error_with_data(
           'e_sam_6',
           'Propose was initiated but was not completed.',
@@ -197,7 +195,6 @@ module Economy
           GlobalConstant::ErrorAction.default,
           {}
         )
-
       end
 
       success
@@ -216,8 +213,7 @@ module Economy
     #
     def enqueue_propose_job
 
-      return if @client_token.send("#{GlobalConstant::ClientToken.propose_initiated_setup_step}?") ||
-        @client_token.registration_done?
+      return if @client_token.propose_initiated? || @client_token.registration_done?
 
       propose_critical_log_obj = CriticalChainInteractionLog.create!(
         {
