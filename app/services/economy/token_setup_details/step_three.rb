@@ -79,12 +79,10 @@ module Economy
       #
       def fetch_setup_details
 
-        @api_response_data[:client_token_planner] = CacheManagement::ClientTokenPlanner.new([@client_token_id]).fetch[@client_token_id]
-
-        r = fetch_chain_interaction_params
+        r = super
         return r unless r.success?
 
-        @api_response_data[:chain_interaction_params] = r.data.with_indifferent_access
+        @api_response_data[:client_token_planner] = CacheManagement::ClientTokenPlanner.new([@client_token_id]).fetch[@client_token_id]
 
         success
 
