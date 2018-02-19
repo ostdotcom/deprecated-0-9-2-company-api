@@ -81,8 +81,8 @@ class StakeAndMint::GetTransferToStakerStatusJob < ApplicationJob
     ) if @critical_chain_interaction_log.blank?
 
     @transaction_hash = @critical_chain_interaction_log.transaction_hash
-    @bt_to_mint = @critical_chain_interaction_log_obj.request_params[:bt_to_mint].to_f
-    @st_prime_to_mint = @critical_chain_interaction_log_obj.request_params[:st_prime_to_mint].to_f
+    @bt_to_mint = @critical_chain_interaction_log.request_params[:bt_to_mint].to_f
+    @st_prime_to_mint = @critical_chain_interaction_log.request_params[:st_prime_to_mint].to_f
 
     @client_token = ClientToken.where(id: @critical_chain_interaction_log.client_token_id).first
 
