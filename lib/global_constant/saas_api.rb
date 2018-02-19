@@ -32,6 +32,10 @@ module GlobalConstant
       'on-boarding/edit-token'
     end
 
+    def self.get_chain_interaction_params_path
+      'on-boarding/get-chain-interaction-params'
+    end
+
     def self.create_dummy_users_path
       'on-boarding/create-dummy-users'
     end
