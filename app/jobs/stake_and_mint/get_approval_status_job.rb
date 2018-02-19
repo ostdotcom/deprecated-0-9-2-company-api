@@ -239,7 +239,7 @@ class StakeAndMint::GetApprovalStatusJob < ApplicationJob
         transaction_uuid: transaction_uuid,
         transaction_hash: transaction_hash,
         request_params: params,
-        response_data: stake_response,
+        response_data: stake_response.to_hash,
         status: status
       }
     )
@@ -293,7 +293,7 @@ class StakeAndMint::GetApprovalStatusJob < ApplicationJob
         transaction_uuid: transaction_uuid,
         transaction_hash: transaction_hash,
         request_params: params,
-        response_data: stake_response,
+        response_data: stake_response.to_hash,
         status: status
       }
     )

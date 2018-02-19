@@ -231,7 +231,7 @@ class StakeAndMint::GetTransferToStakerStatusJob < ApplicationJob
         transaction_uuid: transaction_uuid,
         transaction_hash: transaction_hash,
         request_params: @critical_chain_interaction_log.request_params,
-        response_data: approve_response,
+        response_data: approve_response.to_hash,
         status: status
       }
     )
