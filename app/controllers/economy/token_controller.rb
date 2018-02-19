@@ -87,4 +87,42 @@ class Economy::TokenController < Economy::BaseController
     render_api_response(service_response)
   end
 
+  # Get Transaction types graphs
+  #
+  # * Author: Pankaj
+  # * Date: 19/02/2018
+  # * Reviewed By:
+  #
+  def transaction_type_graph
+    client_token = CacheManagement::ClientTokenSecure.new([params[:client_token_id]]).fetch[params[:client_token_id]]
+    service_response = ExplorerApi::TransactionsTypeGraph.new().perform({token_erc_addr: client_token[:token_erc20_address],
+                                                                         graph_duration: params[:graph_duration]})
+    render_api_response(service_response)
+  end
+
+  # Get Number of Transactions Graph
+  #
+  # * Author: Pankaj
+  # * Date: 19/02/2018
+  # * Reviewed By:
+  #
+  def number_of_transactions_graph
+    client_token = CacheManagement::ClientTokenSecure.new([params[:client_token_id]]).fetch[params[:client_token_id]]
+    service_response = ExplorerApi::NumberOfTransactionsGraph.new().perform({token_erc_addr: client_token[:token_erc20_address],
+                                                                         graph_duration: params[:graph_duration]})
+    render_api_response(service_response)
+  end
+
+  # Get Top users of branded token
+  #
+  # * Author: Pankaj
+  # * Date: 19/02/2018
+  # * Reviewed By:
+  #
+  def top_users_graph
+    client_token = CacheManagement::ClientTokenSecure.new([params[:client_token_id]]).fetch[params[:client_token_id]]
+    service_response = ExplorerApi::TopUsersGraph.new().perform({token_erc_addr: client_token[:token_erc20_address]})
+    render_api_response(service_response)
+  end
+
 end
