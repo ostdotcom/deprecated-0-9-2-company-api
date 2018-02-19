@@ -77,16 +77,4 @@ class ClientToken < EstablishCompanyClientEconomyDbConnection
       send("#{GlobalConstant::ClientToken.registered_on_vc_setup_step}?")
   end
 
-  # Is propose initiated
-  #
-  # * Author: Puneet
-  # * Date: 29/01/2018
-  # * Reviewed By:
-  #
-  # @return [Boolean]
-  #
-  def propose_initiated?
-    send("#{GlobalConstant::ClientToken.propose_initiated_setup_step}?")
-  end
-
 end
