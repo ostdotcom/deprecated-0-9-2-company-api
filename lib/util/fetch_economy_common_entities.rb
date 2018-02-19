@@ -151,12 +151,19 @@ module Util
     #
     def formatted_response
 
-      success_with_data(
-        client_token: @client_token,
-        user: @user,
-        client_balances: @client_balances || {},
-        oracle_price_points: FetchOraclePricePoints.perform
-      )
+      r = SaasApi::OnBoarding::FetchChainInteractionParams.new.perform({client_id: @client_token[:client_id]})
+      chain_interaction_params = r.data.with_indifferent_access if r.success?
+
+      data = {
+          client_token: @client_token,
+          user: @user,
+          client_balances: @client_balances || {},
+          oracle_price_points: FetchOraclePricePoints.perform
+      }
+
+      data[:chain_interaction_params] = chain_interaction_params if chain_interaction_params.present?
+
+      success_with_data(data)
 
     end
 
