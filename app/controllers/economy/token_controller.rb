@@ -87,6 +87,17 @@ class Economy::TokenController < Economy::BaseController
     render_api_response(service_response)
   end
 
+  # Get status of a trnsaction which FE fired on our chains
+  #
+  # * Author: Puneet
+  # * Date: 31/01/2018
+  # * Reviewed By:
+  #
+  def get_critical_chain_interaction_status
+    service_response = Economy::GetCriticalChainInteractionStatus.new(params).perform
+    render_api_response(service_response)
+  end
+
   # Get Transaction types graphs
   #
   # * Author: Pankaj

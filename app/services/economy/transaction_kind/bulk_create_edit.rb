@@ -11,6 +11,7 @@ module Economy
       # * Reviewed By:
       #
       # @params [Integer] client_id (mandatory) - client_id
+      # @params [Integer] client_token_id (mandatory) - client_token_id
       # @params [Hash] transaction_kinds - Hash of all transaction_kinds to be created or edited
       #
       # @return [Economy::TransactionKind::Base]
@@ -18,6 +19,8 @@ module Economy
       def initialize(params)
 
         super
+
+        @client_token_id = @params[:client_token_id]
 
         @transaction_kinds = @params[:transaction_kinds]
 
@@ -45,7 +48,10 @@ module Economy
 
         return r unless r.success?
 
+        CacheManagement::ClientToken.new([@client_token_id]).clear
+
         return_response
+
       end
 
       private

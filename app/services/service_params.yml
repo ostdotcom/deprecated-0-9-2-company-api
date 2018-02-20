@@ -92,12 +92,12 @@
   :optional:
     - :initial_number_of_users
 
-'Economy::LogTransferToStaker':
+'Economy::GetCriticalChainInteractionStatus':
   :mandatory:
     - :client_id
     - :user_id
     - :client_token_id
-    - :transaction_hash
+    - :critical_chain_interaction_log_id
   :optional:
 
 'Economy::StakeAndMint':

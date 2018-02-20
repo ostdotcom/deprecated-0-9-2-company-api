@@ -59,4 +59,22 @@ class CriticalChainInteractionLog < EstablishCompanyBigDbConnection
     (Time.now.to_i - self.created_at.to_i) > MARK_AS_TIMED_OUT_AFTER
   end
 
+  after_commit :flush_cache
+
+  # Flush memcache
+  #
+  # * Author: Puneet
+  # * Date: 01/02/2018
+  # * Reviewed By:
+  #
+  def flush_cache
+
+    id_to_flush = parent_id.present? ? parent_id : id
+    CacheManagement::CriticalChainInteractionStatus.new([id_to_flush]).clear
+
+    # This can be optimized later
+    CacheManagement::PendingCriticalInteractionIds.new([client_token_id]).clear if client_token_id.present?
+
+  end
+
 end
