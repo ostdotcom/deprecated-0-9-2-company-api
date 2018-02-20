@@ -1,4 +1,4 @@
-class CreateTransactionLogs < DbMigrationConnection
+class ModifyTransactionLogs < DbMigrationConnection
   def up
 
     run_migration_for_db(EstablishSaasTransactionDbConnection) do
