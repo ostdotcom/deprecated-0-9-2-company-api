@@ -1,8 +1,8 @@
 module SaasApi
 
-  module Stake
+  module StakeAndMint
 
-    class GetApprovalStatus < SaasApi::Base
+    class StartBrandedToken < SaasApi::Base
 
       # Initialize
       #
@@ -10,7 +10,7 @@ module SaasApi
       # * Date: 29/01/2018
       # * Reviewed By:
       #
-      # @return [SaasApi::Stake::GetApprovalStatus]
+      # @return [SaasApi::StakeAndMint::StartBrandedToken]
       #
       def initialize
         super
@@ -22,14 +22,17 @@ module SaasApi
       # * Date: 25/01/2018
       # * Reviewed By:
       #
-      # @param [String] transaction_hash (mandatory) - transaction hash of the approval transaction
+      # @param [String] beneficiary (mandatory) - eth address of the beneficiary
+      # @param [Number] to_stake_amount (mandatory) - this is the amount of OST to stake
+      # @param [String] uuid (mandatory) - uuid of the token
+
       #
       # @return [Result::Base]
       #
       def perform(params = {})
         send_request_of_type(
-          'get',
-          GlobalConstant::SaasApi.get_approve_status_for_stake_api_path,
+          'post',
+          GlobalConstant::SaasApi.start_stake_bt,
           params
         )
       end

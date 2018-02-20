@@ -97,10 +97,20 @@ module ClientManagement
     #
     def validate_eth_address_from_db
 
-      client_address = ClientAddress.where(hashed_ethereum_address: @hashed_eth_address).last
-
+      # check if this client already has an eth address associated
+      client_address = ClientAddress.where(client_id: @client_id).last
       return error_with_data(
           'cm_vea_4',
+          'Invalid ETH Address.', # do we have to reveal in this message that eth address was associated with someone else
+          'Invalid ETH Address.',
+          GlobalConstant::ErrorAction.default,
+          {}
+      ) if client_address.present? && client_address.hashed_ethereum_address != @hashed_eth_address
+
+      # check if this eth address is associted by any other address
+      client_address = ClientAddress.where(hashed_ethereum_address: @hashed_eth_address).last
+      return error_with_data(
+          'cm_vea_5',
           'Invalid ETH Address.', # do we have to reveal in this message that eth address was associated with someone else
           'Invalid ETH Address.',
           GlobalConstant::ErrorAction.default,

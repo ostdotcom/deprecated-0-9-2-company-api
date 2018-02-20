@@ -55,6 +55,10 @@ export CA_CAMPAIGN_CLIENT_SECRET="818506e0d00c33f84099744461b41ac5"
 export CA_CAMPAIGN_BASE_URL="https://pepocampaigns.com/"
 export CA_CAMPAIGN_MASTER_LIST="3722"
 
+# Company Restful API (SAAS) details
+export CA_SAAS_API_ENDPOINT='http://127.0.0.1:4001/'
+export CA_SAAS_API_SECRET_KEY='1somethingsarebetterkeptinenvironemntvariables'
+
 # OST Explorer Apis
 export CA_EXPLORER_BASE_URL='http://172.16.0.151:3001/'
 export CA_EXPLORER_SECRET_KEY='6p5BkI0uGHI1JPrAKP3eB1Zm88KZ84a9Th9o4syhwZhxlv0oe0'

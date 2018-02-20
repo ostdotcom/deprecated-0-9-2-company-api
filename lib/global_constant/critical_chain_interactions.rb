@@ -15,12 +15,12 @@ module GlobalConstant
         'transfer_to_staker'
       end
 
-      def grant_eth
+      def grant_eth_activity_type
         'grant_eth'
       end
 
-      def propose_initiates_activity_type
-        'propose_initiates'
+      def propose_bt_activity_type
+        'propose_bt'
       end
 
       def staker_initial_transfer_activity_type
@@ -31,8 +31,12 @@ module GlobalConstant
         'stake_approval_started'
       end
 
-      def stake_started_activity_type
-        'stake_started'
+      def stake_bt_started_activity_type
+        'stake_bt_started'
+      end
+
+      def stake_st_prime_started_activity_type
+        'stake_st_prime_started'
       end
 
       ########## chain_types #############

@@ -12,7 +12,8 @@ module ClientUsersManagement
     # @param [Integer] client_id (mandatory) - Client Id
     # @param [Integer] client_token_id (mandatory) - Client Token Id
     # @param [Integer] page_no (optional) - page no
-    # @param [String] filter (optional) - newly_added
+    # @param [String] order_by (optional) - creation_time
+    # @param [String] is_xhr (optional) - creation_time
     #
     # @return [ClientUsersManagement::ListUser]
     #
@@ -24,12 +25,12 @@ module ClientUsersManagement
       @client_token_id = @params[:client_token_id]
       @user_id = @params[:user_id]
       @page_no = @params[:page_no]
-      @filter = @params[:filter]
+      @order_by = @params[:order_by]
+      @is_xhr = @params[:is_xhr]
 
       @page_size = 25
       @client = nil
-      @economy_users = []
-      @has_more = false
+      @api_response_data = {}
 
     end
 
@@ -103,16 +104,16 @@ module ClientUsersManagement
         @page_no = 1
       end
 
-      if @filter.present?
+      if @order_by.present?
         return error_with_data(
             'cum_lu_1',
-            "Invalid Page No.",
-            "Invalid Page No.",
+            "Invalid @order_by",
+            "Invalid @order_by",
             GlobalConstant::ErrorAction.mandatory_params_missing,
             {}
-        ) if [newly_added_filter].exclude?(@filter)
+        ) if [creation_time_order_by].exclude?(@order_by)
       else
-        @filter = ''
+        @order_by = ''
       end
 
       success
@@ -153,41 +154,39 @@ module ClientUsersManagement
     # * Date: 02/02/2018
     # * Reviewed By:
     #
-    # Sets @economy_users
-    #
     # @return [Result::Base]
     #
     def fetch_users
 
-      ar = ClientUser.where(client_id: @client_id)
+      return success unless is_xhr_request?
 
-      case @filter
-        when newly_added_filter
-          ar = ar.where(total_airdropped_tokens_in_wei: 0)
-      end
+      result = CacheManagement::ClientApiCredentials.new([@client_id]).fetch[@client_id]
+      return error_with_data(
+          'uc_lu_1',
+          "Invalid client.",
+          'Something Went Wrong.',
+          GlobalConstant::ErrorAction.default,
+          {}
+      ) if result.blank?
 
-      offset = (@page_no-1) * @page_size
-      economy_users = ar.limit(@page_size+1).offset(offset).all
-      @has_more = economy_users[@page_size].present?
-      economy_users = economy_users[0...-1] if economy_users.length >= @page_size
+      # Create OST Sdk Obj
+      credentials = OSTSdk::Util::APICredentials.new(result[:api_key], result[:api_secret])
+      @ost_sdk_obj = OSTSdk::Saas::Users.new(GlobalConstant::Base.sub_env, credentials)
 
-      @economy_users = economy_users.map do |object|
-        {
-          id: object.id,
-          name: object.name,
-          total_airdropped_tokens_in_wei: object.total_airdropped_tokens_in_wei,
-          total_airdropped_tokens: Util::Converter.from_wei_value(object.total_airdropped_tokens_in_wei),
-          token_balance_in_wei: 0, #TODO: fix later
-          token_balance: Util::Converter.from_wei_value(0) #TODO: fix later
-        }
-      end
+      service_response = @ost_sdk_obj.list(page_no: @page_no, sort_by: @order_by)
+
+      return error_with_data(
+          'uc_lu_2',
+          "Coundn't Fetch User List",
+          'Something Went Wrong.',
+          GlobalConstant::ErrorAction.default,
+          {}
+      ) unless service_response.success?
+
+      @api_response_data = service_response.data
 
       success
 
-    end
-
-    def result_type
-      'economy_users'
     end
 
     # API response
@@ -200,27 +199,22 @@ module ClientUsersManagement
     #
     def api_response
 
-      rsp = {
-        result_type: result_type,
-        result_type.to_sym => @economy_users,
-        next_page_payload: @has_more ? {
-          page_no: @page_no + 1,
-          filter: @filter
-        } : {}
-      }
-
-      if @page_no == 1
+      unless is_xhr_request?
         r = Util::FetchEconomyCommonEntities.new(user_id: @user_id, client_token_id: @client_token_id).perform
         return r unless r.success?
-        rsp.merge!(r.data)
+        @api_response_data.merge!(r.data)
       end
 
-      success_with_data(rsp)
+      success_with_data(@api_response_data)
 
     end
 
-    def newly_added_filter
-      'newly_added'
+    def creation_time_order_by
+      'creation_time'
+    end
+
+    def is_xhr_request?
+      @is_xhr == 1
     end
 
   end

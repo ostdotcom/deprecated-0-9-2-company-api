@@ -17,6 +17,8 @@ class CreateUsers < DbMigrationConnection
 
       add_index :users, :email, name: 'uk_1', unique: true
 
+      execute ("ALTER TABLE users AUTO_INCREMENT = 100000")
+
     end
 
   end

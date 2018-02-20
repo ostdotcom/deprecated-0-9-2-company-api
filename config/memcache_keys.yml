@@ -22,6 +22,12 @@ client:
   token_planner_details:
     key_template: 'c_td_p_%{id}'
     expiry_in_seconds: 60
+  tx_status_details:
+    key_template: 'c_tx_s_%{id}'
+    expiry_in_seconds: 60
+  pending_critical_interaction_ids:
+    key_template: 'c_pci_ids_%{id}'
+    expiry_in_seconds: 60
 
 mics:
   ost_fiat_conversion_factors:

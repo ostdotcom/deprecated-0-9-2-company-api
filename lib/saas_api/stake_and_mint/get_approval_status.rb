@@ -1,8 +1,8 @@
 module SaasApi
 
-  module Stake
+  module StakeAndMint
 
-    class Approve < SaasApi::Base
+    class GetApprovalStatus < SaasApi::Base
 
       # Initialize
       #
@@ -10,7 +10,7 @@ module SaasApi
       # * Date: 29/01/2018
       # * Reviewed By:
       #
-      # @return [SaasApi::Stake::Approve]
+      # @return [SaasApi::StakeAndMint::GetApprovalStatus]
       #
       def initialize
         super
@@ -22,12 +22,14 @@ module SaasApi
       # * Date: 25/01/2018
       # * Reviewed By:
       #
+      # @param [String] transaction_hash (mandatory) - transaction hash of the approval transaction
+      #
       # @return [Result::Base]
       #
       def perform(params = {})
         send_request_of_type(
-          'post',
-          GlobalConstant::SaasApi.approve_for_stake_api_path,
+          'get',
+          GlobalConstant::SaasApi.get_approve_status_for_stake_api_path,
           params
         )
       end

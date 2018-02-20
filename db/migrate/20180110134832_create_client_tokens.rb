@@ -21,6 +21,8 @@ class CreateClientTokens < DbMigrationConnection
       add_index :client_tokens, :name, name: 'uk_1', unique: true
       add_index :client_tokens, :symbol, name: 'uk_2', unique: true
 
+      execute ("ALTER TABLE client_tokens AUTO_INCREMENT = 5000")
+
     end
 
   end

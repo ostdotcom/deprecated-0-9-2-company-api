@@ -4,8 +4,11 @@ module GlobalConstant
   class SaasApi
 
     def self.base_url
-      #TODO - move this to env vars
-      'http://127.0.0.1:4001/'
+      GlobalConstant::Base.company_restful_api[:endpoint]
+    end
+
+    def self.secret_key
+      GlobalConstant::Base.company_restful_api[:secret_key]
     end
 
     def self.propose_bt_api_path
@@ -48,12 +51,16 @@ module GlobalConstant
       'stake/approval-status'
     end
 
-    def self.start_stake
-      'stake/start'
+    def self.start_stake_bt
+      'stake/start-bt'
+    end
+
+    def self.start_stake_st_prime
+      'stake/start-st-prime'
     end
 
     def self.get_tx_receipt
-      'transaction/get-receipt'
+      'stake/get-receipt'
     end
 
     def self.simulate_transaction
@@ -62,11 +69,6 @@ module GlobalConstant
 
     def self.fetch_transaction_details
       'transaction/fetch_details'
-    end
-
-    def self.secret_key
-      #TODO - move this to env vars
-      '1somethingsarebetterkeptinenvironemntvariables'
     end
 
   end

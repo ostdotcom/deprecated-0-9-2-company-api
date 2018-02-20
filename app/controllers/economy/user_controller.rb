@@ -36,7 +36,21 @@ class Economy::UserController < Economy::BaseController
   #
   def edit_user
 
-    service_response = ClientUsersManagement::EditUser.new(params).perform
+    result = CacheManagement::ClientApiCredentials.new([params[:client_id]]).fetch[params[:client_id]]
+    render_api_response(
+        error_with_data(
+            'uc_cu_1',
+            "Invalid client.",
+            'Something Went Wrong.',
+            GlobalConstant::ErrorAction.default,
+            {}
+        )
+    ) if result.blank?
+
+    # Create OST Sdk Obj
+    credentials = OSTSdk::Util::APICredentials.new(result[:api_key], result[:api_secret])
+    @ost_sdk_obj = OSTSdk::Saas::Users.new(GlobalConstant::Base.sub_env, credentials)
+    service_response = @ost_sdk_obj.edit({name: params[:name], address_uuid: params[:address_uuid]})
 
     render_api_response(service_response)
 
@@ -50,6 +64,7 @@ class Economy::UserController < Economy::BaseController
   #
   def list_users
 
+    params[:is_xhr] = request.xhr?.nil? ? 0 : 1
     service_response = ClientUsersManagement::ListUser.new(params).perform
 
     render_api_response(service_response)

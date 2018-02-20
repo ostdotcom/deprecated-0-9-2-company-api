@@ -74,6 +74,7 @@ module Economy
         bit_value = ClientToken.setup_steps_config[GlobalConstant::ClientToken.configure_transactions_setup_step]
         ClientToken.where(id: @client_token_id).
           where("setup_steps is NULL OR (setup_steps & #{bit_value} = 0)").update_all("setup_steps = setup_steps | #{bit_value}")
+        CacheManagement::ClientToken.new([@client_token_id]).clear
       end
 
     end

@@ -16,6 +16,8 @@ class CreateClientTransationTypes < DbMigrationConnection
 
       add_index :client_transaction_types, [:client_id, :name], name: 'uniq_client_id_name', unique:true
 
+      execute ("ALTER TABLE client_transaction_types AUTO_INCREMENT = 20000")
+
     end
   end
 

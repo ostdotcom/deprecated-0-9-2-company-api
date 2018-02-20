@@ -59,20 +59,6 @@ module Economy
 
       private
 
-      # Sub classes to fetch required data
-      #
-      # * Author: Puneet
-      # * Date: 31/01/2018
-      # * Reviewed By:
-      #
-      # Sets @api_response_data
-      #
-      # @return [Result::Base]
-      #
-      def fetch_setup_details
-        fail 'sub class to implement'
-      end
-
       #
       # * Author: Puneet
       # * Date: 31/01/2018
@@ -177,16 +163,25 @@ module Economy
         @i_s_t_c = @client_token[:setup_steps].include?(GlobalConstant::ClientToken.configure_transactions_setup_step)
       end
 
-      # Fetch Chain Interaction params from Saas API
+      # Sub classes to fetch required data
       #
       # * Author: Puneet
       # * Date: 31/01/2018
       # * Reviewed By:
       #
+      # Sets @api_response_data
+      #
       # @return [Result::Base]
       #
-      def fetch_chain_interaction_params
-        SaasApi::OnBoarding::FetchChainInteractionParams.new.perform({client_id: @client_id})
+      def fetch_setup_details
+
+        r = SaasApi::OnBoarding::FetchChainInteractionParams.new.perform({client_id: @client_id})
+        return r unless r.success?
+
+        @api_response_data[:chain_interaction_params] = r.data.with_indifferent_access
+
+        success
+
       end
 
     end

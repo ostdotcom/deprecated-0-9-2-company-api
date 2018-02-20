@@ -79,12 +79,19 @@ module Economy
       #
       def fetch_setup_details
 
-        @api_response_data[:client_token_planner] = CacheManagement::ClientTokenPlanner.new([@client_token_id]).fetch[@client_token_id]
-
-        r = fetch_chain_interaction_params
+        r = super
         return r unless r.success?
 
-        @api_response_data[:chain_interaction_params] = r.data.with_indifferent_access
+        pending_critical_interaction_ids = CacheManagement::PendingCriticalInteractionIds.new([@client_token_id]).fetch[@client_token_id]
+
+        pending_critical_interaction_id = pending_critical_interaction_ids.blank? ? nil :
+                                              pending_critical_interaction_ids[GlobalConstant::CriticalChainInteractions.stake_bt_started_activity_type]
+
+        if pending_critical_interaction_id.present?
+          @api_response_data[:pending_critical_interaction_id] = pending_critical_interaction_id
+        end
+
+        @api_response_data[:client_token_planner] = CacheManagement::ClientTokenPlanner.new([@client_token_id]).fetch[@client_token_id]
 
         success
 

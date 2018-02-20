@@ -1,6 +1,6 @@
 module Economy
 
-  class GetTokenSupplyDetails < ServicesBase
+  class GetCriticalChainInteractionStatus < ServicesBase
 
     # Initialize
     #
@@ -8,10 +8,12 @@ module Economy
     # * Date: 31/01/2018
     # * Reviewed By:
     #
-    # @params [Integer] client_token_id (mandatory) - client token id
+    # @params [Integer] critical_chain_interaction_log_id (mandatory) - critical_chain_interaction_log_id
     # @params [Integer] user_id (mandatory) - user id
+    # @params [Integer] client_id (mandatory) - client id
+    # @params [Integer] client_token_id (mandatory) - client token id
     #
-    # @return [Economy::GetTokenSupplyDetails]
+    # @return [Economy::GetCriticalChainInteractionStatus]
     #
     def initialize(params)
 
@@ -19,6 +21,8 @@ module Economy
 
       @user_id = @params[:user_id]
       @client_token_id = @params[:client_token_id]
+      @client_id = @params[:client_id]
+      @critical_chain_interaction_log_id = @params[:critical_chain_interaction_log_id]
 
       @client_token = nil
       @api_response_data = {}
@@ -35,13 +39,13 @@ module Economy
     #
     def perform
 
-      r = validate
+      r = validate_and_sanitize
       return r unless r.success?
 
       r = fetch_client_token
       return r unless r.success?
 
-      r = fetch_token_supply_details
+      r = fetch_critical_chain_interaction_status
       return r unless r.success?
 
       r = fetch_common_entities
@@ -58,13 +62,39 @@ module Economy
     # * Date: 31/01/2018
     # * Reviewed By:
     #
+    # @return [Result::Base]
+    #
+    def validate_and_sanitize
+
+      r = validate
+      return r unless r.success?
+
+      return error_with_data(
+          'e_gtss_1',
+          'Invalid id.',
+          'Invalid id.',
+          GlobalConstant::ErrorAction.default,
+          {}
+      ) unless Util::CommonValidator.is_numeric?(@critical_chain_interaction_log_id)
+
+      @critical_chain_interaction_log_id = @critical_chain_interaction_log_id.to_i
+
+      success
+
+    end
+
+    #
+    # * Author: Puneet
+    # * Date: 31/01/2018
+    # * Reviewed By:
+    #
     # Sets @client_token
     #
     def fetch_client_token
 
       @client_token = CacheManagement::ClientToken.new([@client_token_id]).fetch[@client_token_id]
       return error_with_data(
-          'e_gtss_1',
+          'e_gtss_2',
           'Token not found.',
           'Token not found.',
           GlobalConstant::ErrorAction.default,
@@ -82,21 +112,9 @@ module Economy
     #
     # @return [Result::Base]
     #
-    def fetch_token_supply_details
+    def fetch_critical_chain_interaction_status
 
-      r = FetchClientTokenSupplyDetails.new(client_token_id: @client_token[:id]).perform
-      return r unless r.success?
-
-      @api_response_data[:token_supply_details] = r.data
-
-      pending_critical_interaction_ids = CacheManagement::PendingCriticalInteractionIds.new([@client_token[:id]]).fetch[@client_token[:id]]
-
-      pending_critical_interaction_id = pending_critical_interaction_ids.blank? ? nil :
-        pending_critical_interaction_ids[GlobalConstant::CriticalChainInteractions.stake_bt_started_activity_type]
-
-      if pending_critical_interaction_id.present?
-        @api_response_data[:pending_critical_interaction_id] = pending_critical_interaction_id
-      end
+      @api_response_data[:critical_chain_interaction_status] = CacheManagement::CriticalChainInteractionStatus.new([@critical_chain_interaction_log_id]).fetch[@critical_chain_interaction_log_id]
 
       success
 
@@ -119,7 +137,8 @@ module Economy
       success
 
     end
-    
+
   end
-  
+
 end
+

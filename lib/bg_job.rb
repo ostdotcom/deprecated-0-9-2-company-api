@@ -14,15 +14,18 @@ class BgJob
   #
   def self.enqueue(klass, enqueue_params, options = {})
     # Set default values to options
-    options.reverse_merge!(emails: '',
-                           subject: "[#{Rails.env}]: Exception occurred while trying to enqueue job to resque",
-                           safe: true,
-                           fallback_run_sync: true,
-                           force_run_sync: Rails.env.development?)
+    options.reverse_merge!({
+                             emails: '',
+                             subject: "[#{Rails.env}]: Exception occurred while trying to enqueue job to resque",
+                             safe: true,
+                             fallback_run_sync: true,
+                             force_run_sync: false #Rails.env.development?
+                           })
     q_name = options[:queue] || klass.queue_name
 
     # if force_run_sync or if it is dev env, run the job synchronously
     if options[:force_run_sync]
+      sleep(options[:wait]) if options[:wait].present?
       return perform_job_synchronously(klass, enqueue_params, q_name)
     else
       enqueue_params = hashify_params_recursively(enqueue_params)
@@ -35,20 +38,21 @@ class BgJob
 
   rescue => e
     Rails.logger.error("Resque enqueue failed with params #{enqueue_params}. Exception: #{e.message}")
+    sleep(options[:wait]) if options[:wait].present?
 
     perform_job_synchronously(klass, enqueue_params, q_name) if options[:fallback_run_sync]
 
-      Rails.logger.error { e }
+    Rails.logger.error {e}
 
-      ApplicationMailer.notify(
-        body: {exception: {message: e.message, backtrace: e.backtrace}},
-        data: {
-          'enqueue_params' => enqueue_params,
-          'class_name' => klass,
-          'options' => options,
-        },
-        subject: 'Exception in Resque enqueue'
-      ).deliver
+    ApplicationMailer.notify(
+      body: {exception: {message: e.message, backtrace: e.backtrace}},
+      data: {
+        'enqueue_params' => enqueue_params,
+        'class_name' => klass,
+        'options' => options,
+      },
+      subject: 'Exception in Resque enqueue'
+    ).deliver unless Rails.env.development?
   end
 
   # Perform job synchronously

@@ -21,7 +21,7 @@ module ClientManagement
 
       @client_id = @params[:client_id]
       @client_token_id = @params[:client_token_id]
-      @amount = @params[:requested_amount] || 500
+      @amount = @params[:requested_amount] || 10000
       @eth_address = @params[:eth_address]
 
       @client = nil
@@ -159,7 +159,8 @@ module ClientManagement
                                     activity_type: GlobalConstant::CriticalChainInteractions.request_ost_activity_type,
                                     chain_type: GlobalConstant::CriticalChainInteractions.value_chain_type,
                                     status: GlobalConstant::CriticalChainInteractions.pending_status,
-                                    debug_data: {amount: @amount})
+                                    request_params: {amount: @amount}
+      )
     end
 
     # Make SAAS API call

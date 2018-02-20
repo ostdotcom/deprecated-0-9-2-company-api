@@ -30,9 +30,13 @@ Rails.application.routes.draw do
     match 'get-step-three-details' => :get_step_three_details, via: :GET
     match 'get-dashboard-details' => :get_dashboard_details, via: :GET
     match 'get-supply-details' => :get_supply_details, via: :GET
+    match 'get-critical-chain-interaction-status' => :get_critical_chain_interaction_status, via: :GET
     match 'plan' => :plan_token, via: :POST
     match 'log-transfer-to-staker' => :log_transfer_to_staker, via: :POST
     match 'stake-and-mint' => :stake_and_mint, via: :POST
+    match 'graph/transaction-types' => :transaction_type_graph, via: :GET
+    match 'graph/number-of-transactions' => :number_of_transactions_graph, via: :GET
+    match 'graph/top-users' => :top_users_graph, via: :GET
   end
 
   scope 'api/economy/transaction/kind', controller: 'economy/transaction_kind' do
