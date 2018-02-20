@@ -215,7 +215,7 @@ class StakeAndMint::GetApprovalStatusJob < ApplicationJob
 
     params = {
       client_id: @critical_chain_interaction_log.client_id,
-      client_token_id: @critical_chain_interaction_log.client_token_id,
+      token_symbol: @client_token.symbol,
       to_stake_amount: ost_to_stake_amount,
     }
 
@@ -272,7 +272,6 @@ class StakeAndMint::GetApprovalStatusJob < ApplicationJob
 
     params = {
       client_id: @critical_chain_interaction_log.client_id,
-      client_token_id: @critical_chain_interaction_log.client_token_id,
       to_stake_amount: st_prime_to_stake_amount,
     }
 
