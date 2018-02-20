@@ -5,7 +5,7 @@ class ModifyTransactionLogs < DbMigrationConnection
 
       add_column :transaction_logs, :client_id, :integer, after: :id
       add_column :transaction_logs, :client_token_id, :integer, after: :client_id
-      add_column :transaction_logs, :formatted_receipt, :string, after: :input_params
+      add_column :transaction_logs, :formatted_receipt, :string, after: :params
 
       rename_column :transaction_logs, :uuid, :transaction_uuid
       rename_column :transaction_logs, :chain, :chain_type
