@@ -49,11 +49,12 @@ module Economy
 
       enqueue_propose_job
 
-      enqueue_stake_and_mint_job
+      r = enqueue_stake_and_mint_job
+      return r unless r.success?
 
-      success_with_data({
-                          stake_and_mint_init_chain_id: @stake_and_mint_init_chain_id.to_i
-                        })
+      success_with_data(
+        stake_and_mint_init_chain_id: @stake_and_mint_init_chain_id.to_i
+      )
 
     end
 
@@ -206,7 +207,7 @@ module Economy
     # * Date: 29/01/2018
     # * Reviewed By: Sunil
     #
-    # Sets @stake_and_mint_init_chain_id
+    # Sets @stake_and_mint_init_chain_id, @propose_critical_log_obj
     # Updates @client_token
     #
     # @return [Result::Base]
@@ -215,7 +216,7 @@ module Economy
 
       return if @client_token.propose_initiated? || @client_token.registration_done?
 
-      propose_critical_log_obj = CriticalChainInteractionLog.create!(
+      @propose_critical_log_obj = CriticalChainInteractionLog.create!(
         {
           client_id: @client_id,
           client_token_id: @client_token_id,
@@ -230,7 +231,7 @@ module Economy
         }
       )
 
-      @stake_and_mint_init_chain_id ||= propose_critical_log_obj.id
+      @stake_and_mint_init_chain_id ||= @propose_critical_log_obj.id
 
       @client_token.send("set_#{GlobalConstant::ClientToken.propose_initiated_setup_step}")
       @client_token.save!
@@ -238,7 +239,7 @@ module Economy
       BgJob.enqueue(
         ::ProposeBrandedToken::StartProposeJob,
         {
-          critical_log_id: propose_critical_log_obj.id
+          critical_log_id: @propose_critical_log_obj.id
         }
       )
     end
@@ -257,21 +258,39 @@ module Economy
 
       return if @bt_to_mint.to_f <= 0 && @st_prime_to_mint.to_f <= 0
 
-      critical_log_obj = CriticalChainInteractionLog.create!(
-        {
-          parent_id: @stake_and_mint_init_chain_id,
-          client_id: @client_id,
-          client_token_id: @client_token_id,
-          activity_type: GlobalConstant::CriticalChainInteractions.staker_initial_transfer_activity_type,
-          chain_type: GlobalConstant::CriticalChainInteractions.value_chain_type,
-          transaction_hash: @transaction_hash,
-          request_params: {
-            bt_to_mint: @bt_to_mint,
-            st_prime_to_mint: @st_prime_to_mint
-          },
-          status: GlobalConstant::CriticalChainInteractions.queued_status
-        }
-      )
+      critical_log_obj = nil
+
+      begin
+
+        critical_log_obj = CriticalChainInteractionLog.create!(
+            {
+                parent_id: @stake_and_mint_init_chain_id,
+                client_id: @client_id,
+                client_token_id: @client_token_id,
+                activity_type: GlobalConstant::CriticalChainInteractions.staker_initial_transfer_activity_type,
+                chain_type: GlobalConstant::CriticalChainInteractions.value_chain_type,
+                transaction_hash: @transaction_hash,
+                request_params: {
+                    bt_to_mint: @bt_to_mint,
+                    st_prime_to_mint: @st_prime_to_mint
+                },
+                status: GlobalConstant::CriticalChainInteractions.queued_status
+            }
+        )
+
+      rescue ActiveRecord::RecordNotUnique => e
+
+        r = error_with_data(
+            'e_sam_7',
+            "Duplicate Tx Hash : #{@transaction_hash}",
+            "Duplicate Tx Hash : #{@transaction_hash}",
+            GlobalConstant::ErrorAction.default,
+            {}
+        )
+
+        return r
+
+      end
 
       @stake_and_mint_init_chain_id ||= critical_log_obj.id
 
@@ -282,6 +301,8 @@ module Economy
           parent_id: @stake_and_mint_init_chain_id
         }
       )
+
+      success
 
     end
 
