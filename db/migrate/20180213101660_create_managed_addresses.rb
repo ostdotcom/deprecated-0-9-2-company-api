@@ -14,6 +14,8 @@ class CreateManagedAddresses < DbMigrationConnection
       end
 
       add_index :managed_addresses, [:client_id, :uuid], name: 'uniq_client_id_uuid', unique: true
+
+      execute ("ALTER TABLE managed_addresses AUTO_INCREMENT = 70000")
     end
   end
 

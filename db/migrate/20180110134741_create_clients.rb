@@ -11,6 +11,8 @@ class CreateClients < DbMigrationConnection
         t.timestamps
       end
 
+      execute ("ALTER TABLE clients AUTO_INCREMENT = 1000")
+
     end
 
   end

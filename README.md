@@ -40,6 +40,9 @@
 > source set_env_vars.sh
 > bundle install
 > rake db:migrate
+# NOTE: remove and create db again
+rake db:drop:all
+rake db:create:all
 ```
 
 * Start SideKiq

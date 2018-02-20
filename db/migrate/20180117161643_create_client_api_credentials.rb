@@ -15,6 +15,8 @@ class CreateClientApiCredentials < DbMigrationConnection
       add_index :client_api_credentials, [:api_key], name: 'uniq_api_key', unique: true
       add_index :client_api_credentials, [:client_id, :expiry_timestamp], name: 'index_client_id_expiry_timestamp'
 
+      execute ("ALTER TABLE client_api_credentials AUTO_INCREMENT = 500000")
+
     end
 
   end

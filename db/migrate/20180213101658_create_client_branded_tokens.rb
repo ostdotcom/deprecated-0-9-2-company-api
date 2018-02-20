@@ -16,6 +16,8 @@ class CreateClientBrandedTokens < DbMigrationConnection
 
       add_index :client_branded_tokens, :client_id, name: 'index_client_id'
       add_index :client_branded_tokens, :symbol, name: 'uniq_symbol'
+
+      execute ("ALTER TABLE client_branded_tokens AUTO_INCREMENT = 30000")
     end
   end
 

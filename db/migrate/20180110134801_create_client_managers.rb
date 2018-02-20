@@ -13,6 +13,8 @@ class CreateClientManagers < DbMigrationConnection
 
       add_index :client_managers, [:client_id, :user_id], name: 'uk_1', unique: true
 
+      execute ("ALTER TABLE client_managers AUTO_INCREMENT = 10000")
+
     end
 
   end
