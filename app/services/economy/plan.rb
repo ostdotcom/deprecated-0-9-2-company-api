@@ -126,6 +126,16 @@ module Economy
         {}
       ) unless ct.present?
 
+      if ct.registration_done? && ct.conversion_rate != @conversion_rate
+        return error_with_data(
+            'e_p_5',
+            'Conversion Rate Can Not be changed after Registering BT.',
+            'Conversion Rate Can Not be changed after Registering BT.',
+            GlobalConstant::ErrorAction.default,
+            {}
+        )
+      end
+
       ctp = ClientTokenPlanner.find_or_initialize_by(client_token_id: @client_token_id)
 
       ct.conversion_rate = @conversion_rate
