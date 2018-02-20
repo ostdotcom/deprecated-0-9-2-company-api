@@ -42,21 +42,21 @@ module Economy
         dummy_response = {
 
             economy_users: {
-                "1": {
+                1 => {
                     id: 1,
                     name: "company User",
                     uuid: "a1",
                     total_airdropped_tokens: "active",
                     token_balance: 1000
                 },
-                "2": {
+                2 => {
                     id: 2,
                     name: "Aman User1",
                     uuid: "a2",
                     total_airdropped_tokens: "active",
                     token_balance: 100
                 },
-                "3": {
+                3 => {
                     id: 3,
                     name: "Rachin User3",
                     uuid: "a3",
@@ -67,7 +67,7 @@ module Economy
             },
 
             client_tokens: {
-                "1": {
+                1 => {
                     id: 1,
                     client_id: 1,
                     name: "TakTakTak",
@@ -89,7 +89,7 @@ module Economy
             },
 
             transaction_types: {
-                "1": {
+                1 => {
                     id: 1,
                     name: "Upvote",
                     kind: "user_to_user",
@@ -98,7 +98,7 @@ module Economy
                     commission_percent: "0.000",
                     status: "active"
                 },
-                "2": {
+                2 => {
                     id: 2,
                     name: "Service Charge",
                     kind: "user_to_company",
@@ -107,7 +107,7 @@ module Economy
                     commission_percent: "0.000",
                     status: "active"
                 },
-                "3": {
+                3 => {
                     id: 3,
                     name: "Like",
                     kind: "user_to_user",
