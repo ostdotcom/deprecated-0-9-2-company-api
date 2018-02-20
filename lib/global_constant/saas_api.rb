@@ -63,6 +63,10 @@ module GlobalConstant
       'stake/get-receipt'
     end
 
+    def self.get_staked_amount
+      'stake/get-staked-amount'
+    end
+
   end
 
 end
