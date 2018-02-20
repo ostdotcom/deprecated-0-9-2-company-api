@@ -27,7 +27,7 @@ module Economy
       @airdrop_bt_per_user = @params[:airdrop_bt_per_user]
       @token_worth_in_usd = @params[:token_worth_in_usd]
 
-      @is_first_time_set = nil
+      @is_first_time_set = false
 
     end
 
@@ -139,24 +139,31 @@ module Economy
       ctp = ClientTokenPlanner.find_or_initialize_by(client_token_id: @client_token_id)
 
       ct.conversion_rate = @conversion_rate
-      ct.save!
+
+      if ct.changed?
+
+        ct.save!
+
+        bit_value = ClientToken.setup_steps_config[GlobalConstant::ClientToken.set_conversion_rate_setup_step]
+
+        # We are firing this extra update query to ensure that even
+        # if multiple requests are fired from FE, we enqueue job onlu once
+        updated_row_cnt = ClientToken.where(id: @client_token_id).
+            where("setup_steps is NULL OR (setup_steps & #{bit_value} = 0)").update_all("setup_steps = setup_steps | #{bit_value}")
+
+        @is_first_time_set = updated_row_cnt == 1
+
+        CacheManagement::ClientToken.new([ct.id]).clear
+
+      end
 
       ctp.initial_no_of_users = @initial_number_of_users
       ctp.initial_airdrop_in_wei = Util::Converter.to_wei_value(@airdrop_bt_per_user)
       ctp.token_worth_in_usd = @token_worth_in_usd
-      ctp.save!
-
-      bit_value = ClientToken.setup_steps_config[GlobalConstant::ClientToken.set_conversion_rate_setup_step]
-
-      # We are firing this extra update query to ensure that even
-      # if multiple requests are fired from FE, we enqueue job onlu once
-      updated_row_cnt = ClientToken.where(id: @client_token_id).
-          where("setup_steps is NULL OR (setup_steps & #{bit_value} = 0)").update_all("setup_steps = setup_steps | #{bit_value}")
-
-      @is_first_time_set = updated_row_cnt == 1
-
-      CacheManagement::ClientToken.new([ct.id]).clear
-      CacheManagement::ClientTokenPlanner.new([ct.id]).clear
+      if ctp.changed?
+        ctp.save!
+        CacheManagement::ClientTokenPlanner.new([ct.id]).clear
+      end
 
       success
 
