@@ -205,6 +205,6 @@
     - :client_id
     - :client_token_id
     - :user_id
+    - :is_xhr
   :optional:
     - :page_no
-    - :is_xhr
