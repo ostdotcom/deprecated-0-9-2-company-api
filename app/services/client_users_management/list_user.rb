@@ -13,6 +13,7 @@ module ClientUsersManagement
     # @param [Integer] client_token_id (mandatory) - Client Token Id
     # @param [Integer] page_no (optional) - page no
     # @param [String] order_by (optional) - creation_time
+    # @param [String] is_xhr (optional) - creation_time
     #
     # @return [ClientUsersManagement::ListUser]
     #
@@ -25,6 +26,7 @@ module ClientUsersManagement
       @user_id = @params[:user_id]
       @page_no = @params[:page_no]
       @order_by = @params[:order_by]
+      @is_xhr = @params[:is_xhr]
 
       @page_size = 25
       @client = nil
@@ -156,16 +158,19 @@ module ClientUsersManagement
     #
     def fetch_users
 
+      return success unless @is_xhr
+
       result = CacheManagement::ClientApiCredentials.new([@client_id]).fetch[@client_id]
-      render_api_response(
-          error_with_data(
-              'uc_lu_1',
-              "Invalid client.",
-              'Something Went Wrong.',
-              GlobalConstant::ErrorAction.default,
-              {}
-          )
-      ) if result.blank?
+      if result.blank?
+        r = error_with_data(
+            'uc_lu_1',
+            "Invalid client.",
+            'Something Went Wrong.',
+            GlobalConstant::ErrorAction.default,
+            {}
+        )
+        render_api_response(r)
+      end
 
       # Create OST Sdk Obj
       credentials = OSTSdk::Util::APICredentials.new(result[:api_key], result[:api_secret])
@@ -189,7 +194,7 @@ module ClientUsersManagement
     #
     def api_response
 
-      if @page_no == 1
+      unless @is_xhr
         r = Util::FetchEconomyCommonEntities.new(user_id: @user_id, client_token_id: @client_token_id).perform
         return r unless r.success?
         @api_response_data.merge!(r.data)

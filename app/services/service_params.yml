@@ -207,3 +207,4 @@
     - :user_id
   :optional:
     - :page_no
+    - :is_xhr
