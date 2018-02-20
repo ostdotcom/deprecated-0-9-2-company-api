@@ -113,7 +113,13 @@ module CacheManagement
         when GlobalConstant::CriticalChainInteractions.propose_bt_activity_type
           [
             GlobalConstant::CriticalChainInteractions.propose_bt_activity_type,
-            GlobalConstant::CriticalChainInteractions.stake_bt_started_activity_type
+            GlobalConstant::CriticalChainInteractions.stake_bt_started_activity_type,
+            GlobalConstant::CriticalChainInteractions.stake_st_prime_started_activity_type
+          ]
+        when GlobalConstant::CriticalChainInteractions.staker_initial_transfer_activity_type
+          [
+            GlobalConstant::CriticalChainInteractions.stake_bt_started_activity_type,
+            GlobalConstant::CriticalChainInteractions.stake_st_prime_started_activity_type
           ]
         else
           fail "unsupported activity_type: #{activity_type}"
@@ -137,8 +143,10 @@ module CacheManagement
           'Registering Branded Token'
         when GlobalConstant::CriticalChainInteractions.stake_bt_started_activity_type
           'Staking OST to mint BT'
+        when GlobalConstant::CriticalChainInteractions.stake_st_prime_started_activity_type
+          'Staking OST to mint OST Prime'
         else
-          fail "unsupported activity_type: #{}"
+          fail "unsupported activity_type: #{db_object.activity_type}"
       end
     end
 

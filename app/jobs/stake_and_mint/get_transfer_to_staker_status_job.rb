@@ -56,6 +56,7 @@ class StakeAndMint::GetTransferToStakerStatusJob < ApplicationJob
     @st_prime_to_mint = nil
 
     @client_token = nil
+
   end
 
   # Validate params
@@ -87,6 +88,7 @@ class StakeAndMint::GetTransferToStakerStatusJob < ApplicationJob
     @client_token = ClientToken.where(id: @critical_chain_interaction_log.client_token_id).first
 
     success
+
   end
 
   # Get status and validate staker transfer status.
@@ -118,9 +120,13 @@ class StakeAndMint::GetTransferToStakerStatusJob < ApplicationJob
     else
       # r.data will be blank when transaction is yet not mined.
       if r.data.present?
-        # TODO: Check data for amount and match it.
-        # processed
-        @critical_chain_interaction_log.status = GlobalConstant::CriticalChainInteractions.processed_status
+        validate_tx_rsp = is_tx_data_valid?(r.data)
+        if validate_tx_rsp.success?
+          @critical_chain_interaction_log.status = GlobalConstant::CriticalChainInteractions.processed_status
+        else
+          @critical_chain_interaction_log.status = GlobalConstant::CriticalChainInteractions.failed_status
+          r = validate_tx_rsp # in case of error we would log error in db and not tx receipt logs
+        end
       else
         # pending
         @critical_chain_interaction_log.status = GlobalConstant::CriticalChainInteractions.pending_status
@@ -246,6 +252,73 @@ class StakeAndMint::GetTransferToStakerStatusJob < ApplicationJob
         wait: 10.seconds
       }
     ) if critical_log_obj.is_pending?
+
+  end
+
+  # Check if Tx Receipt is valid
+  #
+  # * Author: Puneet
+  # * Date: 17/02/2018
+  # * Reviewed By:
+  #
+  def is_tx_data_valid?(tx_receipt_data)
+
+    r = SaasApi::OnBoarding::FetchChainInteractionParams.new.perform({client_id: @client_token[:client_id]})
+    return r unless r.success?
+
+    chain_interaction_params = r.data
+
+    raw_receipt = tx_receipt_data['rawTransactionReceipt']
+
+    client_address = ClientAddress.where(client_id: @client_token[:client_id]).last
+
+    return error_with_data(
+        'j_s_gttssj_5',
+        'Invalid From Address.',
+        'Invalid From Address.',
+        GlobalConstant::ErrorAction.default,
+        {}
+    ) if client_address.blank? ||
+        client_address.hashed_ethereum_address != LocalCipher.get_sha_hashed_text(raw_receipt['from'])
+
+    return error_with_data(
+        'j_s_gttssj_6',
+        'Invalid To Address.',
+        'Invalid To Address.',
+        GlobalConstant::ErrorAction.default,
+        {}
+    ) if raw_receipt['to'].downcase != chain_interaction_params['simple_token_contract_addr'].downcase
+
+    formatted_receipt = tx_receipt_data['formattedTransactionReceipt'] || {}
+
+    buffer = formatted_receipt['eventsData'][0]['events'].select do |event|
+      event['name'] == '_to'
+    end
+
+    return error_with_data(
+        'j_s_gttssj_7',
+        'Invalid Transfer To Address.',
+        'Invalid Transfer To Address.',
+        GlobalConstant::ErrorAction.default,
+        {}
+    ) if buffer.first['value'].downcase != chain_interaction_params['staker_addr'].downcase
+
+    buffer = formatted_receipt['eventsData'][0]['events'].select do |event|
+      event['name'] == '_value'
+    end
+
+    transfered_ost = buffer.first['value'].to_f
+    required_ost = ((@bt_to_mint / @client_token.conversion_rate) + @st_prime_to_mint).to_f
+
+    return error_with_data(
+        'j_s_gttssj_8',
+        'Invalid Transfer Amount.',
+        'Invalid Transfer Amount.',
+        GlobalConstant::ErrorAction.default,
+        {required_ost: required_ost, transfered_ost: transfered_ost}
+    ) if required_ost != transfered_ost
+
+    success
 
   end
 
