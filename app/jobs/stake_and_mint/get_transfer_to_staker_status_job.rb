@@ -307,7 +307,7 @@ class StakeAndMint::GetTransferToStakerStatusJob < ApplicationJob
       event['name'] == '_value'
     end
 
-    transfered_ost = buffer.first['value'].to_f
+    transfered_ost = Util::Converter.from_wei_value(buffer.first['value']).to_f
     required_ost = ((@bt_to_mint / @client_token.conversion_rate) + @st_prime_to_mint).to_f
 
     return error_with_data(
