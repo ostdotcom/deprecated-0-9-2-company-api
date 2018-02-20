@@ -43,8 +43,9 @@ Rails.application.routes.draw do
   end
 
   scope 'api/economy/transaction', controller: 'economy/transaction' do
-    match 'execute' => :execute, via: :POST
+    match 'execute' => :simulate, via: :POST
     match 'history' => :fetch_history, via: :GET
+    match 'fetch-detail' => :fetch_detail, via: :GET
   end
 
 end

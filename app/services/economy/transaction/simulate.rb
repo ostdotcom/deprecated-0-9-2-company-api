@@ -2,7 +2,7 @@ module Economy
 
   module Transaction
 
-    class FetchHistory < ServicesBase
+    class Simulate < ServicesBase
 
       # Initialize
       #
@@ -11,22 +11,19 @@ module Economy
       # * Reviewed By:
       #
       # @params [Integer] client_token_id (mandatory) - client token id
-      # @param [Integer] page_no (optional) - page no
       #
-      # @return [Economy::Transaction::FetchHistory]
+      # @return [Economy::Transaction::Simulate]
       #
       def initialize(params)
 
         super
 
         @client_token_id = @params[:client_token_id]
-        @page_no = @params[:page_no]
-
-        @page_size = 10
 
         @client_token = nil
         @saas_api_response_data = nil
-        @transaction_uuids = []
+        @transaction_uuid = nil
+        @api_response_data = nil
       end
 
       # Perform
@@ -42,13 +39,6 @@ module Economy
         dummy_response = {
 
             economy_users: {
-                "1": {
-                    id: 1,
-                    name: "company User",
-                    uuid: "a1",
-                    total_airdropped_tokens: "active",
-                    token_balance: 1000
-                },
                 "2": {
                     id: 2,
                     name: "Aman User1",
@@ -97,32 +87,14 @@ module Economy
                     currency_value: "10",
                     commission_percent: "0.000",
                     status: "active"
-                },
-                "2": {
-                    id: 2,
-                    name: "Service Charge",
-                    kind: "user_to_company",
-                    currency_type: "bt",
-                    currency_value: "30",
-                    commission_percent: "0.000",
-                    status: "active"
-                },
-                "3": {
-                    id: 3,
-                    name: "Like",
-                    kind: "user_to_user",
-                    currency_type: "usd",
-                    currency_value: "20",
-                    commission_percent: "10.000",
-                    status: "active"
-                },
+                }
             },
 
             result_type: "transactions",
 
             transactions: [
                 {
-                    transaction_uuid: 'a2-a3',
+                    transaction_uuid: "a2-a3-#{Time.now.to_i}",
                     status: 'active',
                     transaction_hash: "uussyyuuwww-#{Time.now.to_i}",
                     created_at: '2018-02-15 08:05:11',
@@ -140,38 +112,6 @@ module Economy
                             currency_value: 10
                         }
                     ]
-                },
-                {
-                    transaction_uuid: 'a2-a1',
-                    status: 'active',
-                    transaction_hash: "uussyyuuwww-#{Time.now.to_i}",
-                    created_at: '2018-02-15 08:05:11',
-                    from_user_id: 2,
-                    to_user_id: 1,
-                    transaction_type_id: 2,
-                    client_token_id: 1,
-                    currency_value: 30,
-                    gas_value: 0.021,
-                    transfers: [
-                        {
-                            from_user_id: 2,
-                            to_user_id: 1,
-                            type: 'transfer',
-                            currency_value: 30
-                        }
-                    ]
-                },
-                {
-                    transaction_uuid: 'a3-a2',
-                    status: 'pending',
-                    transaction_hash: nil,
-                    created_at: nil,
-                    from_user_id: 3,
-                    to_user_id: 2,
-                    transaction_type_id: 3,
-                    currency_value: nil,
-                    gas_value: 0.001,
-                    transfers: []
                 }
             ],
             oracle_price_points: {
@@ -191,55 +131,33 @@ module Economy
         return success_with_data(dummy_response)
 
 
-        r = validate_and_sanitize
+        r = validate
         return r unless r.success?
 
         r = fetch_client_token
         return r unless r.success?
 
+
         # steps completed validations??
 
-        # introduce has_more concept?
-        #
-        r = fetch_transaction_uuids
+        r = simulate_transaction
         return r unless r.success?
 
-        return success if @transaction_uuids.blank?
-
-        r = fetch_transaction_data_from_saas
+        r = parse_saas_response
         return r unless r.success?
 
-        return success_with_data(@saas_api_response_data)
+        create_client_token_transaction
+
+        set_api_response_data
+
+        return success_with_data(@api_response_data)
 
       end
+
 
       private
 
-      # Validate and sanitize
       #
-      # * Author: Puneet
-      # * Date: 02/02/2018
-      # * Reviewed By:
-      #
-      # @return [Result::Base]
-      #
-      def validate_and_sanitize
-        if @page_no.present?
-          return error_with_data(
-              'e_t_fh_1',
-              "Invalid Page No.",
-              "Invalid Page No.",
-              GlobalConstant::ErrorAction.mandatory_params_missing,
-              {}
-          ) unless Util::CommonValidator.is_numeric?(@page_no)
-          @page_no = @page_no.to_i
-        else
-          @page_no = 1
-        end
-
-      end
-
-      # Fetch Client token row
       # * Author: Aman
       # * Date: 17/02/2018
       # * Reviewed By:
@@ -250,7 +168,7 @@ module Economy
 
         @client_token = CacheManagement::ClientToken.new([@client_token_id]).fetch[@client_token_id]
         return error_with_data(
-            'e_t_fh_2',
+            'e_t_s_1',
             'Token not found.',
             'Token not found.',
             GlobalConstant::ErrorAction.default,
@@ -261,24 +179,7 @@ module Economy
 
       end
 
-      # Fetch paginated transaction uuids
-      # * Author: Aman
-      # * Date: 17/02/2018
-      # * Reviewed By:
-      #
-      # Sets @transaction_uuids
-      #
-      def fetch_transaction_uuids
-
-        offset = @page_size * (@page_no - 1)
-
-        @transaction_uuids = ClientTokenTransaction.where(client_token_id: @client_token_id).limit(@page_size).
-            offset(offset).sort(id: :desc).pluck(:transaction_uuid)
-
-        success
-      end
-
-      # Fetch transaction data from saas using uuids
+      # Propose
       #
       # * Author: Aman
       # * Date: 17/02/2018
@@ -288,19 +189,97 @@ module Economy
       #
       # @return [Result::Base]
       #
-      def fetch_transaction_data_from_saas
+      def simulate_transaction
 
         params = {
-            token_symbol: @client_token[:symbol],
-            transaction_uuids: @transaction_uuids
+            token_symbol: @client_token[:symbol]
         }
 
-        r = SaasApi::Transaction::FetchDetails.new.perform(params)
+        r = SaasApi::Transaction::Simulate.new.perform(params)
         return r unless r.success?
 
         @saas_api_response_data = r.data
 
         success
+      end
+
+
+      # Parse data received from saas
+      #
+      # * Author: Aman
+      # * Date: 17/02/2018
+      # * Reviewed By:
+      #
+      # Sets @transaction_uuid
+      #
+      # @return [Result::Base]
+      #
+      def parse_saas_response
+
+        return error_with_data(
+            'e_t_s_2',
+            'Invalid Response from Saas',
+            'Something Went Wrong',
+            GlobalConstant::ErrorAction.default,
+            {}
+        ) if @saas_api_response_data[:result].length != 1
+
+        return error_with_data(
+            'e_t_s_3',
+            'Invalid Response from Saas',
+            'Something Went Wrong',
+            GlobalConstant::ErrorAction.default,
+            {}
+        ) if @saas_api_response_data[:result][0][:type] != GlobalConstant::SaasApiEntityType.result_transaction_type
+
+        id = @saas_api_response_data[:result][0][:id]
+        transaction = @saas_api_response_data[GlobalConstant::SaasApiEntityType.transaction_entity_key][id]
+
+        @transaction_uuid = transaction[:uuid]
+
+        return error_with_data(
+            'e_t_s_4',
+            'Invalid Response from Saas',
+            'Transaction could not be stimulated',
+            GlobalConstant::ErrorAction.default,
+            {}
+        ) if @transaction_uuid.blank?
+
+        success
+      end
+
+
+      # create client token transaction
+      #
+      # * Author: Aman
+      # * Date: 17/02/2018
+      # * Reviewed By:
+      #
+      # Sets @client_token_transaction
+      #
+      # @return [Result::Base]
+      #
+      def create_client_token_transaction
+
+        ClientTokenTransaction.create!(
+            {
+                client_token_id: @client_token_id,
+                transaction_uuid: @transaction_uuid
+
+            }
+        )
+      end
+
+      # Set response data
+      #
+      # * Author: Aman
+      # * Date: 17/02/2018
+      # * Reviewed By:
+      #
+      # Sets @api_response_data
+      # ``
+      def set_api_response_data
+        @api_response_data = @saas_api_response_data
       end
 
     end

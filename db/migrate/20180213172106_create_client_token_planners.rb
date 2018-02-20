@@ -19,7 +19,7 @@ class CreateClientTokenPlanners < DbMigrationConnection
 
   def down
     run_migration_for_db(EstablishCompanyClientEconomyDbConnection) do
-      drop_table :client_tokens
+      drop_table :client_token_planners
     end
   end
 

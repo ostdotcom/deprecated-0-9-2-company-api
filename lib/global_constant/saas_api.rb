@@ -56,6 +56,14 @@ module GlobalConstant
       'transaction/get-receipt'
     end
 
+    def self.simulate_transaction
+      'transaction/simulate'
+    end
+
+    def self.fetch_transaction_details
+      'transaction/fetch_details'
+    end
+
     def self.secret_key
       #TODO - move this to env vars
       '1somethingsarebetterkeptinenvironemntvariables'
