@@ -64,7 +64,7 @@ class Economy::UserController < Economy::BaseController
   #
   def list_users
 
-    params[:is_xhr] = request.xhr?
+    params[:is_xhr] = request.xhr?.nil? ? 0 : 1
     service_response = ClientUsersManagement::ListUser.new(params).perform
 
     render_api_response(service_response)

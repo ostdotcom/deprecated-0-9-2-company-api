@@ -158,25 +158,30 @@ module ClientUsersManagement
     #
     def fetch_users
 
-      return success unless @is_xhr
+      return success unless is_xhr_request?
 
       result = CacheManagement::ClientApiCredentials.new([@client_id]).fetch[@client_id]
-      if result.blank?
-        r = error_with_data(
-            'uc_lu_1',
-            "Invalid client.",
-            'Something Went Wrong.',
-            GlobalConstant::ErrorAction.default,
-            {}
-        )
-        render_api_response(r)
-      end
+      return error_with_data(
+          'uc_lu_1',
+          "Invalid client.",
+          'Something Went Wrong.',
+          GlobalConstant::ErrorAction.default,
+          {}
+      ) if result.blank?
 
       # Create OST Sdk Obj
       credentials = OSTSdk::Util::APICredentials.new(result[:api_key], result[:api_secret])
       @ost_sdk_obj = OSTSdk::Saas::Users.new(GlobalConstant::Base.sub_env, credentials)
 
       service_response = @ost_sdk_obj.list(page_no: @page_no, sort_by: @order_by)
+
+      return error_with_data(
+          'uc_lu_2',
+          "Coundn't Fetch User List",
+          'Something Went Wrong.',
+          GlobalConstant::ErrorAction.default,
+          {}
+      ) unless service_response.success?
 
       @api_response_data = service_response.data
 
@@ -194,7 +199,7 @@ module ClientUsersManagement
     #
     def api_response
 
-      unless @is_xhr
+      unless is_xhr_request?
         r = Util::FetchEconomyCommonEntities.new(user_id: @user_id, client_token_id: @client_token_id).perform
         return r unless r.success?
         @api_response_data.merge!(r.data)
@@ -206,6 +211,10 @@ module ClientUsersManagement
 
     def creation_time_order_by
       'creation_time'
+    end
+
+    def is_xhr_request?
+      @is_xhr == 1
     end
 
   end
