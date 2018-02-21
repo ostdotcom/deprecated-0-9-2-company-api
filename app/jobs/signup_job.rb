@@ -35,6 +35,8 @@ class SignupJob < ApplicationJob
 
     if r.success?
       @client_token.reserve_uuid = r.data['reserveUuid']
+      @client_token.worker_addr_uuid = r.data['workerAddrUuid']
+      @client_token.airdrop_holder_addr_uuid = r.data['airdropHolderAddrUuid']
       @client_token.save
     end
 
