@@ -48,7 +48,9 @@ module Economy
         return r unless r.success?
 
         if is_client_step_one_complete? && is_client_step_two_complete?
+
           success
+
         elsif is_client_step_one_complete?
           error_with_go_to(
               'e_tss_sth_1',
@@ -82,12 +84,7 @@ module Economy
         r = super
         return r unless r.success?
 
-        pending_critical_interaction_ids = CacheManagement::PendingCriticalInteractionIds.new([@client_token_id]).fetch[@client_token_id]
-
-        pending_critical_interaction_id = pending_critical_interaction_ids.blank? ? nil :
-                                              pending_critical_interaction_ids[GlobalConstant::CriticalChainInteractions.stake_bt_started_activity_type]
-
-        if pending_critical_interaction_id.present?
+        if pending_critical_interaction_id > 0
           @api_response_data[:pending_critical_interaction_id] = pending_critical_interaction_id
         end
 

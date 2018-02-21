@@ -44,9 +44,6 @@ module Economy
       #
       def validate_step
 
-        r = super
-        return r unless r.success?
-
         return error_with_go_to(
             'e_tss_st_1',
             'Setup Step One Not Done',
@@ -62,6 +59,9 @@ module Economy
             'Client Address not setup.',
             GlobalConstant::GoTo.economy_planner_step_one
         ) if client_address_data.blank? || client_address_data[:ethereum_address_d].blank?
+
+        r = super
+        return r unless r.success?
 
         success
 

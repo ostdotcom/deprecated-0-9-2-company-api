@@ -94,12 +94,20 @@ module Economy
       #
       def validate_step
 
-        !is_client_setup_complete? ? success : error_with_go_to(
-            'e_tss_b_2',
-            'Setup Complete',
-            'Setup Complete',
-            GlobalConstant::GoTo.economy_dashboard
-        )
+        if is_client_setup_complete?
+
+          pending_critical_interaction_id > 0 ? success : error_with_go_to(
+              'e_tss_b_2',
+              'Setup Complete',
+              'Setup Complete',
+              GlobalConstant::GoTo.economy_dashboard
+          )
+
+        else
+
+          success
+
+        end
 
       end
 
@@ -230,6 +238,28 @@ module Economy
         end
 
         success
+
+      end
+
+      # fetch if a transaction to propose & stake / mint is pending execution
+      #
+      # * Author: Puneet
+      # * Date: 31/01/2018
+      # * Reviewed By:
+      #
+      # @return [Integer]
+      #
+      def pending_critical_interaction_id
+
+        @p_c_i_id ||= begin
+
+          pending_critical_interaction_ids = CacheManagement::PendingCriticalInteractionIds.new([@client_token_id]).fetch[@client_token_id]
+
+          pending_critical_interaction_id = pending_critical_interaction_ids[GlobalConstant::CriticalChainInteractions.propose_bt_activity_type]
+
+          pending_critical_interaction_id ||= -1
+
+        end
 
       end
 
