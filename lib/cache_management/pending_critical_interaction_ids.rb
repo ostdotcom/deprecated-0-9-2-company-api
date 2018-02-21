@@ -15,7 +15,7 @@ module CacheManagement
     def fetch_from_db(cache_miss_ids)
 
       db_records = CriticalChainInteractionLog.where(client_token_id: cache_miss_ids).
-          where('parent_id IS NULL').all
+          where('parent_id IS NULL').where(activity_type: activity_types_to_mark_pending).all
 
       id_to_activity_type_map = {}
 
@@ -24,7 +24,7 @@ module CacheManagement
         id_to_activity_type_map[db_record.id] = {
           activity_type: db_record.activity_type,
           client_token_id: db_record.client_token_id
-        } if statuses_to_mark_pending.include?(db_record.status)
+        }
 
       end
 
@@ -86,6 +86,14 @@ module CacheManagement
       [
           GlobalConstant::CriticalChainInteractions.queued_status,
           GlobalConstant::CriticalChainInteractions.pending_status
+      ]
+    end
+
+    def activity_types_to_mark_pending
+      [
+          GlobalConstant::CriticalChainInteractions.propose_bt_activity_type,
+          GlobalConstant::CriticalChainInteractions.stake_bt_started_activity_type,
+          GlobalConstant::CriticalChainInteractions.stake_st_prime_started_activity_type
       ]
     end
 
