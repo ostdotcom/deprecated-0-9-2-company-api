@@ -43,6 +43,10 @@ module GlobalConstant
       'on-boarding/create-dummy-users'
     end
 
+    def self.get_balances_path
+      'on-boarding/fetch-balances'
+    end
+
     def self.approve_for_stake_api_path
       'stake/approve'
     end

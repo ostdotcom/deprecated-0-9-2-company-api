@@ -1,6 +1,6 @@
 module CacheManagement
 
-  class ClientApiCredentials < CacheManagement::Base
+  class ClientAddress < CacheManagement::Base
 
     # Fetch from cache and for cache misses call fetch_from_db
     #
@@ -17,14 +17,15 @@ module CacheManagement
       data_from_cache = data_from_cache.deep_dup ## Deep DUP is important here
 
       # as cache has local cypher encrypted value of API Secret, we would need to decrypt it before sending it out
-      data_from_cache.each do |client_id, api_credentials|
+      data_from_cache.each do |client_id, client_address_data|
 
-        next if api_credentials.blank?
+        next if client_address_data.blank?
 
-        r = encryptor_obj.decrypt(api_credentials[:api_secret])
+        r = encryptor_obj.decrypt(client_address_data[:ethereum_address_e])
 
         if r.success?
-          api_credentials[:api_secret] = r.data[:plaintext]
+          client_address_data.delete(:ethereum_address_e)
+          client_address_data[:ethereum_address_d] = r.data[:plaintext]
         else
           data_from_cache[client_id] = {}
         end
@@ -47,22 +48,27 @@ module CacheManagement
     #
     def fetch_from_db(cache_miss_ids)
 
+      db_records = ::ClientAddress.where(
+          client_id: cache_miss_ids, status: GlobalConstant::ClientAddress.active_status
+      )
+
       aggregated_cache_data = {}
 
-      cache_miss_ids.each do |client_id|
+      db_records.each do |db_record|
 
-        get_credentials_rsp = ClientManagement::GetClientApiCredentials.new(client_id: client_id).perform
-        return get_credentials_rsp unless get_credentials_rsp.success?
+        r = Aws::Kms.new('info','user').decrypt(db_record.address_salt)
+        next unless r.success?
 
-        encrypt_rsp = encryptor_obj.encrypt(get_credentials_rsp.data[:api_secret])
-        return encrypt_rsp unless encrypt_rsp.success?
+        r = LocalCipher.new(r.data[:plaintext]).decrypt(db_record.ethereum_address)
+        next unless r.success?
 
-        cache_data = {
-          api_key: get_credentials_rsp.data[:api_key],
-          api_secret: encrypt_rsp.data[:ciphertext_blob]
+        encrypt_rsp = encryptor_obj.encrypt(r.data[:plaintext])
+        next unless encrypt_rsp.success?
+
+        aggregated_cache_data[db_record.client_id] = {
+          ethereum_address_e: encrypt_rsp.data[:ciphertext_blob],
+          hashed_ethereum_address: db_record.hashed_ethereum_address
         }
-
-        aggregated_cache_data[client_id] = cache_data
 
       end
 
@@ -78,7 +84,7 @@ module CacheManagement
     # @return [MemcacheKey]
     #
     def memcache_key_object
-      @m_k_o ||= MemcacheKey.new('client.api_credentials')
+      @m_k_o ||= MemcacheKey.new('client.address')
     end
 
     # Fetch cache key

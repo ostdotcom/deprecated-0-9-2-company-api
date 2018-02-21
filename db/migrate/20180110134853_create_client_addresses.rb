@@ -14,11 +14,12 @@ class CreateClientAddresses < DbMigrationConnection
       end
 
       add_index :client_addresses, [:hashed_ethereum_address], unique: true, name: 'index_1'
-      add_index :client_addresses, [:client_id, :status], name: 'index_2'
+      add_index :client_addresses, [:client_id, :status], unique: true, name: 'index_2'
 
       execute ("ALTER TABLE client_addresses AUTO_INCREMENT = 50000")
 
     end
+
   end
 
   def down

@@ -47,12 +47,24 @@ module Economy
         r = super
         return r unless r.success?
 
-        is_client_step_one_complete? ? success : error_with_go_to(
+        return error_with_go_to(
             'e_tss_st_1',
             'Setup Step One Not Done',
             'Setup Step One Not Done',
             GlobalConstant::GoTo.economy_planner_step_one
-        )
+        ) unless is_client_step_one_complete?
+
+        client_address_data = CacheManagement::ClientAddress.new([@client_id]).fetch[@client_id]
+
+        return error_with_data(
+            'e_tss_st_2',
+            'Client Address not setup.',
+            'Client Address not setup.',
+            GlobalConstant::ErrorAction.default,
+            {}
+        ) if client_address_data.blank? || client_address_data[:ethereum_address_d].blank?
+
+        success
 
       end
 

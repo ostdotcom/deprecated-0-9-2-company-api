@@ -184,6 +184,55 @@ module Economy
 
       end
 
+      # fetch OST & ETH Balance from SAAS
+      #
+      # * Author: Puneet
+      # * Date: 31/01/2018
+      # * Reviewed By:
+      #
+      # Sets @api_response_data
+      #
+      # @return [Result::Base]
+      #
+      def fetch_eth_ost_balance(fail_if_addr_not_setup = true)
+
+        client_address_data = CacheManagement::ClientAddress.new([@client_id]).fetch[@client_id]
+
+        if client_address_data.blank? || client_address_data[:ethereum_address_d].blank?
+
+          r = fail_if_addr_not_setup ? error_with_data(
+              'e_tsd_b_1',
+              'Client Address not found.',
+              'Client Address not found.',
+              GlobalConstant::ErrorAction.default,
+              {}
+          ) : success
+
+          return r
+
+        end
+
+        r = FetchClientBalances.new(
+            client_id: @client_token.client_id,
+            balances_to_fetch: {
+                GlobalConstant::CriticalChainInteractions.value_chain_type => {
+                    address: client_address_data[:ethereum_address_d],
+                    balance_types: [
+                        GlobalConstant::BalanceTypes.ost_balance_type,
+                        GlobalConstant::BalanceTypes.eth_balance_type
+                    ]
+                }
+            }
+        ).perform
+
+        if r.success?
+          @api_response_data[:client_balances] = r.data
+        end
+
+        success
+
+      end
+
     end
 
   end

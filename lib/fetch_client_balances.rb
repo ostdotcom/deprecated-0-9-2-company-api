@@ -9,12 +9,12 @@ class FetchClientBalances
   # * Reviewed By:
   #
   # @param [Integer] client_id (mandatory) - Client Id for which Api credentials has to be fetched
-  # @param [String] address_uuid (mandatory) - uuid of address whose balance is to be fetched
+  # @param [Hash] balances_to_fetch (mandatory) - hash which has value & utility as keys and corresponding data in values
   #
   def initialize(params)
 
     @client_id = params[:client_id]
-    @address_uuid = params[:address_uuid]
+    @balances_to_fetch = params[:balances_to_fetch]
 
     @api_credentials = {}
 
@@ -26,19 +26,14 @@ class FetchClientBalances
   # * Date: 01/02/2018
   # * Reviewed By:
   #
-  # @param [Array] balance_types (mandatory) - balance_types which are to be fetched
-  #
   # @return [Result::Base]
   #
-  def perform(balance_types)
+  def perform
 
     r = validate
     return r unless r.success?
 
-    r = fetch_client_api_credentials
-    return r unless r.success?
-
-    fetch_balances(balance_types)
+    fetch_balances
 
   end
 
@@ -62,30 +57,57 @@ class FetchClientBalances
         {}
     ) if @client_id.blank?
 
-    success
+    @balances_to_fetch.each do |chain_type, data|
 
-  end
+      case chain_type
 
-  # Fetch API credentals
-  #
-  # * Author: Puneet
-  # * Date: 01/02/2018
-  # * Reviewed By:
-  #
-  # @return [Result::Base]
-  #
-  def fetch_client_api_credentials
+        when GlobalConstant::CriticalChainInteractions.utility_chain_type
 
-    result = CacheManagement::ClientApiCredentials.new([@client_id]).fetch[@client_id]
-    return error_with_data(
-        'e_tk_b_1',
-        "Invalid client.",
-        'Something Went Wrong.',
-        GlobalConstant::ErrorAction.default,
-        {}
-    ) if result.blank?
+          return error_with_data(
+              'fcb_4',
+              'missing address_uuid',
+              'Something Went Wrong.',
+              GlobalConstant::ErrorAction.default,
+              {}
+          ) if data[:address_uuid].blank?
 
-    @api_credentials = result
+          return error_with_data(
+              'fcb_5',
+              'invalid balance types',
+              'Something Went Wrong.',
+              GlobalConstant::ErrorAction.default,
+              {}
+          ) if data[:balance_types].blank?
+
+        when GlobalConstant::CriticalChainInteractions.value_chain_type
+
+          return error_with_data(
+              'fcb_6',
+              'missing address',
+              'Something Went Wrong.',
+              GlobalConstant::ErrorAction.default,
+              {}
+          ) if data[:address].blank?
+
+          return error_with_data(
+              'fcb_9',
+              'invalid balance types',
+              'Something Went Wrong.',
+              GlobalConstant::ErrorAction.default,
+              {}
+          ) if data[:balance_types].blank?
+
+        else
+          return error_with_data(
+              'fcb_8',
+              "invalid chain_type : #{chain_type}",
+              'Something Went Wrong.',
+              GlobalConstant::ErrorAction.default,
+              {}
+          )
+      end
+
+    end
 
     success
 
@@ -97,18 +119,11 @@ class FetchClientBalances
   # * Date: 01/02/2018
   # * Reviewed By:
   #
-  # @param [Array] balance_types (mandatory) - balance_types which are to be fetched
-  #
   # @return [Result::Base]
   #
-  def fetch_balances(balance_types)
+  def fetch_balances
 
-    credentials = OSTSdk::Util::APICredentials.new(@api_credentials[:api_key], @api_credentials[:api_secret])
-    obj = OSTSdk::Saas::Addresses.new(GlobalConstant::Base.sub_env, credentials)
-
-    params = {balance_types: balance_types, address_uuid: @address_uuid}
-
-    obj.fetch_balances(params)
+    SaasApi::OnBoarding::FetchBalances.new.perform(client_id: @client_id, balances_to_fetch: @balances_to_fetch)
 
   end
 

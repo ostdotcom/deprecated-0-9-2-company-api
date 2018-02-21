@@ -65,23 +65,7 @@ module Economy
         @api_response_data[:client_token_planner] = !is_client_step_one_complete? ? {} :
             CacheManagement::ClientTokenPlanner.new([@client_token_id]).fetch[@client_token_id]
 
-        client_token_s = CacheManagement::ClientTokenSecure.new([@client_token_id]).fetch[@client_token_id]
-
-        balance_types = [
-          GlobalConstant::BalanceTypes.ost_balance_type,
-          GlobalConstant::BalanceTypes.eth_balance_type
-        ]
-
-        r = FetchClientBalances.new(
-          client_id: @client_token[:client_id],
-          address_uuid: client_token_s[:reserve_uuid]
-        ).perform(balance_types)
-
-        if r.success?
-          @api_response_data[:client_balances] = r.data
-        end
-
-        success
+        fetch_eth_ost_balance(false)
 
       end
 

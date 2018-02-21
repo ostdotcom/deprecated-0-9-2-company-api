@@ -18,16 +18,19 @@ client:
     expiry_in_seconds: 86400
   api_credentials:
     key_template: 'c_api_crd_%{id}'
-    expiry_in_seconds: 60
+    expiry_in_seconds: 86400
   token_planner_details:
     key_template: 'c_td_p_%{id}'
-    expiry_in_seconds: 60
+    expiry_in_seconds: 86400
   tx_status_details:
     key_template: 'c_tx_s_%{id}'
-    expiry_in_seconds: 60
+    expiry_in_seconds: 86400
   pending_critical_interaction_ids:
     key_template: 'c_pci_ids_%{id}'
-    expiry_in_seconds: 60
+    expiry_in_seconds: 86400
+  address:
+    key_template: 'c_addr_%{id}'
+    expiry_in_seconds: 86400
 
 mics:
   ost_fiat_conversion_factors:

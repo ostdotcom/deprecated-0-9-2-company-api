@@ -89,15 +89,18 @@ class StakeAndMint::GetStakeStatusJob < ApplicationJob
 
     @client_token_s = CacheManagement::ClientTokenSecure.new([@client_token.id]).fetch[@client_token.id]
 
-    balance_types = [
-      GlobalConstant::BalanceTypes.ost_prime_balance_type,
-      @client_token.symbol
-    ]
-
     r = FetchClientBalances.new(
-      client_id: @client_token.client_id,
-      address_uuid: @client_token_s[:reserve_uuid]
-    ).perform(balance_types)
+        client_id: @client_token.client_id,
+        balances_to_fetch: {
+            GlobalConstant::CriticalChainInteractions.utility_chain_type => {
+                address_uuid: @client_token_s[:reserve_uuid],
+                balance_types: [
+                    GlobalConstant::BalanceTypes.ost_prime_balance_type,
+                    @client_token.symbol
+                ]
+            }
+        }
+    ).perform
 
     if @critical_chain_interaction_log.can_be_marked_timeout?
       # Timeout
