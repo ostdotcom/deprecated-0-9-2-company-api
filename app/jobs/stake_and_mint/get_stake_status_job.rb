@@ -109,12 +109,13 @@ class StakeAndMint::GetStakeStatusJob < ApplicationJob
       # failed - service failure
       @critical_chain_interaction_log.status = GlobalConstant::CriticalChainInteractions.failed_status
     else
+
       @client_balances = r.data['balances']
 
       if @critical_chain_interaction_log.activity_type == GlobalConstant::CriticalChainInteractions.stake_bt_started_activity_type
-        new_balance = @client_balances[@client_token[:symbol]]
+        new_balance = @client_balances[@client_token[:symbol]].to_f
       else
-        new_balance = @client_balances[GlobalConstant::BalanceTypes.ost_prime_balance_type]
+        new_balance = @client_balances[GlobalConstant::BalanceTypes.ost_prime_balance_type].to_f
       end
 
       if new_balance > @existing_balance
