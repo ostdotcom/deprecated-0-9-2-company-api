@@ -95,15 +95,17 @@ module Economy
             transactions: [
                 {
                     transaction_uuid: "a2-a3-#{Time.now.to_i}",
-                    status: 'active',
-                    transaction_hash: "uussyyuuwww-#{Time.now.to_i}",
-                    created_at: '2018-02-15 08:05:11',
+                    status: 'pending',
+                    transaction_hash: nil,
+                    uts: "#{Time.now.to_i}",
                     from_user_id: 2,
                     to_user_id: 3,
                     transaction_type_id: 1,
                     client_token_id: 1,
                     currency_value: 10,
-                    gas_value: 0.011,
+                    gas_value: nil,
+                    block_number: nil,
+                    block_timestamp: nil,
                     transfers: [
                         {
                             from_user_id: 2,

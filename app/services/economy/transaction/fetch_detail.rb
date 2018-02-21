@@ -41,15 +41,17 @@ module Economy
           if (Time.now.to_i % 2 == 0)
             data = {
                 transaction_uuid: transaction_uuid,
-                status: 'active',
-                transaction_hash: "uussyyuuwww-#{Time.now.to_i}",
-                created_at: '2018-02-15 08:05:11',
+                uts: "#{Time.now.to_i}",
                 from_user_id: 2,
                 to_user_id: 1,
                 transaction_type_id: 2,
                 client_token_id: 1,
                 currency_value: 30,
                 gas_value: 0.021,
+                status: 'active',
+                transaction_hash: "uussyyuuwww-#{Time.now.to_i}",
+                block_number: 3,
+                block_timestamp: "#{Time.now.to_i}",
                 transfers: [
                     {
                         from_user_id: 2,
@@ -64,12 +66,14 @@ module Economy
                 transaction_uuid: transaction_uuid,
                 status: 'pending',
                 transaction_hash: nil,
-                created_at: nil,
+                uts: "#{Time.now.to_i}",
                 from_user_id: 3,
                 to_user_id: 2,
                 transaction_type_id: 3,
                 currency_value: nil,
-                gas_value: 0.001,
+                gas_value: nil,
+                block_number: nil,
+                block_timestamp: nil,
                 transfers: []
             }
           end

@@ -59,4 +59,8 @@ rake db:create:all
 > rails s -p 4000
 ```
 
+* Start Cron Jobs
+```bash
+> rake RAILS_ENV=development cron_task:continuous:process_email_service_api_call_hooks lock_key_suffix=1
+```
 
