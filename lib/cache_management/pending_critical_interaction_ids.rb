@@ -31,7 +31,11 @@ module CacheManagement
       response_data = {}
       cache_data = CacheManagement::CriticalChainInteractionStatus.new(id_to_activity_type_map.keys).fetch
       cache_data.each do |id, data|
-        if data.present? && statuses_to_mark_pending.include?(data.last[:status])
+        next if data.blank?
+        pending_data = data.select do |row|
+          statuses_to_mark_pending.include?(row[:status])
+        end
+        if pending_data.present?
           buffer = id_to_activity_type_map[id]
           client_token_id = buffer[:client_token_id]
           response_data[client_token_id] ||= {}
