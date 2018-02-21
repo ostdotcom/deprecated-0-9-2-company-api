@@ -179,6 +179,7 @@ class ProposeBrandedToken::GetProposeStatusJob < ApplicationJob
     if @client_token.changed?
       @client_token.save!
       CacheManagement::ClientToken.new([@client_token.id]).clear
+      CacheManagement::ClientTokenSecure.new([@client_token.id]).clear
     end
 
     # Update BT details in saas

@@ -330,6 +330,7 @@ module UserManagement
       CacheManagement::User.new([@user.id]).clear
       CacheManagement::Client.new([@client_id]).clear
       CacheManagement::ClientToken.new([@client_token_id]).clear
+      CacheManagement::ClientTokenSecure.new([@client_token_id]).clear
     end
 
     # Enqueue Job
