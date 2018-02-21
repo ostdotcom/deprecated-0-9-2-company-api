@@ -20,8 +20,8 @@ class FetchClientTokenSupplyDetails
   #
   def perform
 
-    # r = SaasApi::StakeAndMint::GetReceipt.new.perform({simple_stake_contract_address: ''})
-    # tokens_minted = r.success? ? r.data : 2
+    # r = SaasApi::StakeAndMint::FetchStakedAmount.new.perform({simple_stake_contract_address: ''})
+    # tokens_minted = r.success? ? r.data['allTimeStakedAmount'] : 2
 
     success_with_data(
       tokens_minted: 2

@@ -27,7 +27,7 @@ module SaasApi
       def perform(params = {})
         send_request_of_type(
             'get',
-            GlobalConstant::SaasApi.approve_for_stake_api_path,
+            GlobalConstant::SaasApi.get_staked_amount,
             params
         )
       end
