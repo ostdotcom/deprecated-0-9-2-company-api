@@ -221,6 +221,7 @@ class StakeAndMint::GetApprovalStatusJob < ApplicationJob
       client_id: @critical_chain_interaction_log.client_id,
       token_symbol: @client_token.symbol,
       to_stake_amount: ost_to_stake_amount,
+      bt_to_mint: @bt_to_mint
     }
 
     stake_response = SaasApi::StakeAndMint::StartBrandedToken.new.perform(params)
