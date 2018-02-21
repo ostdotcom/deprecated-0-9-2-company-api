@@ -168,6 +168,8 @@ module ClientManagement
           status: GlobalConstant::ClientAddress.active_status
       )
 
+      CacheManagement::ClientAddress.new([@client_id]).clear
+
       success
 
     end
