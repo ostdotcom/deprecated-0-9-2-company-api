@@ -213,7 +213,7 @@ module Economy
         end
 
         r = FetchClientBalances.new(
-            client_id: @client_token.client_id,
+            client_id: @client_id,
             balances_to_fetch: {
                 GlobalConstant::CriticalChainInteractions.value_chain_type => {
                     address: client_address_data[:ethereum_address_d],

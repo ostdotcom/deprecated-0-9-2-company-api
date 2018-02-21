@@ -56,12 +56,11 @@ module Economy
 
         client_address_data = CacheManagement::ClientAddress.new([@client_id]).fetch[@client_id]
 
-        return error_with_data(
+        return error_with_go_to(
             'e_tss_st_2',
             'Client Address not setup.',
             'Client Address not setup.',
-            GlobalConstant::ErrorAction.default,
-            {}
+            GlobalConstant::GoTo.economy_planner_step_one
         ) if client_address_data.blank? || client_address_data[:ethereum_address_d].blank?
 
         success
