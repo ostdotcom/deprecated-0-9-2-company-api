@@ -33,6 +33,7 @@ class PlanEconomyJob < ApplicationJob
   def init_params(params)
     @client_token_id = params[:client_token_id].to_i
     @is_first_time_set = params[:is_first_time_set]
+    @is_sync_in_saas_needed = params[:is_sync_in_saas_needed]
     @client_token = CacheManagement::ClientToken.new([@client_token_id]).fetch[@client_token_id]
     @client_token_planner_details = CacheManagement::ClientTokenPlanner.new([@client_token_id]).fetch[@client_token_id]
     @failed_logs = {}
@@ -45,6 +46,8 @@ class PlanEconomyJob < ApplicationJob
   # * Reviewed By:
   #
   def sync_data_in_saas
+
+    return unless @is_sync_in_saas_needed
 
     r = SaasApi::OnBoarding::EditBt.new.perform(
         name: @client_token[:name],
