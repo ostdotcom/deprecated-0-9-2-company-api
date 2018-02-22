@@ -22,10 +22,12 @@ module Economy
       super
 
       @client_token_id = @params[:client_token_id]
-      @conversion_rate = @params[:conversion_rate].to_f
+      @token_worth_in_usd = @params[:token_worth_in_usd]
+
+      # Optional params
+      @conversion_rate = @params[:conversion_rate]
       @initial_number_of_users = @params[:initial_number_of_users]
       @airdrop_bt_per_user = @params[:airdrop_bt_per_user]
-      @token_worth_in_usd = @params[:token_worth_in_usd]
 
       @is_first_time_set = false
 
@@ -68,36 +70,47 @@ module Economy
       r = validate
       return r unless r.success?
 
-      @conversion_rate = @conversion_rate.to_f
+      if @conversion_rate.present?
 
-      return error_with_data(
-        'e_p_1',
-        'Conversion should be greater than 0.',
-        'Conversion should be greater than 0.',
-        GlobalConstant::ErrorAction.default,
-        {}
-      ) if @conversion_rate <= 0
+        @conversion_rate = @conversion_rate.to_f
 
-      @initial_number_of_users = @initial_number_of_users.to_i
+        return error_with_data(
+            'e_p_1',
+            'Conversion should be greater than 0.',
+            'Conversion should be greater than 0.',
+            GlobalConstant::ErrorAction.default,
+            {}
+        ) if @conversion_rate <= 0
 
-      return error_with_data(
-        'e_p_2',
-        'Initial number of users should be greater than 0.',
-        'Initial number of users should be greater than 0.',
-        GlobalConstant::ErrorAction.default,
-        {}
-      ) if @initial_number_of_users <= 0
+      end
 
+      if @initial_number_of_users.present?
 
-      @airdrop_bt_per_user = @airdrop_bt_per_user.to_i
+        @initial_number_of_users = @initial_number_of_users.to_i
 
-      return error_with_data(
-        'e_p_3',
-        'Airdrop branded token per user should be greater than 0.',
-        'Airdrop branded token per user should be greater than 0.',
-        GlobalConstant::ErrorAction.default,
-        {}
-      ) if @airdrop_bt_per_user <= 0
+        return error_with_data(
+            'e_p_2',
+            'Initial number of users should be greater than 0.',
+            'Initial number of users should be greater than 0.',
+            GlobalConstant::ErrorAction.default,
+            {}
+        ) if @initial_number_of_users <= 0
+
+      end
+
+      if @airdrop_bt_per_user.present?
+
+        @airdrop_bt_per_user = @airdrop_bt_per_user.to_i
+
+        return error_with_data(
+            'e_p_3',
+            'Airdrop branded token per user should be greater than 0.',
+            'Airdrop branded token per user should be greater than 0.',
+            GlobalConstant::ErrorAction.default,
+            {}
+        ) if @airdrop_bt_per_user <= 0
+
+      end
 
       success
 
@@ -136,15 +149,13 @@ module Economy
         )
       end
 
-      ctp = ClientTokenPlanner.find_or_initialize_by(client_token_id: @client_token_id)
-
-      ct.conversion_rate = @conversion_rate
+      ct.conversion_rate = @conversion_rate if @conversion_rate.present?
 
       if ct.changed?
 
         ct.save!
 
-        bit_value = ClientToken.setup_steps_config[GlobalConstant::ClientToken.set_conversion_rate_setup_step]
+        bit_value = ClientToken.setup_steps_config[GlobalConstant::ClientToken.token_worth_in_usd_setup_step]
 
         # We are firing this extra update query to ensure that even
         # if multiple requests are fired from FE, we enqueue job onlu once
@@ -157,9 +168,10 @@ module Economy
 
       end
 
-      ctp.initial_no_of_users = @initial_number_of_users
-      ctp.initial_airdrop_in_wei = Util::Converter.to_wei_value(@airdrop_bt_per_user)
-      ctp.token_worth_in_usd = @token_worth_in_usd
+      ctp = ClientTokenPlanner.find_or_initialize_by(client_token_id: @client_token_id)
+      ctp.initial_no_of_users = @initial_number_of_users if @initial_number_of_users.present?
+      ctp.initial_airdrop_in_wei = Util::Converter.to_wei_value(@airdrop_bt_per_user) if @airdrop_bt_per_user.present?
+      ctp.token_worth_in_usd = @token_worth_in_usd if @token_worth_in_usd.present?
       if ctp.changed?
         ctp.save!
         CacheManagement::ClientTokenPlanner.new([ct.id]).clear

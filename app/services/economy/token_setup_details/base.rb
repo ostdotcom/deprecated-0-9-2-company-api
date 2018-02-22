@@ -155,7 +155,7 @@ module Economy
       #
       def is_client_step_one_complete?
         return @i_s_o_c unless @i_s_o_c.nil?
-        @i_s_o_c = @client_token[:setup_steps].include?(GlobalConstant::ClientToken.set_conversion_rate_setup_step)
+        @i_s_o_c = @client_token[:setup_steps].include?(GlobalConstant::ClientToken.token_worth_in_usd_setup_step)
       end
 
       # Is client's setup complete ?

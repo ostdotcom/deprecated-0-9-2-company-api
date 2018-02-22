@@ -19,8 +19,8 @@ module GlobalConstant
 
       ### Setup Steps Start ###
 
-      def set_conversion_rate_setup_step
-        'set_conversion_rate'
+      def token_worth_in_usd_setup_step
+        'token_worth_in_usd'
       end
 
       def configure_transactions_setup_step
