@@ -9,7 +9,8 @@ class FetchClientTokenSupplyDetails
   #
   def initialize(params)
 
-    @client_token_id = params[:client_token_id]
+    @client_id = params[:client_id]
+    @token_symbol = params[:token_symbol]
 
   end
 
@@ -20,11 +21,11 @@ class FetchClientTokenSupplyDetails
   #
   def perform
 
-    # r = SaasApi::StakeAndMint::FetchStakedAmount.new.perform({simple_stake_contract_address: ''})
-    # tokens_minted = r.success? ? r.data['allTimeStakedAmount'] : 2
+    r = SaasApi::StakeAndMint::FetchStakedAmount.new.perform(client_id: @client_id, token_symbol: @token_symbol)
+    tokens_minted = r.success? ? r.data['allTimeStakedAmount'] : 2
 
     success_with_data(
-      tokens_minted: 2
+      tokens_minted: tokens_minted
     )
 
   end

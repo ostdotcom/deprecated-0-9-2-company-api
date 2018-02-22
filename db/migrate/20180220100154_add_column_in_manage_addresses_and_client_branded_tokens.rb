@@ -15,7 +15,6 @@ class AddColumnInManageAddressesAndClientBrandedTokens < DbMigrationConnection
 
       add_column :client_tokens, :worker_addr_uuid, :string, after: :reserve_uuid
       add_column :client_tokens, :airdrop_holder_addr_uuid, :string, after: :worker_addr_uuid
-      add_column :client_tokens, :simple_stake_contract_addr, :string, after: :token_erc20_address
 
     end
 
@@ -37,7 +36,6 @@ class AddColumnInManageAddressesAndClientBrandedTokens < DbMigrationConnection
 
       remove_column :client_tokens, :worker_addr_uuid
       remove_column :client_tokens, :airdrop_holder_addr_uuid
-      remove_column :client_tokens, :simple_stake_contract_addr
 
     end
 
