@@ -74,9 +74,9 @@ module Economy
                     symbol: "T3K",
                     symbol_icon: '',
                     status: "active",
-                    conversion_rate: 3.003,
+                    conversion_factor: 3.003,
                     setup_steps: [
-                        "set_conversion_rate",
+                        "token_worth_in_usd",
                         "configure_transactions",
                         "propose_initiated",
                         "propose_done",

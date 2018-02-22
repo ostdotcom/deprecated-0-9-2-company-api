@@ -9,7 +9,7 @@ module Economy
     # * Reviewed By:
     #
     # @params [Integer] client_token_id (mandatory) - client token id
-    # @params [Decimal] conversion_rate (mandatory) - how many branded tokens are there in one OST
+    # @params [Decimal] conversion_factor (mandatory) - how many branded tokens are there in one OST
     # @params [Decimal] token_worth_in_usd (mandatory) - approx worth of BT in USD
     # @params [Integer] airdrop_bt_per_user (mandatory) - how many BT are to given to each user
     # @params [Integer] initial_number_of_users (optional) - init number of users
@@ -25,7 +25,7 @@ module Economy
       @token_worth_in_usd = @params[:token_worth_in_usd]
 
       # Optional params
-      @conversion_rate = @params[:conversion_rate]
+      @conversion_factor = @params[:conversion_factor]
       @initial_number_of_users = @params[:initial_number_of_users]
       @airdrop_bt_per_user = @params[:airdrop_bt_per_user]
 
@@ -71,9 +71,9 @@ module Economy
       r = validate
       return r unless r.success?
 
-      if @conversion_rate.present?
+      if @conversion_factor.present?
 
-        @conversion_rate = @conversion_rate.to_f
+        @conversion_factor = @conversion_factor.to_f
 
         return error_with_data(
             'e_p_1',
@@ -81,7 +81,7 @@ module Economy
             'Conversion should be greater than 0.',
             GlobalConstant::ErrorAction.default,
             {}
-        ) if @conversion_rate <= 0
+        ) if @conversion_factor <= 0
 
       end
 
@@ -140,7 +140,7 @@ module Economy
         {}
       ) unless ct.present?
 
-      if ct.registration_done? && ct.conversion_rate != @conversion_rate
+      if ct.registration_done? && ct.conversion_factor != @conversion_factor
         return error_with_data(
             'e_p_5',
             'Conversion Rate Can Not be changed after Registering BT.',
@@ -150,7 +150,7 @@ module Economy
         )
       end
 
-      ct.conversion_rate = @conversion_rate if @conversion_rate.present?
+      ct.conversion_factor = @conversion_factor if @conversion_factor.present?
 
       ctp = ClientTokenPlanner.find_or_initialize_by(client_token_id: @client_token_id)
       ctp.initial_no_of_users = @initial_number_of_users if @initial_number_of_users.present?

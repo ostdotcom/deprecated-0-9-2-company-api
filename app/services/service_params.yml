@@ -89,7 +89,7 @@
     - :token_worth_in_usd
   :optional:
     - :initial_number_of_users
-    - :conversion_rate
+    - :conversion_factor
     - :airdrop_bt_per_user
 
 'Economy::GetCriticalChainInteractionStatus':

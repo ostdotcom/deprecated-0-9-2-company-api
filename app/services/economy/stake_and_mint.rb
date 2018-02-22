@@ -184,7 +184,7 @@ module Economy
         'Economy not planned.',
         GlobalConstant::ErrorAction.default,
         {}
-      ) if @client_token.conversion_rate.to_f <= 0 || @client_token.name.blank? ||
+      ) if @client_token.conversion_factor.to_f <= 0 || @client_token.name.blank? ||
         @client_token.symbol.blank? || @client_token.reserve_uuid.blank?
 
       # if propose was started but registeration not done yet we can not proceed
@@ -225,7 +225,7 @@ module Economy
           request_params: {
             token_symbol: @client_token.symbol,
             token_name: @client_token.name,
-            token_conversion_rate: @client_token.conversion_rate.to_f
+            token_conversion_rate: @client_token.conversion_factor.to_f
           },
           status: GlobalConstant::CriticalChainInteractions.queued_status
         }
