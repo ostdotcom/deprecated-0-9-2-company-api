@@ -28,6 +28,8 @@ class ProposeBrandedToken::GetProposeStatusJob < ApplicationJob
 
     if @critical_chain_interaction_log.is_pending?
       enqueue_self
+    else
+      deploy_airdrop_contract
     end
 
     success
@@ -46,6 +48,7 @@ class ProposeBrandedToken::GetProposeStatusJob < ApplicationJob
   #
   def init_params(params)
     @critical_log_id = params[:critical_log_id]
+    @parent_id = params[:parent_id]
 
     @critical_chain_interaction_log = nil
     @client_id = nil
@@ -158,6 +161,59 @@ class ProposeBrandedToken::GetProposeStatusJob < ApplicationJob
         wait: 10.seconds
       }
     )
+  end
+
+  # start the deployment of airdrop.
+  #
+  # * Author: Alpesh
+  # * Date: 21/02/2018
+  # * Reviewed By:
+  #
+  def deploy_airdrop_contract
+    request_params = {
+      client_id: @client_id,
+      token_symbol: @client_token.symbol,
+      token_name: @client_token.name
+    }
+
+    deploy_response = SaasApi::OnBoarding::DeployAirdropContract.new.perform(request_params)
+
+    Rails.logger.debug(deploy_response)
+
+    if deploy_response.success?
+      status = GlobalConstant::CriticalChainInteractions.pending_status
+      transaction_uuid = deploy_response.data[:transaction_uuid]
+      transaction_hash = deploy_response.data[:transaction_hash]
+    else
+      status = GlobalConstant::CriticalChainInteractions.failed_status
+    end
+
+    critical_log = CriticalChainInteractionLog.create!(
+      {
+        parent_id: @parent_id,
+        client_id: @client_id,
+        activity_type: GlobalConstant::CriticalChainInteractions.deploy_airdrop_activity_type,
+        client_token_id: @client_token_id,
+        chain_type: GlobalConstant::CriticalChainInteractions.utility_chain_type,
+        transaction_uuid: transaction_uuid,
+        transaction_hash: transaction_hash,
+        request_params: request_params,
+        response_data: deploy_response.to_hash,
+        status: status
+      }
+    )
+
+    BgJob.enqueue(
+      Airdrop::GetAirdropDeployStatusJob,
+      {
+        critical_log_id: critical_log.id,
+        parent_id: @parent_id
+      },
+      {
+        wait: 10.seconds
+      }
+    ) if critical_log.is_pending?
+
   end
 
   # Save registration status

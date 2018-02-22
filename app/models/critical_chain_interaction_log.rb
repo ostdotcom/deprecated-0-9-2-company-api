@@ -8,7 +8,8 @@ class CriticalChainInteractionLog < EstablishCompanyBigDbConnection
     GlobalConstant::CriticalChainInteractions.staker_initial_transfer_activity_type => 5,
     GlobalConstant::CriticalChainInteractions.stake_approval_started_activity_type => 6,
     GlobalConstant::CriticalChainInteractions.stake_bt_started_activity_type => 7,
-    GlobalConstant::CriticalChainInteractions.stake_st_prime_started_activity_type => 8
+    GlobalConstant::CriticalChainInteractions.stake_st_prime_started_activity_type => 8,
+    GlobalConstant::CriticalChainInteractions.deploy_airdrop_activity_type => 9
   }
 
   enum chain_type: {

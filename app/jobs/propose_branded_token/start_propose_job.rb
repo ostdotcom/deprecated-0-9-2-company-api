@@ -39,6 +39,7 @@ class ProposeBrandedToken::StartProposeJob < ApplicationJob
   #
   def init_params(params)
     @critical_log_id = params[:critical_log_id]
+    @parent_id = params[:parent_id]
 
     @critical_chain_interaction_log = nil
 
@@ -143,6 +144,7 @@ class ProposeBrandedToken::StartProposeJob < ApplicationJob
       ProposeBrandedToken::GetProposeStatusJob,
       {
         critical_log_id: @critical_log_id,
+        parent_id: @parent_id
       },
       {
         wait: 10.seconds

@@ -39,6 +39,10 @@ module GlobalConstant
         'stake_st_prime_started'
       end
 
+      def deploy_airdrop_activity_type
+        'deploy_airdrop'
+      end
+
       ########## chain_types #############
 
       def utility_chain_type

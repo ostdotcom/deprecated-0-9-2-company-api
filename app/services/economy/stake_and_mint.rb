@@ -239,7 +239,8 @@ module Economy
       BgJob.enqueue(
         ::ProposeBrandedToken::StartProposeJob,
         {
-          critical_log_id: @propose_critical_log_obj.id
+          critical_log_id: @propose_critical_log_obj.id,
+          parent_id: @stake_and_mint_init_chain_id
         }
       )
     end

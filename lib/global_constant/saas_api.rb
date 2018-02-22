@@ -15,6 +15,10 @@ module GlobalConstant
       'on-boarding/propose-branded-token'
     end
 
+    def self.deploy_airdrop_contract_path
+      'on-boarding/deploy-airdrop-contract'
+    end
+
     def self.get_registration_status_api_path
       'on-boarding/registration-status'
     end
