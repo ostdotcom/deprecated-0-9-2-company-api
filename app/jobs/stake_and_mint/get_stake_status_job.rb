@@ -118,7 +118,7 @@ class StakeAndMint::GetStakeStatusJob < ApplicationJob
         new_balance = @client_balances[GlobalConstant::BalanceTypes.ost_prime_balance_type].to_f
       end
 
-      if new_balance > @existing_balance
+      if new_balance > @existing_balance.to_f
         # processed
         @critical_chain_interaction_log.status = GlobalConstant::CriticalChainInteractions.processed_status
       else
