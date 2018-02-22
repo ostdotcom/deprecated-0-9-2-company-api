@@ -93,7 +93,7 @@ module Economy
             result_type: "transactions",
 
             transactions: [
-                {
+                {   id: "a2-a3-#{Time.now.to_i}",
                     transaction_uuid: "a2-a3-#{Time.now.to_i}",
                     status: 'pending',
                     transaction_hash: nil,

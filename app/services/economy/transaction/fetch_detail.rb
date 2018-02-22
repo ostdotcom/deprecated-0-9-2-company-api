@@ -40,6 +40,7 @@ module Economy
 
           if (Time.now.to_i % 2 == 0)
             data = {
+                id: transaction_uuid,
                 transaction_uuid: transaction_uuid,
                 uts: "#{Time.now.to_i}",
                 from_user_id: 2,
@@ -63,6 +64,7 @@ module Economy
             }
           else
             data = {
+                id: transaction_uuid,
                 transaction_uuid: transaction_uuid,
                 status: 'pending',
                 transaction_hash: nil,

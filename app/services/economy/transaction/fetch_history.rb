@@ -122,6 +122,7 @@ module Economy
 
             transactions: [
                 {
+                    id: 'a2-a3',
                     transaction_uuid: 'a2-a3',
                     status: 'active',
                     transaction_hash: "uussyyuuwww-#{Time.now.to_i}",
@@ -144,6 +145,7 @@ module Economy
                     ]
                 },
                 {
+                    id: 'a2-a1',
                     transaction_uuid: 'a2-a1',
                     status: 'active',
                     transaction_hash: "uussyyuuwww-#{Time.now.to_i}",
@@ -166,6 +168,7 @@ module Economy
                     ]
                 },
                 {
+                    id: 'a3-a2',
                     transaction_uuid: 'a3-a2',
                     status: 'pending',
                     transaction_hash: nil,
