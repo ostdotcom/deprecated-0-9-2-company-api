@@ -24,7 +24,7 @@ module SaasApi
       #
       # @param [String] token_symbol (mandatory) - token symbol
       # @param [String] token_name (mandatory) - token name
-      # @param [String] token_conversion_rate (mandatory) - token conversion rate
+      # @param [String] token_conversion_factor (mandatory) - token conversion rate
       #
       # @return [Result::Base]
       #
