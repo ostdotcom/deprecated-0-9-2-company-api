@@ -167,6 +167,8 @@ module CacheManagement
           'Registering Branded Token'
         when GlobalConstant::CriticalChainInteractions.stake_bt_started_activity_type
           'Staking OST to mint BT'
+        when GlobalConstant::CriticalChainInteractions.stake_st_prime_started_activity_type
+          'Staking OST for Transaction Fees'
         else
           fail "unsupported activity_type: #{activity_type}"
       end
