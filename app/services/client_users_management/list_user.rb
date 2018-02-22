@@ -11,9 +11,9 @@ module ClientUsersManagement
     # @param [Integer] user_id (mandatory) - user Id
     # @param [Integer] client_id (mandatory) - Client Id
     # @param [Integer] client_token_id (mandatory) - Client Token Id
+    # @param [Integer] is_xhr (mandatory) - is request xhr 0/1
     # @param [Integer] page_no (optional) - page no
     # @param [String] order_by (optional) - creation_time
-    # @param [String] is_xhr (optional) - creation_time
     #
     # @return [ClientUsersManagement::ListUser]
     #
@@ -214,7 +214,7 @@ module ClientUsersManagement
     end
 
     def is_xhr_request?
-      @is_xhr == 1
+      @is_xhr.to_i == 1
     end
 
   end

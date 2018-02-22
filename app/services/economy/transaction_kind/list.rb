@@ -13,6 +13,7 @@ module Economy
       # @params [String] client_id (mandatory) - client_id
       # @param [Integer] client_token_id (mandatory) - Client Token Id
       # @param [Integer] user_id (mandatory) - user Id
+      # @param [Integer] is_xhr (mandatory) - is request xhr 0/1
       #
       # @return [Economy::TransactionKind::List]
       #
@@ -22,6 +23,7 @@ module Economy
 
         @user_id = @params[:user_id]
         @client_token_id = @params[:client_token_id]
+        @is_xhr = @params[:is_xhr]
 
         @api_response_data = {}
 
@@ -39,10 +41,10 @@ module Economy
       #
       def perform
 
-        r = super
+        r = validate
         return r unless r.success?
 
-        r = execute
+        r = fetch_kinds
         return r unless r.success?
 
         r = fetch_supporting_data
@@ -62,7 +64,12 @@ module Economy
       #
       # @return [Result::Base]
       #
-      def execute
+      def fetch_kinds
+
+        return success unless is_xhr_request?
+
+        r = instantiate_ost_sdk
+        return r unless r.success?
 
         r = @ost_sdk_obj.list({})
         return r unless r.success?
@@ -85,13 +92,18 @@ module Economy
       #
       def fetch_supporting_data
 
-        r = Util::FetchEconomyCommonEntities.new(user_id: @user_id, client_token_id: @client_token_id).perform
-        return r unless r.success?
-
-        @api_response_data.merge!(r.data)
+        unless is_xhr_request?
+          r = Util::FetchEconomyCommonEntities.new(user_id: @user_id, client_token_id: @client_token_id).perform
+          return r unless r.success?
+          @api_response_data.merge!(r.data)
+        end
 
         success
 
+      end
+
+      def is_xhr_request?
+        @is_xhr.to_i == 1
       end
 
     end

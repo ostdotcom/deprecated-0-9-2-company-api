@@ -173,6 +173,7 @@
     - :client_id
     - :client_token_id
     - :user_id
+    - :is_xhr
   :optional:
 
 'Economy::Transaction::FetchHistory':

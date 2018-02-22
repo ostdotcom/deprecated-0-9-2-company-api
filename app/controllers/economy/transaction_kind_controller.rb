@@ -29,6 +29,7 @@ class Economy::TransactionKindController < Economy::BaseController
   # * Reviewed By:
   #
   def list
+    params[:is_xhr] = request.xhr?.nil? ? 0 : 1
     service_response = Economy::TransactionKind::List.new(params).perform
     render_api_response(service_response)
   end
