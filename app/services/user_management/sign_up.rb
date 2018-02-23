@@ -15,7 +15,7 @@ module UserManagement
     # @param [Integer] client_creation_needed (mandatory) - 1 if new client creation is needed
     # @param [String] token_name (mandatory) - token name
     # @param [String] token_symbol (mandatory) - token symbol
-    # @param [String] token_icon (optional) - token symbol icon color code, until backend generate image
+    # @param [String] token_icon (mandatory) - token symbol icon color code, until backend generate image
     # @param [String] agreed_terms_of_service (mandatory) - agreed_terms_of_service
     #
     # @return [UserManagement::SignUp]
@@ -99,6 +99,8 @@ module UserManagement
       validation_errors[:password] = 'Password should be minimum 8 characters' unless Util::CommonValidator.is_valid_password?(@password)
 
       validation_errors[:agreed_terms_of_service] = 'Tos not selected' unless @agreed_terms_of_service == 'on'
+
+      validation_errors[:token_icon] = 'Icon Not Selected' if @token_symbol_icon.blank?
 
       r = validate_token_creation_params
       validation_errors.merge!(r.data) unless r.success?

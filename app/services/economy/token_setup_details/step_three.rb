@@ -88,8 +88,6 @@ module Economy
           @api_response_data[:pending_critical_interaction_id] = pending_critical_interaction_id
         end
 
-        @api_response_data[:client_token_planner] = CacheManagement::ClientTokenPlanner.new([@client_token_id]).fetch[@client_token_id]
-
         fetch_eth_ost_balance
 
       end

@@ -186,6 +186,7 @@ module Economy
         r = SaasApi::OnBoarding::FetchChainInteractionParams.new.perform({client_id: @client_id})
         return r unless r.success?
 
+        @api_response_data[:client_token_planner] = CacheManagement::ClientTokenPlanner.new([@client_token_id]).fetch[@client_token_id]
         @api_response_data[:chain_interaction_params] = r.data.with_indifferent_access
 
         success

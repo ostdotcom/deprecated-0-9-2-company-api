@@ -9,9 +9,9 @@ module Economy
     # * Reviewed By:
     #
     # @params [Integer] client_token_id (mandatory) - client token id
-    # @params [Decimal] conversion_factor (mandatory) - how many branded tokens are there in one OST
     # @params [Decimal] token_worth_in_usd (mandatory) - approx worth of BT in USD
-    # @params [Integer] airdrop_bt_per_user (mandatory) - how many BT are to given to each user
+    # @params [Decimal] conversion_factor (optional) - how many branded tokens are there in one OST
+    # @params [Integer] airdrop_bt_per_user (optional) - how many BT are to given to each user
     # @params [Integer] initial_number_of_users (optional) - init number of users
     #
     #
@@ -157,10 +157,9 @@ module Economy
       ctp.initial_airdrop_in_wei = Util::Converter.to_wei_value(@airdrop_bt_per_user) if @airdrop_bt_per_user.present?
       ctp.token_worth_in_usd = @token_worth_in_usd if @token_worth_in_usd.present?
 
-      if ctp.changed?
+      flush_ct_cache = false
 
-        ctp.save!
-        CacheManagement::ClientTokenPlanner.new([ct.id]).clear
+      if ctp.changed?
 
         if ctp.token_worth_in_usd_changed? && !ct.send("#{GlobalConstant::ClientToken.token_worth_in_usd_setup_step}?")
 
@@ -171,17 +170,22 @@ module Economy
           updated_row_cnt = ClientToken.where(id: @client_token_id).
               where("setup_steps is NULL OR (setup_steps & #{bit_value} = 0)").update_all("setup_steps = setup_steps | #{bit_value}")
 
-          @is_first_time_set = updated_row_cnt == 1
+          @is_first_time_set = flush_ct_cache = (updated_row_cnt == 1)
 
         end
+
+        ctp.save!
+        CacheManagement::ClientTokenPlanner.new([ct.id]).clear
 
       end
 
       if ct.changed?
         @is_sync_in_saas_needed = true
         ct.save!
-        CacheManagement::ClientToken.new([ct.id]).clear
+        flush_ct_cache = true
       end
+
+      CacheManagement::ClientToken.new([ct.id]).clear if flush_ct_cache
 
       success
 

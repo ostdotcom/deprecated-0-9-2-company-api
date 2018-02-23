@@ -61,10 +61,6 @@ module Economy
         r = super
         return r unless r.success?
 
-        # set this with {} if step one not complete or fetch
-        @api_response_data[:client_token_planner] = !is_client_step_one_complete? ? {} :
-            CacheManagement::ClientTokenPlanner.new([@client_token_id]).fetch[@client_token_id]
-
         fetch_eth_ost_balance(false)
 
       end
