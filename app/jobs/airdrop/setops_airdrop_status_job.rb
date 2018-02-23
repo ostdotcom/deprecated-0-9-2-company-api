@@ -1,4 +1,4 @@
-class Airdrop::GetAirdropDeployStatusJob < ApplicationJob
+class Airdrop::SetopsAirdropStatusJob < ApplicationJob
 
   include Util::ResultHelper
 
@@ -20,13 +20,21 @@ class Airdrop::GetAirdropDeployStatusJob < ApplicationJob
     r = validate
     return r unless r.success?
 
-    r = get_airdrop_deploy_status
+    r = setops_airdrop_deploy_status
     return unless r.success?
 
     if @critical_chain_interaction_log.is_processed?
-      start_setops_airdrop
+
+      set_worker
+
+      set_price_oracle
+
+      set_accepted_margin
+
     else
+
       enqueue_self
+
     end
 
     success
@@ -87,7 +95,7 @@ class Airdrop::GetAirdropDeployStatusJob < ApplicationJob
   #
   # @return [Result::Base]
   #
-  def get_airdrop_deploy_status
+  def setops_airdrop_deploy_status
     # Initial transfer transaction is done
     return success if @critical_chain_interaction_log.is_processed?
 
@@ -109,7 +117,6 @@ class Airdrop::GetAirdropDeployStatusJob < ApplicationJob
       if r.data.present?
         # processed
         @critical_chain_interaction_log.status = GlobalConstant::CriticalChainInteractions.processed_status
-        update_airdrop_contract_address(r.data["formattedTransactionReceipt"]["contractAddress"])
       else
         # pending
         @critical_chain_interaction_log.status = GlobalConstant::CriticalChainInteractions.pending_status
@@ -155,49 +162,75 @@ class Airdrop::GetAirdropDeployStatusJob < ApplicationJob
 
   end
 
-  # update contract address.
-  #
-  # * Author: alpesh
-  # * Date: 22/02/2018
-  # * Reviewed By:
-  #
-  def update_airdrop_contract_address(contract_address)
-
-    client_token = ClientToken.where(id: @critical_chain_interaction_log.client_token_id).first
-    ClientToken.where(id: @critical_chain_interaction_log.client_token_id).
-      update_all(airdrop_contract_addr: contract_address)
-
-    SaasApi::OnBoarding::EditBt.new.perform(
-      symbol: client_token.symbol,
-      client_id: client_token.client_id,
-      airdrop_contract_addr: contract_address
-    )
-
-  end
-
-
   # set worker for a client
   #
   # * Author: alpesh
   # * Date: 22/02/2018
   # * Reviewed By:
   #
-  def start_setops_airdrop
+  def set_worker
 
     request_params = {
       client_id: @client_id,
       token_symbol: @client_token.symbol,
     }
 
-    saas_api_response = SaasApi::OnBoarding::SetopsAirdrop.new.perform(request_params)
+    saas_api_response = SaasApi::OnBoarding::SetWorker.new.perform(request_params)
 
     process_saas_response(
       request_params,
       saas_api_response,
-      GlobalConstant::CriticalChainInteractions.setops_airdrop_activity_type
+      GlobalConstant::CriticalChainInteractions.set_worker_activity_type
     )
 
   end
+
+  # set price oracle in airdrop contract
+  #
+  # * Author: alpesh
+  # * Date: 22/02/2018
+  # * Reviewed By:
+  #
+  def set_price_oracle
+
+    request_params = {
+      client_id: @client_id,
+      token_symbol: @client_token.symbol,
+    }
+
+    saas_api_response = SaasApi::OnBoarding::SetPriceOracle.new.perform(request_params)
+
+    process_saas_response(
+      request_params,
+      saas_api_response,
+      GlobalConstant::CriticalChainInteractions.set_price_oracle_activity_type
+    )
+
+  end
+
+  # set accepted price fluctuation in airdrop contract
+  #
+  # * Author: alpesh
+  # * Date: 22/02/2018
+  # * Reviewed By:
+  #
+  def set_accepted_margin
+
+    request_params = {
+      client_id: @client_id,
+      token_symbol: @client_token.symbol,
+    }
+
+    saas_api_response = SaasApi::OnBoarding::SetAcceptedMargin.new.perform(request_params)
+
+    process_saas_response(
+      request_params,
+      saas_api_response,
+      GlobalConstant::CriticalChainInteractions.set_accepted_margin_activity_type
+    )
+
+  end
+
 
   def process_saas_response(request_params, saas_api_response, activity_type)
 
@@ -225,10 +258,9 @@ class Airdrop::GetAirdropDeployStatusJob < ApplicationJob
     )
 
     BgJob.enqueue(
-      Airdrop::SetopsAirdropStatusJob,
+      Airdrop::GetAirdropSetupStatusJob,
       {
-        critical_log_id: critical_log.id,
-        parent_id: @parent_id
+        critical_log_id: critical_log.id
       },
       {
         wait: 10.seconds

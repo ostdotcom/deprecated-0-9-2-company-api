@@ -156,6 +156,7 @@ class ProposeBrandedToken::GetProposeStatusJob < ApplicationJob
       ProposeBrandedToken::GetProposeStatusJob,
       {
         critical_log_id: @critical_log_id,
+        parent_id: @parent_id
       },
       {
         wait: 10.seconds
@@ -188,10 +189,11 @@ class ProposeBrandedToken::GetProposeStatusJob < ApplicationJob
       status = GlobalConstant::CriticalChainInteractions.failed_status
     end
 
+    Rails.logger.debug("params -------------------------------- p->#{@parent_id}, c->#{@client_id}")
     critical_log = CriticalChainInteractionLog.create!(
       {
-        parent_id: @parent_id,
         client_id: @client_id,
+        parent_id: @parent_id,
         activity_type: GlobalConstant::CriticalChainInteractions.deploy_airdrop_activity_type,
         client_token_id: @client_token_id,
         chain_type: GlobalConstant::CriticalChainInteractions.utility_chain_type,

@@ -9,8 +9,12 @@ class CriticalChainInteractionLog < EstablishCompanyBigDbConnection
     GlobalConstant::CriticalChainInteractions.stake_approval_started_activity_type => 6,
     GlobalConstant::CriticalChainInteractions.stake_bt_started_activity_type => 7,
     GlobalConstant::CriticalChainInteractions.stake_st_prime_started_activity_type => 8,
-    GlobalConstant::CriticalChainInteractions.deploy_airdrop_activity_type => 9,
-    GlobalConstant::CriticalChainInteractions.airdrop_users_activity_type => 10,
+    GlobalConstant::CriticalChainInteractions.airdrop_users_activity_type => 9,
+    GlobalConstant::CriticalChainInteractions.deploy_airdrop_activity_type => 10,
+    GlobalConstant::CriticalChainInteractions.setops_airdrop_activity_type => 11,
+    GlobalConstant::CriticalChainInteractions.set_worker_activity_type => 12,
+    GlobalConstant::CriticalChainInteractions.set_price_oracle_activity_type => 13,
+    GlobalConstant::CriticalChainInteractions.set_accepted_margin_activity_type => 14
   }
 
   enum chain_type: {

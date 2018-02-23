@@ -43,6 +43,22 @@ module GlobalConstant
         'deploy_airdrop'
       end
 
+      def set_worker_activity_type
+        'set_worker'
+      end
+
+      def set_price_oracle_activity_type
+        'set_price_oracle'
+      end
+
+      def set_accepted_margin_activity_type
+        'set_accepted_margin'
+      end
+
+      def setops_airdrop_activity_type
+        'setops_airdrop'
+      end
+
       def airdrop_users_activity_type
         'airdrop_users'
       end

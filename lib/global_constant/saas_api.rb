@@ -51,6 +51,22 @@ module GlobalConstant
       'on-boarding/fetch-balances'
     end
 
+    def self.set_worker_path
+      'on-boarding/set-worker'
+    end
+
+    def self.set_price_oracle_path
+      'on-boarding/set-price-oracle'
+    end
+
+    def self.set_accepted_margin_path
+      'on-boarding/set-accepted-margin'
+    end
+
+    def self.setops_airdrop_path
+      'on-boarding/setops-airdrop'
+    end
+
     def self.approve_for_stake_api_path
       'stake/approve'
     end
