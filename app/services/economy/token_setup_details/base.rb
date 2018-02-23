@@ -96,7 +96,8 @@ module Economy
 
         if is_client_setup_complete?
 
-          pending_critical_interaction_id > 0 ? success : error_with_go_to(
+          pending_critical_interactions[GlobalConstant::CriticalChainInteractions.propose_bt_activity_type]  ?
+              success : error_with_go_to(
               'e_tss_b_2',
               'Setup Complete',
               'Setup Complete',
@@ -125,7 +126,8 @@ module Economy
         @api_response_data.merge!(
             user: CacheManagement::User.new([@user_id]).fetch[@user_id],
             client_token: @client_token,
-            oracle_price_points: FetchOraclePricePoints.perform
+            oracle_price_points: FetchOraclePricePoints.perform,
+            pending_critical_interactions: pending_critical_interactions
         )
 
         success
@@ -259,18 +261,10 @@ module Economy
       #
       # @return [Integer]
       #
-      def pending_critical_interaction_id
-
+      def pending_critical_interactions
         @p_c_i_id ||= begin
-
-          pending_critical_interaction_ids = CacheManagement::PendingCriticalInteractionIds.new([@client_token_id]).fetch[@client_token_id]
-
-          pending_critical_interaction_id = pending_critical_interaction_ids[GlobalConstant::CriticalChainInteractions.propose_bt_activity_type]
-
-          pending_critical_interaction_id ||= -1
-
+          CacheManagement::PendingCriticalInteractionIds.new([@client_token_id]).fetch[@client_token_id]
         end
-
       end
 
     end

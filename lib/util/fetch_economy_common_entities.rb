@@ -21,6 +21,7 @@ module Util
       @client_token = params[:client_token]
       @user = params[:user]
       @client_balances = params[:client_balances]
+      @client_token_pending_transactions = params[:client_token_pending_transactions]
 
     end
 
@@ -121,9 +122,7 @@ module Util
 
       return success if @client_balances.present?
 
-      @client_token_s = CacheManagement::ClientTokenSecure.new([@client_token_id]).fetch[@client_token_id]
-
-      client_address_data = CacheManagement::ClientAddress.new([@client_token[:client_id]]).fetch[@client_token[:client_id]]
+      client_address_data = CacheManagement::ClientAddress.new([@client_token_id]).fetch[@client_token_id]
 
       return error_with_data(
           'fece_1',
@@ -133,11 +132,21 @@ module Util
           {}
       ) if client_address_data.blank? || client_address_data[:ethereum_address_d].blank?
 
+      client_token_s = CacheManagement::ClientTokenSecure.new([@client_token_id]).fetch[@client_token_id]
+
+      return error_with_data(
+          'fece_2',
+          'Client Token not deployed.',
+          'Client Token not deployed.',
+          GlobalConstant::ErrorAction.default,
+          {}
+      ) if client_token_s.blank? || client_token_s[:reserve_uuid].blank?
+
       r = FetchClientBalances.new(
           client_id: [@client_token[:client_id]],
           balances_to_fetch: {
               GlobalConstant::CriticalChainInteractions.utility_chain_type => {
-                  address_uuid: @client_token_s[:reserve_uuid],
+                  address_uuid: client_token_s[:reserve_uuid],
                   balance_types: [
                       GlobalConstant::BalanceTypes.ost_prime_balance_type,
                       @client_token[:symbol]
@@ -160,6 +169,26 @@ module Util
 
     end
 
+    # Fetch Pending Transactions
+    #
+    # * Author: Puneet
+    # * Date: 02/02/2018
+    # * Reviewed By:
+    #
+    # Sets @client_token_pending_transactions
+    #
+    # @return [Result::Base]
+    #
+    def fetch_pending_transactions
+
+      return success if @client_token_pending_transactions.present?
+
+      @client_token_pending_transactions = CacheManagement::PendingCriticalInteractionIds.new([@client_token_id]).fetch[@client_token_id]
+
+      success
+
+    end
+
     #
     # * Author: Puneet
     # * Date: 02/02/2018
@@ -176,7 +205,8 @@ module Util
           client_token: @client_token,
           user: @user,
           client_balances: @client_balances || {},
-          oracle_price_points: FetchOraclePricePoints.perform
+          oracle_price_points: FetchOraclePricePoints.perform,
+          pending_critical_interactions: @client_token_pending_transactions || {}
       }
 
       data[:chain_interaction_params] = chain_interaction_params if chain_interaction_params.present?

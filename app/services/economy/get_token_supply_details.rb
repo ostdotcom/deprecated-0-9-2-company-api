@@ -91,15 +91,6 @@ module Economy
 
       @api_response_data[:token_supply_details] = r.data
 
-      pending_critical_interaction_ids = CacheManagement::PendingCriticalInteractionIds.new([@client_token[:id]]).fetch[@client_token[:id]]
-
-      pending_critical_interaction_id = pending_critical_interaction_ids.blank? ? nil :
-        pending_critical_interaction_ids[GlobalConstant::CriticalChainInteractions.stake_bt_started_activity_type]
-
-      if pending_critical_interaction_id.present?
-        @api_response_data[:pending_critical_interaction_id] = pending_critical_interaction_id
-      end
-
       success
 
     end
