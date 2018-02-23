@@ -256,7 +256,7 @@ module Economy
       return success if @client_token.registration_done?
 
       @airdrop_amount = @airdrop_amount.present? ? BigDecimal.new(@airdrop_amount) : @airdrop_amount
-      @ost_to_bt = @airdrop_amount.present? ? BigDecimal.new(@ost_to_bt) : @ost_to_bt
+      @ost_to_bt = @ost_to_bt.present? ? BigDecimal.new(@ost_to_bt) : @ost_to_bt
       @number_of_users = @number_of_users.to_i
 
       return error_with_data(
