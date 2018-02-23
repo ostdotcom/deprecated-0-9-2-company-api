@@ -140,6 +140,14 @@
     - :user_id
   :optional:
 
+'Economy::AirdropUsers':
+  :mandatory:
+    - :client_token_id
+    - :client_id
+    - :airdrop_amount
+    - :airdrop_list_type
+  :optional:
+
 'Economy::TransactionKind::Create':
   :mandatory:
     - :client_id

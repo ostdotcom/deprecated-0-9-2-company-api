@@ -93,7 +93,8 @@ module CacheManagement
       [
           GlobalConstant::CriticalChainInteractions.propose_bt_activity_type,
           GlobalConstant::CriticalChainInteractions.stake_bt_started_activity_type,
-          GlobalConstant::CriticalChainInteractions.stake_st_prime_started_activity_type
+          GlobalConstant::CriticalChainInteractions.stake_st_prime_started_activity_type,
+          GlobalConstant::CriticalChainInteractions.airdrop_users_activity_type
       ]
     end
 

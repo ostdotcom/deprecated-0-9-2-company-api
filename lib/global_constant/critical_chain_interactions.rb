@@ -43,6 +43,10 @@ module GlobalConstant
         'deploy_airdrop'
       end
 
+      def airdrop_users_activity_type
+        'airdrop_users'
+      end
+
       ########## chain_types #############
 
       def utility_chain_type

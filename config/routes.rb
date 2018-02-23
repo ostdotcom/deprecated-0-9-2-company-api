@@ -22,6 +22,7 @@ Rails.application.routes.draw do
     match 'create' => :create_user, via: :POST
     match 'edit' => :edit_user, via: :POST
     match 'list' => :list_users, via: :GET
+    match 'airdrop' => :airdrop_users, via: :POST
   end
 
   scope 'api/economy/token', controller: 'economy/token' do

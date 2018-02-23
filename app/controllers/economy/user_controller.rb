@@ -71,4 +71,18 @@ class Economy::UserController < Economy::BaseController
 
   end
 
+  # AirDrop users of client
+  #
+  # * Author: Pankaj
+  # * Date: 23/02/2018
+  # * Reviewed By:
+  #
+  def airdrop_users
+
+    service_response = Economy::AirdropUsers.new(params).perform
+
+    render_api_response(service_response)
+
+  end
+
 end
