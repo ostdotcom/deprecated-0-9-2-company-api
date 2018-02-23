@@ -238,7 +238,7 @@ module Economy
         balances_to_fetch[GlobalConstant::CriticalChainInteractions.utility_chain_type] = {
             address_uuid: client_token_s[:reserve_uuid],
             balance_types: [@client_token[:symbol]]
-        } if client_token_s[:reserve_uuid].present?
+        } if client_token_s[:token_erc20_address].present?
 
         r = FetchClientBalances.new(
             client_id: @client_id,
