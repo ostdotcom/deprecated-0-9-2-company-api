@@ -267,6 +267,8 @@ module Economy
           {}
       ) if @airdrop_amount.blank? || @airdrop_amount < 0 || @ost_to_bt.blank? || @bt_to_mint < 0 || @number_of_users < 0
 
+      success
+
     end
 
     # Set Registeration related params in DB
