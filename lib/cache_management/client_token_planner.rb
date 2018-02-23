@@ -3,7 +3,7 @@ module CacheManagement
   class ClientTokenPlanner < CacheManagement::Base
 
     # Fetch from cache and for cache misses call fetch_from_db
-    # 1. If initial_airdrop_in_wei is set in DB return
+    # 1. If initial_airdrop_in_wei is set in DB append config & return
     # 2. Else using some vars compute what could be the initial_airdrop_in_wei
     # Note: Data for 2 can not be cached as OST values change frequently and thats a art of the calculation
     #
@@ -27,7 +27,15 @@ module CacheManagement
 
       data_from_cache.each do |client_token_id, token_planner_data|
 
-        next if token_planner_data.blank? || token_planner_data[:initial_airdrop_in_wei].present?
+        next if token_planner_data.blank?
+
+        token_planner_data[:config] = {
+          default_initial_users: default_initial_users,
+          buffer_mint_factor_over_airdrop: buffer_mint_factor_over_airdrop,
+          max_allowed_token_worth_in_usd: ::ClientTokenPlanner.max_allowed_token_worth_in_usd
+        }
+
+        next if token_planner_data[:initial_airdrop_in_wei].present?
 
         bt_to_fiat = BigDecimal.new(token_planner_data[:token_worth_in_usd])
 
