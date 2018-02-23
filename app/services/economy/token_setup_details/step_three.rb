@@ -84,10 +84,6 @@ module Economy
         r = super
         return r unless r.success?
 
-        if pending_critical_interaction_id > 0
-          @api_response_data[:pending_critical_interaction_id] = pending_critical_interaction_id
-        end
-
         fetch_eth_ost_balance
 
       end
