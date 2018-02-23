@@ -70,3 +70,7 @@ saas_client_economy_<%= GlobalConstant::Base.sub_env%>_<%= Rails.env%>:
 saas_transaction_<%= GlobalConstant::Base.sub_env%>_<%= Rails.env%>:
   <<: *saas_default_db
   database: saas_transaction_<%= GlobalConstant::Base.sub_env%>_<%= Rails.env%>
+
+saas_airdrop_<%= GlobalConstant::Base.sub_env%>_<%= Rails.env%>:
+  <<: *saas_default_db
+  database: saas_airdrop_<%= GlobalConstant::Base.sub_env%>_<%= Rails.env%>
