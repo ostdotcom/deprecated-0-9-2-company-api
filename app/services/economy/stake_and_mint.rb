@@ -10,10 +10,14 @@ module Economy
     #
     # @param [Integer] client_id (mandatory) - client id
     # @param [Integer] user_id (mandatory) - user id
-    # @params [Integer] client_token_id (mandatory) - client token id
+    # @param [Integer] client_token_id (mandatory) - client token id
     # @param [Decimal] bt_to_mint (mandatory) - BT amount to stake and mint
     # @param [Decimal] st_prime_to_mint (mandatory) - ST' amount to stake and mint
     # @param [String] transaction_hash (mandatory) - transaction hash of the initial transfer to the staker.
+    #
+    # @param [Decimal] ost_to_bt (optional) - OST TO Bt conversion Factor sent by FE
+    # @param [Integer] number_of_users (optional) - number_of_users which need to be airdropped
+    # @param [Integer] airdrop_amount (optional) - BT amount which needs to be airdropped to users
     #
     # @return [Economy::StakeAndMint]
     #
@@ -28,9 +32,15 @@ module Economy
       @st_prime_to_mint = @params[:st_prime_to_mint]
       @transaction_hash = @params[:transaction_hash]
 
+      #optional params
+      @ost_to_bt = @params[:ost_to_bt]
+      @number_of_users = @params[:number_of_users]
+      @airdrop_amount = @params[:airdrop_amount]
+
       @user = nil
       @client_token = nil
       @stake_and_mint_init_chain_id = nil
+      @parent_tx_activity_type = nil
 
     end
 
@@ -47,13 +57,20 @@ module Economy
       r = validate_and_sanitize
       return r unless r.success?
 
-      enqueue_propose_job
+      r = set_registeration_params_in_db
+      return r unless r.success?
+
+      r = enqueue_propose_job
+      return r unless r.success?
 
       r = enqueue_stake_and_mint_job
       return r unless r.success?
 
+      #NOTE: Returned this and not fetched from PendingCriticalInteractionIds to avoid extra query
       success_with_data(
-        stake_and_mint_init_chain_id: @stake_and_mint_init_chain_id.to_i
+        pending_critical_interactions: {
+          @parent_tx_activity_type => @stake_and_mint_init_chain_id.to_i
+        }
       )
 
     end
@@ -75,13 +92,16 @@ module Economy
       r = validate
       return r unless r.success?
 
+      @bt_to_mint = BigDecimal.new(@bt_to_mint)
+      @st_prime_to_mint = BigDecimal.new(@st_prime_to_mint)
+
       return error_with_data(
         'e_sam_1',
         'Invalid stake and mint parameters.',
         'Invalid stake and mint parameters.',
         GlobalConstant::ErrorAction.default,
         {}
-      ) if @bt_to_mint.to_f < 0 || @st_prime_to_mint.to_f < 0 || @transaction_hash.blank?
+      ) if @transaction_hash.blank? || (@bt_to_mint < 0 && @st_prime_to_mint < 0)
 
       r = validate_user
       return r unless r.success?
@@ -90,6 +110,9 @@ module Economy
       return r unless r.success?
 
       r = validate_client_token
+      return r unless r.success?
+
+      r = validate_registeration_params
       return r unless r.success?
 
       success
@@ -166,6 +189,7 @@ module Economy
     # @return [Result::Base]
     #
     def validate_client_token
+
       @client_token = ClientToken.where(
         id: @client_token_id
       ).first
@@ -184,8 +208,7 @@ module Economy
         'Economy not planned.',
         GlobalConstant::ErrorAction.default,
         {}
-      ) if @client_token.conversion_factor.to_f <= 0 || @client_token.name.blank? ||
-        @client_token.symbol.blank? || @client_token.reserve_uuid.blank?
+      ) if @client_token.name.blank? || @client_token.symbol.blank? || @client_token.reserve_uuid.blank?
 
       # if propose was started but registeration not done yet we can not proceed
       if @client_token.propose_initiated? && !@client_token.registration_done?
@@ -198,7 +221,83 @@ module Economy
         )
       end
 
+      ct_pending_transactions = CacheManagement::PendingCriticalInteractionIds.
+          new([@client_token_id]).fetch[@client_token_id]
+
+      if ct_pending_transactions[GlobalConstant::CriticalChainInteractions.propose_bt_activity_type].present? ||
+          ct_pending_transactions[GlobalConstant::CriticalChainInteractions.stake_bt_started_activity_type].present? ||
+          ct_pending_transactions[GlobalConstant::CriticalChainInteractions.stake_st_prime_started_activity_type].present?
+
+        return error_with_data(
+            'e_sam_7',
+            'Pending Transaction Is Being Processed. Please try again later.',
+            'Pending Transaction Is Being Processed. Please try again later.',
+            GlobalConstant::ErrorAction.default,
+            {}
+        )
+
+      end
+
       success
+
+    end
+
+    # Validate Registeration Params
+    #
+    # * Author: Puneet
+    # * Date: 29/01/2018
+    # * Reviewed By:
+    #
+    # @return [Result::Base]
+    #
+    def validate_registeration_params
+
+      # If registeration was already complete, return
+      return success if @client_token.registration_done?
+
+      @airdrop_amount = @airdrop_amount.present? ? BigDecimal.new(@airdrop_amount) : @airdrop_amount
+      @ost_to_bt = @airdrop_amount.present? ? BigDecimal.new(@ost_to_bt) : @ost_to_bt
+      @number_of_users = @number_of_users.to_i
+
+      return error_with_data(
+          'e_sam_8',
+          'Invalid registeration parameters.',
+          'Invalid registeration parameters.',
+          GlobalConstant::ErrorAction.default,
+          {}
+      ) if @airdrop_amount.blank? || @airdrop_amount < 0 || @ost_to_bt.blank? || @bt_to_mint < 0 || @number_of_users < 0
+
+    end
+
+    # Set Registeration related params in DB
+    #
+    # * Author: Puneet
+    # * Date: 29/01/2018
+    # * Reviewed By:
+    #
+    # Updates @client_token, @client_token_planner
+    #
+    # @return [Result::Base]
+    #
+    def set_registeration_params_in_db
+
+      # If registeration was already complete, return
+      return success if @client_token.registration_done?
+
+      r = Economy::SetUpEconomy.new(
+          client_token_id: @client_token_id,
+          conversion_factor: @ost_to_bt,
+          airdrop_bt_per_user: @airdrop_amount,
+          initial_number_of_users: @number_of_users
+      ).perform
+
+      return r unless r.success?
+
+      @client_token = r.data[:client_token]
+      @client_token_planner = r.data[:client_token_planner]
+
+      success
+
     end
 
     # Enqueue propose branded token job
@@ -215,6 +314,8 @@ module Economy
     def enqueue_propose_job
 
       return if @client_token.propose_initiated? || @client_token.registration_done?
+
+      @parent_tx_activity_type = GlobalConstant::CriticalChainInteractions.propose_bt_activity_type
 
       @propose_critical_log_obj = CriticalChainInteractionLog.create!(
         {
@@ -259,15 +360,17 @@ module Economy
 
       return if @bt_to_mint.to_f <= 0 && @st_prime_to_mint.to_f <= 0
 
+      @parent_tx_activity_type ||= GlobalConstant::CriticalChainInteractions.staker_initial_transfer_activity_type
+
       critical_log_obj = nil
 
       begin
 
         critical_log_obj = CriticalChainInteractionLog.create!(
             {
-                parent_id: @stake_and_mint_init_chain_id,
                 client_id: @client_id,
                 client_token_id: @client_token_id,
+                parent_id: @stake_and_mint_init_chain_id,
                 activity_type: GlobalConstant::CriticalChainInteractions.staker_initial_transfer_activity_type,
                 chain_type: GlobalConstant::CriticalChainInteractions.value_chain_type,
                 transaction_hash: @transaction_hash,

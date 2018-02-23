@@ -143,7 +143,6 @@ module CacheManagement
     def activity_type_display_text(db_object)
       request_params = db_object.request_params
       case db_object.activity_type
-        #TODO: Using input params and all change language
         when GlobalConstant::CriticalChainInteractions.propose_bt_activity_type
           'Registering Branded Token'
         when GlobalConstant::CriticalChainInteractions.stake_bt_started_activity_type

@@ -88,9 +88,14 @@
     - :client_token_id
     - :token_worth_in_usd
   :optional:
+
+'Economy::SetUpEconomy':
+  :mandatory:
+    - :client_token_id
     - :initial_number_of_users
     - :conversion_factor
     - :airdrop_bt_per_user
+  :optional:
 
 'Economy::GetCriticalChainInteractionStatus':
   :mandatory:
@@ -109,6 +114,9 @@
     - :st_prime_to_mint
     - :transaction_hash
   :optional:
+    - :ost_to_bt
+    - :number_of_users
+    - :airdrop_amount
 
 'Economy::TokenSetupDetails::StepOne':
   :mandatory:
