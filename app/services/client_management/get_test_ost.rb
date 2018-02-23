@@ -21,7 +21,7 @@ module ClientManagement
 
       @client_id = @params[:client_id]
       @client_token_id = @params[:client_token_id]
-      @amount = @params[:requested_amount] || 10000
+      @amount = @params[:requested_amount] || GlobalConstant::ClientAddress.default_ost_grant_amount
       @eth_address = @params[:eth_address]
 
       @client = nil

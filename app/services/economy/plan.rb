@@ -71,9 +71,28 @@ module Economy
       r = validate
       return r unless r.success?
 
+      @token_worth_in_usd = BigDecimal.new(@token_worth_in_usd)
+
+      validation_errors = {}
+      validation_errors[:token_worth_in_usd] = 'BT To Fiat Value should be > 0' if @token_worth_in_usd <= 0
+
+      max_allowed_token_worth_in_usd = ClientTokenPlanner.max_allowed_token_worth_in_usd
+      if @token_worth_in_usd > max_allowed_token_worth_in_usd
+        validation_errors[:token_worth_in_usd] = "BT To Fiat Value should be < #{max_allowed_token_worth_in_usd}"
+      end
+
+      return error_with_data(
+          'um_su_1',
+          'Plan Economy Error',
+          '',
+          GlobalConstant::ErrorAction.default,
+          {},
+          validation_errors
+      ) if validation_errors.present?
+
       if @conversion_factor.present?
 
-        @conversion_factor = @conversion_factor.to_f
+        @conversion_factor = BigDecimal.new(@conversion_factor)
 
         return error_with_data(
             'e_p_1',
@@ -155,7 +174,7 @@ module Economy
       ctp = ClientTokenPlanner.find_or_initialize_by(client_token_id: @client_token_id)
       ctp.initial_no_of_users = @initial_number_of_users if @initial_number_of_users.present?
       ctp.initial_airdrop_in_wei = Util::Converter.to_wei_value(@airdrop_bt_per_user) if @airdrop_bt_per_user.present?
-      ctp.token_worth_in_usd = @token_worth_in_usd if @token_worth_in_usd.present?
+      ctp.token_worth_in_usd = @token_worth_in_usd
 
       flush_ct_cache = false
 

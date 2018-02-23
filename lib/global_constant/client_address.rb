@@ -17,6 +17,10 @@ module GlobalConstant
 
       ### Status End ###
 
+      def default_ost_grant_amount
+        10000
+      end
+
     end
 
   end
