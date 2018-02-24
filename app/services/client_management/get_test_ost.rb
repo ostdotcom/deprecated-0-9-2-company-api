@@ -172,6 +172,7 @@ module ClientManagement
     # @return [Result::Base]
     #
     def make_saas_api_call
+
       r = SaasApi::OnBoarding::GrantTestOst.new.perform(ethereum_address: @eth_address, amount: @amount)
       return r unless r.success?
 
@@ -183,7 +184,10 @@ module ClientManagement
       @client_token.send("set_#{GlobalConstant::ClientToken.received_test_ost_setup_step}")
       @client_token.save!
 
+      CacheManagement::ClientToken.new([@client_token.id])
+
       r
+
     end
 
     # Fetch Eth Address of client

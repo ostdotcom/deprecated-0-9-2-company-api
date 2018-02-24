@@ -123,7 +123,7 @@ module Economy
 
           @is_first_time_set = (updated_row_cnt == 1)
 
-          CacheManagement::ClientToken.new([ct.id]).clear if @is_first_time_set == 1
+          CacheManagement::ClientToken.new([ct.id]).clear if @is_first_time_set
 
         end
 
