@@ -325,7 +325,7 @@ module Economy
           request_params: {
             token_symbol: @client_token.symbol,
             token_name: @client_token.name,
-            token_conversion_factor: @client_token.conversion_factor.to_f
+            token_conversion_factor: BigDecimal.new(@client_token.conversion_factor)
           },
           status: GlobalConstant::CriticalChainInteractions.queued_status
         }

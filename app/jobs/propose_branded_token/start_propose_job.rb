@@ -78,7 +78,7 @@ class ProposeBrandedToken::StartProposeJob < ApplicationJob
     @client_token_id = @critical_chain_interaction_log.client_token_id
     @token_name = @critical_chain_interaction_log.request_params[:token_name]
     @token_symbol = @critical_chain_interaction_log.request_params[:token_symbol]
-    @token_conversion_factor = @critical_chain_interaction_log.request_params[:token_conversion_factor].to_f
+    @token_conversion_factor = BigDecimal.new(@critical_chain_interaction_log.request_params[:token_conversion_factor])
 
     @client_token = ClientToken.where(id: @critical_chain_interaction_log.client_token_id).first
 
@@ -106,7 +106,7 @@ class ProposeBrandedToken::StartProposeJob < ApplicationJob
     params = {
       token_symbol: @token_symbol,
       token_name: @token_name,
-      token_conversion_factor: @token_conversion_factor.to_f
+      token_conversion_factor: @token_conversion_factor
     }
 
     r = SaasApi::OnBoarding::ProposeBt.new.perform(params)
