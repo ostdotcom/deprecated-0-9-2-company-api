@@ -47,6 +47,15 @@ module Economy
 
       insert_initial_db_record
 
+      r = make_saas_call
+      if r.success?
+        @chain_interaction.transaction_uuid = r.data[:airdrop_uuid]
+        @chain_interaction.status = GlobalConstant::CriticalChainInteractions.pending_status
+      else
+        @chain_interaction.status = GlobalConstant::CriticalChainInteractions.failed_status
+      end
+      @chain_interaction.save
+
       success_with_data(
           pending_critical_interactions:
             {GlobalConstant::CriticalChainInteractions.airdrop_users_activity_type => @chain_interaction.id }
@@ -141,6 +150,45 @@ module Economy
                                                                request_params: {airdrop_amount: @airdrop_amount, token_symbol: @client_token[:symbol],
                                                                                 users_list_to_airdrop: @airdrop_list_type}
       )
+    end
+
+    # Make Saas Api call
+    #
+    # * Author: Pankaj
+    # * Date: 23/02/2018
+    # * Reviewed By:
+    #
+    #
+    # @return [Result::Base]
+    #
+    def make_saas_call
+
+      result = CacheManagement::ClientApiCredentials.new([@client_id]).fetch[@client_id]
+      return error_with_data(
+          'e_adu_4',
+          "Invalid client.",
+          'Something Went Wrong.',
+          GlobalConstant::ErrorAction.default,
+          {}
+      ) if result.blank?
+
+      # Create OST Sdk Obj
+      credentials = OSTSdk::Util::APICredentials.new(result[:api_key], result[:api_secret])
+      @ost_sdk_obj = OSTSdk::Saas::Users.new(GlobalConstant::Base.sub_env, credentials)
+
+      service_response = @ost_sdk_obj.airdrop_tokens(symbol: @client_token[:symbol], amount: @airdrop_amount,
+                                                     list_type: @airdrop_list_type)
+
+      return error_with_data(
+          'e_adu_5',
+          "Coundn't Airdrop Tokens",
+          'Something Went Wrong.',
+          GlobalConstant::ErrorAction.default,
+          {}
+      ) unless service_response.success?
+
+      service_response
+
     end
 
   end
