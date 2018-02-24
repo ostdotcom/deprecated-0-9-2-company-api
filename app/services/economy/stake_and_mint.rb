@@ -63,8 +63,8 @@ module Economy
       r = enqueue_propose_job
       return r unless r.success?
 
-      # r = enqueue_stake_and_mint_job
-      # return r unless r.success?
+      r = enqueue_stake_and_mint_job
+      return r unless r.success?
 
       #NOTE: Returned this and not fetched from PendingCriticalInteractionIds to avoid extra query
       success_with_data(
@@ -343,6 +343,9 @@ module Economy
           parent_id: @stake_and_mint_init_chain_id
         }
       )
+
+      success
+
     end
 
     # Enqueue stake and mint job
