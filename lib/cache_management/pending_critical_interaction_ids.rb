@@ -34,9 +34,14 @@ module CacheManagement
         next if data.blank?
         has_pending = false
         has_failed = false
+        # check if any of these rows have failed or pending
         data.each do |row|
-          has_pending = statuses_to_mark_pending.include?(row[:status])
-          has_failed = row[:status] == GlobalConstant::CriticalChainInteractions.failed_status
+          if !has_pending
+            has_pending = statuses_to_mark_pending.include?(row[:status])
+          end
+          if !has_failed
+            has_failed = row[:status] == GlobalConstant::CriticalChainInteractions.failed_status
+          end
         end
         if has_pending && !has_failed
           buffer = id_to_activity_type_map[id]
