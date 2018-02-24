@@ -158,6 +158,25 @@ module Util
       ethereum_address
     end
 
+    # check if string has stop words or not
+    #
+    #
+    # * Author: Puneet
+    # * Date: 22/02/2018
+    # * Reviewed By:
+    #
+    # @return [Boolean] returns a boolean
+    #
+    def self.has_stop_words?(str)
+      if str.blank?
+        return false
+      else
+        stop_words = ["anal", "anus", "arse", "ballsack", "bitch", "biatch", "blowjob", "blow job", "bollock", "bollok", "boner", "boob", "bugger", "bum", "butt", "buttplug", "clitoris", "cock", "coon", "crap", "cunt", "dick", "dildo", "dyke", "fag", "feck", "fellate", "fellatio", "felching", "fuck", "f u c k", "fudgepacker", "fudge packer", "flange", "Goddamn", "God damn", "homo", "jerk", "Jew", "jizz", "Kike", "knobend", "knob end", "labia", "muff", "nigger", "nigga", "penis", "piss", "poop", "prick", "pube", "pussy", "scrotum", "sex", "shit", "s hit", "sh1t", "slut", "smegma", "spunk", "tit", "tosser", "turd", "twat", "vagina", "wank", "whore", "porn"]
+        reg_ex = /\b(?:#{ stop_words.join('|') })\b/i
+        return (str.gsub(reg_ex, '') != str) ? true : false
+      end
+    end
+
   end
 
 end

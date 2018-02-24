@@ -156,6 +156,14 @@ module UserManagement
         validation_errors[:token_symbol] = 'Token symbol already exists.'
       end
 
+      if Util::CommonValidator.has_stop_words?(@token_name)
+        validation_errors[:token_name] = 'Token name does not pass Profanity check.'
+      end
+
+      if Util::CommonValidator.has_stop_words?(@token_symbol)
+        validation_errors[:token_symbol] = 'Token symbol does not pass Profanity check.'
+      end
+
       validation_errors.blank? ? success : error_with_data(
           'e_ct_4',
           'Token Creation params errors.',
