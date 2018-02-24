@@ -177,6 +177,30 @@ module Util
       end
     end
 
+    # check if string is a valid Token Symbol
+    #
+    # * Author: Puneet
+    # * Date: 22/02/2018
+    # * Reviewed By:
+    #
+    # @return [Boolean] returns a boolean
+    #
+    def self.is_valid_token_symbol?(str)
+      (str =~ /^[a-z]{3,4}$/i).present?
+    end
+
+    # check if string is a valid Token name
+    #
+    # * Author: Puneet
+    # * Date: 22/02/2018
+    # * Reviewed By:
+    #
+    # @return [Boolean] returns a boolean
+    #
+    def self.is_valid_token_name?(str)
+      (str =~ /^[a-z\s]{3,25}$/i).present?
+    end
+
   end
 
 end

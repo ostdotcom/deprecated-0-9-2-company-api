@@ -148,28 +148,20 @@ module UserManagement
 
       validation_errors = {}
 
+      unless Util::CommonValidator.is_valid_token_symbol?(@token_symbol)
+        validation_errors[:token_symbol] = 'Token symbol should contain only alphabets btw 3 and 4 characters.'
+      end
+
+      unless Util::CommonValidator.is_valid_token_name?(@token_name)
+        validation_errors[:token_name] = 'Token name should contain only alphabets btw 3 and 25 characters.'
+      end
+
       if Util::CommonValidator.has_stop_words?(@token_name)
         validation_errors[:token_name] = 'Token name does not pass Profanity check.'
       end
 
       if Util::CommonValidator.has_stop_words?(@token_symbol)
         validation_errors[:token_symbol] = 'Token symbol does not pass Profanity check.'
-      end
-
-      if @token_symbol.length > 4
-        validation_errors[:token_symbol] = 'Token symbol can be of max 4 characters.'
-      end
-
-      if @token_symbol.length < 3
-        validation_errors[:token_symbol] = 'Token symbol should be of atleast 3 characters.'
-      end
-
-      if @token_name.length > 25
-        validation_errors[:token_name] = 'Token name can be of max 25 characters.'
-      end
-
-      if @token_name.length < 3
-        validation_errors[:token_name] = 'Token name should be of atleast 3 characters.'
       end
 
       if ClientToken.where('name = ?', @token_name).first.present?
