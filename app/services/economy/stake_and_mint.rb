@@ -312,7 +312,7 @@ module Economy
     #
     def enqueue_propose_job
 
-      return if @client_token.propose_initiated? || @client_token.registration_done?
+      return success if @client_token.propose_initiated? || @client_token.registration_done?
 
       @parent_tx_activity_type = GlobalConstant::CriticalChainInteractions.propose_bt_activity_type
 
@@ -387,7 +387,7 @@ module Economy
       rescue ActiveRecord::RecordNotUnique => e
 
         r = error_with_data(
-            'e_sam_7',
+            'e_sam_9',
             "Duplicate Tx Hash : #{@transaction_hash}",
             "Duplicate Tx Hash : #{@transaction_hash}",
             GlobalConstant::ErrorAction.default,
