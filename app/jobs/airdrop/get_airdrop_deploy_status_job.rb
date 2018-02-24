@@ -122,6 +122,10 @@ class Airdrop::GetAirdropDeployStatusJob < ApplicationJob
     if @critical_chain_interaction_log.is_pending? || @critical_chain_interaction_log.is_processed?
       return success
     else
+
+      # In case of any failure in any step reverse propose initiated bit so that client can restart proposal
+      unset_propose_initiated_bit
+
       return error_with_data(
         'j_s_gasj_2',
         'Transaction receipt failed.',
@@ -132,6 +136,7 @@ class Airdrop::GetAirdropDeployStatusJob < ApplicationJob
     end
 
     success
+
   end
 
   # Enqueue job
@@ -234,6 +239,18 @@ class Airdrop::GetAirdropDeployStatusJob < ApplicationJob
         wait: 10.seconds
       }
     ) if critical_log.is_pending?
+  end
+
+  # Unset Propose initiated bit
+  #
+  # * Author: Puneet
+  # * Date: 24/02/2018
+  # * Reviewed By:
+  #
+  def unset_propose_initiated_bit
+    @client_token.send("unset_#{GlobalConstant::ClientToken.propose_initiated_setup_step}")
+    @client_token.save
+    CacheManagement::ClientToken.new([@client_token.id]).clear
   end
 
 end
