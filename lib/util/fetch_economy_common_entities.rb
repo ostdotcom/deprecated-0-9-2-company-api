@@ -122,7 +122,7 @@ module Util
 
       return success if @client_balances.present?
 
-      client_address_data = CacheManagement::ClientAddress.new([@client_token_id]).fetch[@client_token_id]
+      client_address_data = CacheManagement::ClientAddress.new([@client_token[:client_id]]).fetch[@client_token[:client_id]]
 
       return error_with_data(
           'fece_1',

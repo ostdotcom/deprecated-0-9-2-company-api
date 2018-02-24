@@ -51,8 +51,6 @@ module Economy
             GlobalConstant::GoTo.economy_planner_step_one
         ) unless is_client_step_one_complete?
 
-        client_address_data = CacheManagement::ClientAddress.new([@client_id]).fetch[@client_id]
-
         r = fetch_eth_ost_balance(true)
         return error_with_go_to(
             'e_tss_st_2',
