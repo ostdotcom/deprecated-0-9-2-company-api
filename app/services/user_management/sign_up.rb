@@ -160,8 +160,16 @@ module UserManagement
         validation_errors[:token_symbol] = 'Token symbol can be of max 4 characters.'
       end
 
-      if @token_name.length > 50
-        validation_errors[:token_name] = 'Token name can be of max 50 characters.'
+      if @token_symbol.length < 3
+        validation_errors[:token_symbol] = 'Token symbol should be of atleast 3 characters.'
+      end
+
+      if @token_name.length > 25
+        validation_errors[:token_name] = 'Token name can be of max 25 characters.'
+      end
+
+      if @token_name.length < 3
+        validation_errors[:token_name] = 'Token name should be of atleast 3 characters.'
       end
 
       if ClientToken.where('name = ?', @token_name).first.present?
