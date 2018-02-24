@@ -171,7 +171,7 @@ module Economy
     #
     def update_in_saas
 
-      return unless @is_sync_in_saas_needed
+      return success unless @is_sync_in_saas_needed
 
       SaasApi::OnBoarding::EditBt.new.perform(
           name: @client_token[:name],
