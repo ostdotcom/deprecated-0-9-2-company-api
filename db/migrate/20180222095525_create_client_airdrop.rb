@@ -8,8 +8,8 @@ class CreateClientAirdrop < DbMigrationConnection
         t.column :client_branded_token_id, :integer, null: false
         t.column :airdrop_list_type, :tinyint, size: 1, null: false
         t.column :common_airdrop_amount_in_wei, :decimal, precision: 30, scale: 0, null: true
-        t.column :common_expiry_timesatmp, :integer, null: true
-        t.column :steps_complete, :tinyint, size: 1, null: true
+        t.column :common_expiry_timesatmp, :integer, null: false
+        t.column :steps_complete, :tinyint, size: 1, default: 0, null: false
         t.column :status, :tinyint, size: 1, null: false
         t.column :data, :text, null: true
         t.timestamps
