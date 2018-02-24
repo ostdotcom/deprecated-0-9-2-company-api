@@ -119,6 +119,10 @@ class ProposeBrandedToken::StartProposeJob < ApplicationJob
       propose_status = GlobalConstant::CriticalChainInteractions.failed_status
       transaction_hash = nil
       transaction_uuid = nil
+      # Unset Propose initiated bit
+      @client_token.send("unset_#{GlobalConstant::ClientToken.propose_initiated_setup_step}")
+      @client_token.save
+      CacheManagement::ClientToken.new([@client_token.id]).clear
     end
 
     @critical_chain_interaction_log.response_data = r.to_hash

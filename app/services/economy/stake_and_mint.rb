@@ -225,8 +225,7 @@ module Economy
           new([@client_token_id]).fetch[@client_token_id]
 
       if ct_pending_transactions[GlobalConstant::CriticalChainInteractions.propose_bt_activity_type].present? ||
-          ct_pending_transactions[GlobalConstant::CriticalChainInteractions.stake_bt_started_activity_type].present? ||
-          ct_pending_transactions[GlobalConstant::CriticalChainInteractions.stake_st_prime_started_activity_type].present?
+          ct_pending_transactions[GlobalConstant::CriticalChainInteractions.staker_initial_transfer_activity_type].present?
 
         return error_with_data(
             'e_sam_7',
@@ -252,8 +251,7 @@ module Economy
     #
     def validate_registeration_params
 
-      # If registeration was already complete, return
-      return success if @client_token.registration_done?
+      return success if @client_token.propose_initiated? || @client_token.registration_done?
 
       @airdrop_amount = @airdrop_amount.present? ? BigDecimal.new(@airdrop_amount) : @airdrop_amount
       @ost_to_bt = @ost_to_bt.present? ? BigDecimal.new(@ost_to_bt) : @ost_to_bt
@@ -283,8 +281,7 @@ module Economy
     #
     def set_registeration_params_in_db
 
-      # If registeration was already complete, return
-      return success if @client_token.registration_done?
+      return success if @client_token.propose_initiated? || @client_token.registration_done?
 
       r = Economy::SetUpEconomy.new(
           client_token_id: @client_token_id,
@@ -377,8 +374,8 @@ module Economy
                 chain_type: GlobalConstant::CriticalChainInteractions.value_chain_type,
                 transaction_hash: @transaction_hash,
                 request_params: {
-                    bt_to_mint: @bt_to_mint,
-                    st_prime_to_mint: @st_prime_to_mint
+                  bt_to_mint: @bt_to_mint,
+                  st_prime_to_mint: @st_prime_to_mint
                 },
                 status: GlobalConstant::CriticalChainInteractions.queued_status
             }

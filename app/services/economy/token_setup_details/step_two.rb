@@ -53,12 +53,25 @@ module Economy
 
         client_address_data = CacheManagement::ClientAddress.new([@client_id]).fetch[@client_id]
 
+        r = fetch_eth_ost_balance(true)
         return error_with_go_to(
             'e_tss_st_2',
-            'Client Address not setup.',
-            'Client Address not setup.',
+            'Setup Step One Not Done',
+            'Setup Step One Not Done',
             GlobalConstant::GoTo.economy_planner_step_one
-        ) if client_address_data.blank? || client_address_data[:ethereum_address_d].blank?
+        ) unless r.success?
+
+        if @api_response_data[:client_balances].blank? ||
+            @api_response_data[:client_balances][GlobalConstant::BalanceTypes.ost_balance_type].blank?
+
+          return error_with_go_to(
+              'e_tss_st_3',
+              'OST Not Granted Yet',
+              'OST Not Granted Yet',
+              GlobalConstant::GoTo.economy_planner_step_one
+          ) unless r.success?
+
+        end
 
         r = super
         return r unless r.success?
