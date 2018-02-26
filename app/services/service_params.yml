@@ -100,8 +100,6 @@
 
 'Economy::GetCriticalChainInteractionStatus':
   :mandatory:
-    - :client_id
-    - :user_id
     - :client_token_id
     - :critical_chain_interaction_log_id
   :optional:
