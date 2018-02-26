@@ -43,7 +43,7 @@ class ClientToken < EstablishCompanyClientEconomyDbConnection
         symbol: symbol,
         symbol_icon: symbol_icon,
         status: status,
-        conversion_factor: conversion_factor.present? ? conversion_factor.to_f : conversion_factor,
+        conversion_factor: conversion_factor.present? ? conversion_factor.to_s : conversion_factor, # should be string as it goes to FE
         setup_steps: setup_steps.present? ? ClientToken.get_bits_set_for_setup_steps(setup_steps) : []
     }
   end
