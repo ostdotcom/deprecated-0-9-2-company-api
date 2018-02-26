@@ -15,7 +15,8 @@ module CacheManagement
     def fetch_from_db(cache_miss_ids)
 
       db_records = CriticalChainInteractionLog.where(id: cache_miss_ids).
-          or(CriticalChainInteractionLog.where(parent_id: cache_miss_ids))
+          or(CriticalChainInteractionLog.where(parent_id: cache_miss_ids)).
+          where(activity_type: GlobalConstant::CriticalChainInteractions.activity_types_to_mark_pending)
 
       aggregared_db_records = {}
       primary_id_mandatory_steps_map = {}
@@ -26,7 +27,7 @@ module CacheManagement
           id_to_index = db_record.parent_id
         else
           id_to_index = db_record.id
-          primary_id_mandatory_steps_map[id_to_index] = mandatory_steps_for_type(db_record.activity_type)
+          primary_id_mandatory_steps_map[id_to_index] = mandatory_steps_for_type(db_record)
         end
 
         aggregared_db_records[id_to_index] ||= {}
@@ -103,12 +104,12 @@ module CacheManagement
     # * Date: 01/02/2018
     # * Reviewed By:
     #
-    # @param [String] activity_type
+    # @param [CriticalChainInteractionLog] db_record
     #
     # @return [Array]
     #
-    def mandatory_steps_for_type(activity_type)
-      case activity_type
+    def mandatory_steps_for_type(db_record)
+      case db_record.activity_type
         # NOTE: These types should be ordered. First step which needs to be executed should be first
         when GlobalConstant::CriticalChainInteractions.propose_bt_activity_type
           [
@@ -117,10 +118,13 @@ module CacheManagement
             GlobalConstant::CriticalChainInteractions.stake_st_prime_started_activity_type
           ]
         when GlobalConstant::CriticalChainInteractions.staker_initial_transfer_activity_type
-          [
-            GlobalConstant::CriticalChainInteractions.stake_bt_started_activity_type,
-            GlobalConstant::CriticalChainInteractions.stake_st_prime_started_activity_type
-          ]
+          steps = []
+          if db_record.request_params[:bt_to_mint].present?
+            steps << GlobalConstant::CriticalChainInteractions.stake_bt_started_activity_type
+          end
+          if db_record.request_params[:st_prime_to_mint].present?
+            steps << GlobalConstant::CriticalChainInteractions.stake_st_prime_started_activity_type
+          end
         when GlobalConstant::CriticalChainInteractions.airdrop_users_activity_type
           [
               GlobalConstant::CriticalChainInteractions.airdrop_users_activity_type
