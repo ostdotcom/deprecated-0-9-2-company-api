@@ -7,7 +7,7 @@ class CreateClientAirdropDetails < DbMigrationConnection
         t.column :client_airdrop_id, :integer, null: false
         t.column :managed_address_id, :integer, null: false
         t.column :airdrop_amount_in_wei, :decimal, precision: 30, scale: 0, null: false
-        t.column :expiry_timesatmp, :integer, null: false
+        t.column :expiry_timestamp, :integer, null: false
         t.column :status, :tinyint, size: 1, null: false
         t.timestamps
       end
