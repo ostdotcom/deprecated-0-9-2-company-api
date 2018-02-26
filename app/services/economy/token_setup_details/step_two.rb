@@ -52,12 +52,7 @@ module Economy
         ) unless is_client_step_one_complete?
 
         r = fetch_eth_ost_balance(true)
-        return error_with_go_to(
-            'e_tss_st_2',
-            'Setup Step One Not Done',
-            'Setup Step One Not Done',
-            GlobalConstant::GoTo.economy_planner_step_one
-        ) unless r.success?
+        return r unless r.success?
 
         if @api_response_data[:client_balances].blank? ||
             @api_response_data[:client_balances][GlobalConstant::BalanceTypes.ost_balance_type].blank?

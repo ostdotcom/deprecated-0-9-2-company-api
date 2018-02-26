@@ -96,7 +96,7 @@ module Economy
 
         if is_client_setup_complete?
 
-          pending_critical_interactions[GlobalConstant::CriticalChainInteractions.propose_bt_activity_type]  ?
+          pending_critical_interactions[GlobalConstant::CriticalChainInteractions.propose_bt_activity_type] || has_zero_bt? ?
               success : error_with_go_to(
               'e_tss_b_2',
               'Setup Complete',
@@ -265,6 +265,20 @@ module Economy
         @p_c_i_id ||= begin
           CacheManagement::PendingCriticalInteractionIds.new([@client_token_id]).fetch[@client_token_id]
         end
+      end
+
+      # Client Has Zero BT ?
+      #
+      # * Author: Puneet
+      # * Date: 31/01/2018
+      # * Reviewed By:
+      #
+      # @return [Boolean]
+      #
+      def has_zero_bt?
+        @api_response_data[:client_balances].blank? ||
+            @api_response_data[:client_balances][@client_token[:symbol]].blank? ||
+            BigDecimal.new(@api_response_data[:client_balances][@client_token[:symbol]]) == 0
       end
 
     end

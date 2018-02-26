@@ -43,7 +43,11 @@ module Economy
       # @return [Result::Base]
       #
       def validate_step
+
+        fetch_eth_ost_balance(false)
+
         super
+
       end
 
       # Sub classes to fetch required data
@@ -60,8 +64,6 @@ module Economy
 
         r = super
         return r unless r.success?
-
-        fetch_eth_ost_balance(false)
 
       end
 

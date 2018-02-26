@@ -44,6 +44,9 @@ module Economy
       #
       def validate_step
 
+        r = fetch_eth_ost_balance(true)
+        return r unless r.success?
+
         r = super
         return r unless r.success?
 
@@ -83,8 +86,6 @@ module Economy
 
         r = super
         return r unless r.success?
-
-        fetch_eth_ost_balance
 
       end
 
