@@ -101,6 +101,7 @@ class Airdrop::GetAirdropSetupStatusJob < ApplicationJob
       if r.data.present?
         # processed
         @critical_chain_interaction_log.status = GlobalConstant::CriticalChainInteractions.processed_status
+        set_airdrop_setup_done
       else
         # pending
         @critical_chain_interaction_log.status = GlobalConstant::CriticalChainInteractions.pending_status
@@ -143,6 +144,25 @@ class Airdrop::GetAirdropSetupStatusJob < ApplicationJob
       }
     )
 
+  end
+
+  def set_airdrop_setup_done
+    processed_post_airdrop_steps = CriticalChainInteractionLog.
+      where(client_token_id: @critical_chain_interaction_log.client_token_id).
+      where("activity_type in (?)",
+            [
+              CriticalChainInteractionLog::activity_types[GlobalConstant::CriticalChainInteractions.set_worker_activity_type.to_sym],
+              CriticalChainInteractionLog::activity_types[GlobalConstant::CriticalChainInteractions.set_price_oracle_activity_type],
+              CriticalChainInteractionLog::activity_types[GlobalConstant::CriticalChainInteractions.set_accepted_margin_activity_type]
+            ]).
+      where(status: GlobalConstant::CriticalChainInteractions.processed_status).
+      count
+
+    if processed_post_airdrop_steps == 3
+      client_token = ClientToken.where(id: @critical_chain_interaction_log.client_token_id).first
+      client_token.send("set_#{GlobalConstant::ClientToken.airdrop_done_setup_step}")
+      client_token.save!
+    end
   end
 
 end

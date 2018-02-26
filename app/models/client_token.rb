@@ -13,7 +13,8 @@ class ClientToken < EstablishCompanyClientEconomyDbConnection
       GlobalConstant::ClientToken.propose_done_setup_step => 8,
       GlobalConstant::ClientToken.registered_on_uc_setup_step => 16,
       GlobalConstant::ClientToken.registered_on_vc_setup_step => 32,
-      GlobalConstant::ClientToken.received_test_ost_setup_step => 64
+      GlobalConstant::ClientToken.received_test_ost_setup_step => 64,
+      GlobalConstant::ClientToken.airdrop_done_setup_step => 128
     }
   end
 

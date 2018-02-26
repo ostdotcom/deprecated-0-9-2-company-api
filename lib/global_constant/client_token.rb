@@ -47,6 +47,10 @@ module GlobalConstant
         'received_test_ost'
       end
 
+      def airdrop_done_setup_step
+        'airdrop_setup_done'
+      end
+
       ### Setup Steps End ###
 
     end
