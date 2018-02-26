@@ -47,12 +47,14 @@ module CacheManagement
             # this step has not been initiated yet
             formatted_data_for_id << {
                 status: GlobalConstant::CriticalChainInteractions.queued_status,
-                display_text: get_default_text_for_activity_kind(activity_kind)
+                display_text: get_default_text_for_activity_kind(activity_kind),
+                activity_kind: activity_kind
             }
           else
             formatted_data_for_id << {
               status: activity_kind_data.status,
-              display_text: activity_type_display_text(activity_kind_data)
+              display_text: activity_type_display_text(activity_kind_data),
+              activity_kind: activity_kind
             }
           end
         end

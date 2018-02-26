@@ -79,7 +79,7 @@ class Economy::UserController < Economy::BaseController
   #
   def airdrop_users
 
-    service_response = Economy::AirdropUsers.new(params).perform
+    service_response = Economy::AirdropToUsers.new(params).perform
 
     render_api_response(service_response)
 

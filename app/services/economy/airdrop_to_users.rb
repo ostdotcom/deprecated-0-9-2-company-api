@@ -1,6 +1,6 @@
 module Economy
 
-  class AirdropUsers < ServicesBase
+  class AirdropToUsers < ServicesBase
 
     # Initialize
     #
@@ -12,8 +12,9 @@ module Economy
     # @params [Integer] client_token_id (mandatory) - client token id
     # @params [Integer] airdrop_amount (mandatory) - Amount to airdrop in Branded token base unit.
     # @params [String] airdrop_list_type (mandatory) - List type of users to airdrop eg: all or new
+    # @params [Integer] parent_critical_log_id (Optional) - Parent critical log id, if it starts from stake and mint
     #
-    # @return [Economy::AirdropUsers]
+    # @return [Economy::AirdropToUsers]
     #
     def initialize(params)
 
@@ -23,6 +24,7 @@ module Economy
       @client_id = @params[:client_id]
       @airdrop_amount = @params[:airdrop_amount]
       @airdrop_list_type = @params[:airdrop_list_type]
+      @parent_critical_log_id = @params[:parent_critical_log_id]
 
       @chain_interaction = nil
       @api_response_data = {}
@@ -55,6 +57,8 @@ module Economy
         @chain_interaction.status = GlobalConstant::CriticalChainInteractions.failed_status
       end
       @chain_interaction.save
+
+      enqueue_job
 
       success_with_data(
           pending_critical_interactions:
@@ -112,7 +116,7 @@ module Economy
     #
     def validate_airdrop_done
       client_chain_interactions = CriticalChainInteractionLog.of_activity_type(GlobalConstant::CriticalChainInteractions.
-          airdrop_users_activity_type).where(client_id: @client_id).order('created_at DESC').group_by(&:status)
+          airdrop_users_activity_type).where(client_id: @client_id).group_by(&:status)
 
       # No requests present
       return success if client_chain_interactions.blank?
@@ -148,7 +152,8 @@ module Economy
                                                                chain_type: GlobalConstant::CriticalChainInteractions.utility_chain_type,
                                                                status: GlobalConstant::CriticalChainInteractions.queued_status,
                                                                request_params: {airdrop_amount: @airdrop_amount, token_symbol: @client_token[:symbol],
-                                                                                users_list_to_airdrop: @airdrop_list_type}
+                                                                                users_list_to_airdrop: @airdrop_list_type},
+                                                               parent_id: @parent_critical_log_id
       )
     end
 
@@ -188,6 +193,26 @@ module Economy
       ) unless service_response.success?
 
       service_response
+
+    end
+
+    # Enqueue job
+    #
+    # * Author: Pankaj
+    # * Date: 22/02/2018
+    # * Reviewed By:
+    #
+    def enqueue_job
+
+      BgJob.enqueue(
+          Airdrop::GetAirdropTransactionStatusJob,
+          {
+              critical_log_id: @chain_interaction.id
+          },
+          {
+              wait: 10.seconds
+          }
+      )
 
     end
 

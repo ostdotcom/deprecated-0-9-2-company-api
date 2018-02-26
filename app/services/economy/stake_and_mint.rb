@@ -17,6 +17,7 @@ module Economy
     #
     # @param [Decimal] ost_to_bt (optional) - OST TO Bt conversion Factor sent by FE
     # @param [Integer] number_of_users (optional) - number_of_users which need to be airdropped
+    # @param [String] airdrop_user_list_type (optional) - List type of users who needs to be airdropped
     # @param [Integer] airdrop_amount (optional) - BT amount which needs to be airdropped to users
     #
     # @return [Economy::StakeAndMint]
@@ -36,6 +37,7 @@ module Economy
       @ost_to_bt = @params[:ost_to_bt]
       @number_of_users = @params[:number_of_users]
       @airdrop_amount = @params[:airdrop_amount]
+      @airdrop_user_list_type = @params[:airdrop_user_list_type]
 
       @user = nil
       @client_token = nil
@@ -65,6 +67,8 @@ module Economy
 
       r = enqueue_stake_and_mint_job
       return r unless r.success?
+
+      enqueue_airdrop_tokens_job
 
       #NOTE: Returned this and not fetched from PendingCriticalInteractionIds to avoid extra query
       success_with_data(
@@ -325,7 +329,11 @@ module Economy
           request_params: {
             token_symbol: @client_token.symbol,
             token_name: @client_token.name,
-            token_conversion_factor: BigDecimal.new(@client_token.conversion_factor)
+            token_conversion_factor: BigDecimal.new(@client_token.conversion_factor),
+            bt_to_mint: @bt_to_mint,
+            st_prime_to_mint: @st_prime_to_mint,
+            airdrop_amount: @airdrop_amount,
+            airdrop_user_list_type: @airdrop_user_list_type
           },
           status: GlobalConstant::CriticalChainInteractions.queued_status
         }
@@ -409,6 +417,31 @@ module Economy
       )
 
       success
+
+    end
+
+    # Enqueue Initiate Airdrop tokens job if required
+    #
+    # * Author: Pankaj
+    # * Date: 26/02/2018
+    # * Reviewed By:
+    #
+    def enqueue_airdrop_tokens_job
+      if @airdrop_amount.present? && @airdrop_user_list_type.present?
+        BgJob.enqueue(
+            Airdrop::InitiateAirdropTokensJob,
+            {
+                parent_critical_log_id: @stake_and_mint_init_chain_id,
+                client_token_id: @client_token_id,
+                client_id: @client_id,
+                airdrop_amount: @airdrop_amount,
+                airdrop_list_type: @airdrop_user_list_type
+            },
+            {
+                wait: 10.seconds
+            }
+        )
+      end
 
     end
 
