@@ -44,6 +44,7 @@
 'UserManagement::DoubleOptIn':
   :mandatory:
     - :r_t
+    - :user_id
   :optional:
 
 'ClientManagement::GetClientApiCredentials':

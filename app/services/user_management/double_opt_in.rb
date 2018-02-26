@@ -13,14 +13,17 @@ module UserManagement
     # @return [UserManagement::DoubleOptIn]
     #
     def initialize(params)
+      
       super
 
       @r_t = @params[:r_t]
+      @user_id = @params[:user_id]
 
       @token = nil
       @user_validation_hash_id = nil
       @user_validation_hash_obj = nil
       @user = nil
+      
     end
 
     # Perform
@@ -36,12 +39,14 @@ module UserManagement
       r = validate_and_sanitize
       return r unless r.success?
 
+      r = fetch_logged_in_user
+      return r unless r.success?
+
+      return success if @user.send("#{GlobalConstant::User.is_user_verified_property}?")
+
       fetch_user_validation_record
 
       r = validate_double_opt_token
-      return r unless r.success?
-
-      r = fetch_user
       return r unless r.success?
 
       r = update_user_validation_hashes_status
@@ -90,7 +95,34 @@ module UserManagement
 
       @user_validation_hash_id = splited_reset_token[0].to_i
 
+      @user_id = @user_id.to_i
+      
       success
+      
+    end
+
+    # Fetch logged in User
+    #
+    # * Author: Puneet
+    # * Date: 16/02/2018
+    # * Reviewed By:
+    #
+    # Sets @user
+    #
+    def fetch_logged_in_user
+
+      @user = User.where(id: @user_id).first
+
+      return error_with_data(
+          'um_dop_3',
+          'Invalid User',
+          'Invalid User',
+          GlobalConstant::ErrorAction.default,
+          {}
+      ) if @user.blank? || @user[:status] != GlobalConstant::User.active_status
+
+      success
+
     end
 
     # Fetch User validation record from token
@@ -125,26 +157,10 @@ module UserManagement
 
       return invalid_url_error('um_doi_7') if @user_validation_hash_obj.kind != GlobalConstant::UserValidationHash.double_optin
 
-      success
-
-    end
-
-    # Fetch user
-    #
-    # * Author: Pankaj
-    # * Date: 16/01/2018
-    # * Reviewed By:
-    #
-    # Sets @user
-    #
-    # @return [Result::Base]
-    #
-    def fetch_user
-      @user = User.where(id: @user_validation_hash_obj.user_id).first
-      return unauthorized_access_response('um_doi_8') unless @user.present? &&
-          (@user.status == GlobalConstant::User.active_status)
+      return unauthorized_access_response('um_doi_8') if @user_validation_hash_obj.user_id != @user_id
 
       success
+
     end
 
     # Create update contact email hook
@@ -188,7 +204,7 @@ module UserManagement
       @user_validation_hash_obj.save!
 
       UserValidationHash.where(
-          user_id: @user.id,
+          user_id: @user_id,
           kind: GlobalConstant::UserValidationHash.double_optin,
           status: GlobalConstant::UserValidationHash.active_status
       ).update_all(
@@ -241,7 +257,7 @@ module UserManagement
     # @return [Result::Base]
     #
     def clear_cache
-      CacheManagement::User.new([@user.id]).clear
+      CacheManagement::User.new([@user_id]).clear
     end
 
   end
