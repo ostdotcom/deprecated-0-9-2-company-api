@@ -85,7 +85,9 @@ module Economy
     def fetch_token_supply_details
 
       r = FetchClientTokenSupplyDetails.new(
-          client_id: @client_token[:client_id], token_symbol: @client_token[:symbol]
+          client_id: @client_token[:client_id],
+          client_token_id: @client_token_id,
+          token_symbol: @client_token[:symbol]
       ).perform
       return r unless r.success?
 
