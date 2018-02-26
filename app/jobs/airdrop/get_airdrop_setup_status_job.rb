@@ -22,7 +22,11 @@ class Airdrop::GetAirdropSetupStatusJob < ApplicationJob
     r = get_airdrop_setup_status
     return unless r.success?
 
-    enqueue_self if @critical_chain_interaction_log.is_pending?
+    if @critical_chain_interaction_log.is_pending?
+      enqueue_self
+    else
+      set_airdrop_setup_done
+    end
 
     success
 
@@ -101,7 +105,6 @@ class Airdrop::GetAirdropSetupStatusJob < ApplicationJob
       if r.data.present?
         # processed
         @critical_chain_interaction_log.status = GlobalConstant::CriticalChainInteractions.processed_status
-        set_airdrop_setup_done
       else
         # pending
         @critical_chain_interaction_log.status = GlobalConstant::CriticalChainInteractions.pending_status
