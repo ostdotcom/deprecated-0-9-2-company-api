@@ -20,7 +20,7 @@ module Util
 
       @client_token = params[:client_token]
       @user = params[:user]
-      @client_balances = params[:client_balances]
+      @client_balances_data = params[:client_balances]
       @client_token_pending_transactions = params[:client_token_pending_transactions]
 
     end
@@ -120,7 +120,7 @@ module Util
     #
     def fetch_client_balances
 
-      return success if @client_balances.present?
+      return success if @client_balances_data.present?
 
       client_address_data = CacheManagement::ClientAddress.new([@client_token[:client_id]]).fetch[@client_token[:client_id]]
 
@@ -159,16 +159,14 @@ module Util
           }
       ).perform
 
-      if r.success?
-        @client_balances = r.data
-      else
-        return error_with_go_to(
-            'fece_3',
-            "Couldn't Fetch Balances",
-            "Couldn't Fetch Balances",
-            GlobalConstant::GoTo.economy_planner_step_three
-        )
-      end
+      return error_with_go_to(
+          'fece_3',
+          "Couldn't Fetch Balances",
+          "Couldn't Fetch Balances",
+          GlobalConstant::GoTo.economy_planner_step_one
+      ) unless r.success?
+
+      @client_balances_data = r.data
 
       success
 
@@ -209,7 +207,7 @@ module Util
       data = {
           client_token: @client_token,
           user: @user,
-          client_balances: @client_balances || {},
+          client_balances: @client_balances_data || {},
           oracle_price_points: FetchOraclePricePoints.perform,
           pending_critical_interactions: @client_token_pending_transactions || {}
       }

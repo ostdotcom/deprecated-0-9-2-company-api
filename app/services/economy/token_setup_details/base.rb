@@ -244,8 +244,37 @@ module Economy
             balances_to_fetch: balances_to_fetch
         ).perform
 
-        if r.success?
-          @api_response_data[:client_balances] = r.data
+        return error_with_go_to(
+            'e_tss_b_2',
+            "Couldn't Fetch Balances",
+            "Couldn't Fetch Balances",
+            GlobalConstant::GoTo.economy_planner_step_one
+        ) unless r.success?
+
+        @api_response_data[:client_balances] = r.data
+
+        balances = @api_response_data[:client_balances]['balances']
+
+        ost_balance_str = balances[GlobalConstant::BalanceTypes.ost_balance_type]
+        ost_balance = ost_balance_str.present? ? BigDecimal.new(ost_balance_str) : ost_balance_str
+        if ost_balance.blank? || ost_balance == 0
+          error_with_go_to(
+              'e_tss_b_3',
+              "OST Grant Not Completed Yet",
+              "OST Grant Not Completed Yet",
+              GlobalConstant::GoTo.economy_planner_step_one
+          )
+        end
+
+        eth_balance_str = balances[GlobalConstant::BalanceTypes.eth_balance_type]
+        eth_balance = eth_balance_str.present? ? BigDecimal.new(eth_balance_str) : eth_balance_str
+        if eth_balance.blank? || eth_balance == 0
+          error_with_go_to(
+              'e_tss_b_3',
+              "Ether Grant Not Completed Yet",
+              "Ether Grant Not Completed Yet",
+              GlobalConstant::GoTo.economy_planner_step_one
+          )
         end
 
         success
