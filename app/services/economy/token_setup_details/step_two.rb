@@ -85,7 +85,13 @@ module Economy
       #
       def fetch_setup_details
 
-        super
+        r = super
+        return r unless r.success?
+
+        r = SaasApi::Client::FetchStats.new.perform(client_id: @client_id)
+        @api_response_data[:client_stats] = r.data if r.success?
+
+        success
 
       end
 
