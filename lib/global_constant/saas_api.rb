@@ -99,6 +99,10 @@ module GlobalConstant
       'transaction/fetch_details'
     end
 
+    def self.fetch_cliient_stats
+      'client/fetch-stats'
+    end
+
   end
 
 end
