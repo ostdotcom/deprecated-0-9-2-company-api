@@ -144,7 +144,7 @@ module Economy
       #
       def is_client_setup_complete?
         return @i_s_s_c unless @i_s_s_c.nil?
-        @i_s_s_c = @client_token[:setup_steps].include?(GlobalConstant::ClientToken.registered_on_vc_setup_step)
+        @i_s_s_c = @client_token[:setup_steps].include?(GlobalConstant::ClientToken.airdrop_done_setup_step)
       end
 
       # Is client's setup complete ?
@@ -305,7 +305,7 @@ module Economy
       #
       def has_zero_bt?
         balances = @api_response_data[:client_balances].present? ? @api_response_data[:client_balances]['balances'] : {}
-        balances || balances[@client_token[:symbol]].blank? ||
+        balances.blank? || balances[@client_token[:symbol]].blank? ||
             BigDecimal.new(balances[@client_token[:symbol]]) == 0
       end
 
