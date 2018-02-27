@@ -304,9 +304,9 @@ module Economy
       # @return [Boolean]
       #
       def has_zero_bt?
-        @api_response_data[:client_balances].blank? ||
-            @api_response_data[:client_balances][@client_token[:symbol]].blank? ||
-            BigDecimal.new(@api_response_data[:client_balances][@client_token[:symbol]]) == 0
+        balances = @api_response_data[:client_balances].present? ? @api_response_data[:client_balances]['balances'] : {}
+        balances || balances[@client_token[:symbol]].blank? ||
+            BigDecimal.new(balances[@client_token[:symbol]]) == 0
       end
 
     end
