@@ -93,10 +93,10 @@ class Airdrop::GetAirdropTransactionStatusJob < ApplicationJob
       @critical_chain_interaction_log.status = GlobalConstant::CriticalChainInteractions.failed_status
     else
       # If current status is complete then mark as processed.
-      if r.data.current_status == 'complete'
+      if r.data["current_status"] == 'complete'
         # processed
         @critical_chain_interaction_log.status = GlobalConstant::CriticalChainInteractions.processed_status
-      elsif r.data.current_status == 'failed'
+      elsif r.data["current_status"] == 'failed'
         # Failed
         @critical_chain_interaction_log.status = GlobalConstant::CriticalChainInteractions.failed_status
       else

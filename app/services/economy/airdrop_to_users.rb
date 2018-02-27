@@ -51,7 +51,7 @@ module Economy
 
       r = make_saas_call
       if r.success?
-        @chain_interaction.transaction_uuid = r.data[:airdrop_uuid]
+        @chain_interaction.transaction_uuid = @api_response_data["airdrop_uuid"]
         @chain_interaction.status = GlobalConstant::CriticalChainInteractions.pending_status
       else
         @chain_interaction.status = GlobalConstant::CriticalChainInteractions.failed_status
@@ -181,7 +181,7 @@ module Economy
       credentials = OSTSdk::Util::APICredentials.new(result[:api_key], result[:api_secret])
       @ost_sdk_obj = OSTSdk::Saas::Users.new(GlobalConstant::Base.sub_env, credentials)
 
-      service_response = @ost_sdk_obj.airdrop_tokens(symbol: @client_token[:symbol], amount: @airdrop_amount,
+      service_response = @ost_sdk_obj.airdrop_tokens(token_symbol: @client_token[:symbol], amount: @airdrop_amount,
                                                      list_type: @airdrop_list_type)
 
       return error_with_data(
@@ -192,7 +192,9 @@ module Economy
           {}
       ) unless service_response.success?
 
-      service_response
+      @api_response_data = service_response.data
+
+      success
 
     end
 
