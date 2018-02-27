@@ -34,5 +34,5 @@ client:
 
 mics:
   ost_fiat_conversion_factors:
-    key_template: 'm_oucf'
+    key_template: 'm_oucf_%{id}'
     expiry_in_seconds: 86400

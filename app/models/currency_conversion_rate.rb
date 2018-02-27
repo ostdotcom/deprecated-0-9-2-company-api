@@ -1,4 +1,4 @@
-class CurrencyConversionRate < EstablishCompanyBigDbConnection
+class CurrencyConversionRate < EstablishCompanySaasSharedDbConnection
 
   enum base_currency: {
       GlobalConstant::ConversionRates.ost_currency => 1

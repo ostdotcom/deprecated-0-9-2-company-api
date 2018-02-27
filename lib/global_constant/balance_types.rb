@@ -10,7 +10,7 @@ module GlobalConstant
       end
 
       def ost_balance_type
-        'ost'
+        'OST'
       end
 
       def ost_prime_balance_type
