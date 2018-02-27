@@ -184,7 +184,7 @@ module ClientManagement
       @client_token.send("set_#{GlobalConstant::ClientToken.received_test_ost_setup_step}")
       @client_token.save!
 
-      CacheManagement::ClientToken.new([@client_token.id])
+      CacheManagement::ClientToken.new([@client_token.id]).clear
 
       r
 
