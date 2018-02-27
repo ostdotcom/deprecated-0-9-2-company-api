@@ -211,12 +211,11 @@ module Economy
 
         if client_address_data.blank? || client_address_data[:ethereum_address_d].blank?
 
-          r = fail_if_addr_not_setup ? error_with_data(
-              'e_tsd_b_1',
+          r = fail_if_addr_not_setup ? error_with_go_to(
+              'e_tss_b_2',
               'Client Address not found.',
               'Client Address not found.',
-              GlobalConstant::ErrorAction.default,
-              {}
+              GlobalConstant::GoTo.economy_planner_step_one
           ) : success
 
           return r
