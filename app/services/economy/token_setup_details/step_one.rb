@@ -62,8 +62,7 @@ module Economy
       #
       def fetch_setup_details
 
-        r = super
-        return r unless r.success?
+        super
 
       end
 
