@@ -124,22 +124,20 @@ module Util
 
       client_address_data = CacheManagement::ClientAddress.new([@client_token[:client_id]]).fetch[@client_token[:client_id]]
 
-      return error_with_data(
+      return error_with_go_to(
           'fece_1',
           'Client Address not found.',
           'Client Address not found.',
-          GlobalConstant::ErrorAction.default,
-          {}
+          GlobalConstant::GoTo.economy_planner_step_one
       ) if client_address_data.blank? || client_address_data[:ethereum_address_d].blank?
 
       client_token_s = CacheManagement::ClientTokenSecure.new([@client_token_id]).fetch[@client_token_id]
 
-      return error_with_data(
+      return error_with_go_to(
           'fece_2',
           'Client Token not deployed.',
           'Client Token not deployed.',
-          GlobalConstant::ErrorAction.default,
-          {}
+          GlobalConstant::GoTo.economy_planner_step_three
       ) if client_token_s.blank? || client_token_s[:reserve_uuid].blank?
 
       r = FetchClientBalances.new(
@@ -163,6 +161,13 @@ module Util
 
       if r.success?
         @client_balances = r.data
+      else
+        return error_with_go_to(
+            'fece_3',
+            "Couldn't Fetch Balances",
+            "Couldn't Fetch Balances",
+            GlobalConstant::GoTo.economy_planner_step_three
+        )
       end
 
       success
