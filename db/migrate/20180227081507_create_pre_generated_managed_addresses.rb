@@ -6,7 +6,7 @@ class CreatePreGeneratedManagedAddresses < DbMigrationConnection
         t.column :ethereum_address, :string, null: false
         t.column :passphrase, :text, null: false
         t.column :pre_generated_encryption_salt_id, :integer, null: false, limit: 5
-        t.column :lock, :integer, null: true
+        t.column :lock_identifier, :integer, null: true
         t.column :status, :tinyint, null: false, limit: 1, default: 0
         t.timestamps
       end
