@@ -233,3 +233,12 @@
   :optional:
     - :page_no
     - :order_by
+
+'Economy::AirdropToUsers':
+  :mandatory:
+    - :client_id
+    - :client_token_id
+    - :airdrop_amount
+    - :airdrop_list_type
+  :optional:
+    - :parent_critical_log_id
