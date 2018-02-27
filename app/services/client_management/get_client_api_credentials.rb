@@ -87,7 +87,7 @@ module ClientManagement
     #
     def decrypt_api_secret
 
-      r = Aws::Kms.new('info','user').decrypt(@client_api_credentials.api_salt)
+      r = Aws::Kms.new('api_key','user').decrypt(@client_api_credentials.api_salt)
       return r unless r.success?
 
       info_salt_d = r.data[:plaintext]

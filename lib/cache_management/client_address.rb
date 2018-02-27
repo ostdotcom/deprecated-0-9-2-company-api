@@ -56,7 +56,7 @@ module CacheManagement
 
       db_records.each do |db_record|
 
-        r = Aws::Kms.new('info','user').decrypt(db_record.address_salt)
+        r = Aws::Kms.new('api_key','user').decrypt(db_record.address_salt)
         next unless r.success?
 
         r = LocalCipher.new(r.data[:plaintext]).decrypt(db_record.ethereum_address)

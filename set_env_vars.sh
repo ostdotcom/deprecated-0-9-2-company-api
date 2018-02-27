@@ -33,8 +33,8 @@ export CA_USER_AWS_SECRET_KEY="qS0sJZCPQ5t2WnpJymxyGQjX62Wf13kjs80MYhML"
 # KMS Details
 export CA_LOGIN_KMS_ARN='arn:aws:kms:us-east-1:604850698061:key'
 export CA_LOGIN_KMS_ID='eab8148d-fd9f-451d-9eb9-16c115645635'
-export CA_INFO_KMS_ARN='arn:aws:kms:us-east-1:604850698061:key'
-export CA_INFO_KMS_ID='eab8148d-fd9f-451d-9eb9-16c115645635'
+export CA_API_KEY_KMS_ARN='arn:aws:kms:us-east-1:604850698061:key'
+export CA_API_KEY_KMS_ID='eab8148d-fd9f-451d-9eb9-16c115645635'
 
 # Secret Encryptor Details
 export CA_COOKIE_SECRET_KEY='byfd#ss@#4nflkn%^!~wkk^^&71o{23dpi~@jwe$pi'

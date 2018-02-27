@@ -119,7 +119,7 @@ module ClientManagement
     #
     def generate_address_salt
 
-      r = Aws::Kms.new('info','user').generate_data_key
+      r = Aws::Kms.new('api_key','user').generate_data_key
       return r unless r.success?
 
       @address_salt = r.data

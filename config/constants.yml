@@ -15,9 +15,9 @@ constants:
     login:
       arn: <%= ENV['CA_LOGIN_KMS_ARN']%>
       id: <%= ENV['CA_LOGIN_KMS_ID']%>
-    info:
-      arn: <%= ENV['CA_INFO_KMS_ARN']%>
-      id: <%= ENV['CA_INFO_KMS_ID']%>
+    api_key:
+      arn: <%= ENV['CA_API_KEY_KMS_ARN']%>
+      id: <%= ENV['CA_API_KEY_KMS_ID']%>
 
   secret_encryptor:
     cookie_secret_key: <%= ENV['CA_COOKIE_SECRET_KEY'] %>

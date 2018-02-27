@@ -126,7 +126,7 @@ class SignupJob < ApplicationJob
   # @return [Result::Base]
   #
   def generate_api_key_salt
-    Aws::Kms.new('info', 'user').generate_data_key
+    Aws::Kms.new('api_key', 'user').generate_data_key
   end
 
   # Create Hook to sync data in Email Service

@@ -231,7 +231,7 @@ module ClientManagement
     # @return [String]
     #
     def decrypt_client_eth_address
-      r = Aws::Kms.new('info','user').decrypt(@client_address.address_salt)
+      r = Aws::Kms.new('api_key','user').decrypt(@client_address.address_salt)
       return nil unless r.success?
       info_salt_d = r.data[:plaintext]
 
