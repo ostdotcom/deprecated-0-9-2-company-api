@@ -116,6 +116,7 @@
     - :ost_to_bt
     - :number_of_users
     - :airdrop_amount
+    - :airdrop_user_list_type
 
 'Economy::TokenSetupDetails::StepOne':
   :mandatory:
