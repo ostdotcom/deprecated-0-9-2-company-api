@@ -6,11 +6,19 @@ module GlobalConstant
     class << self
 
       def default_from
-        Rails.env.production? ? 'notifier@simpletoken.org' : 'notifier@stagingsimpletoken.org'
+        if Rails.env.production?
+          if GlobalConstant::Base.sub_env == GlobalConstant::Environment.main_sub_environment
+            'notifier@ost.com'
+          else
+            'sandbox.notifier@ost.com'
+          end
+        else
+          'staging.notifier@ost.com'
+        end
       end
 
       def default_to
-        ['bala@pepo.com', 'sunil@pepo.com', 'kedar@pepo.com', 'alpesh@pepo.com', 'pankaj@pepo.com']
+        ['bala@ost.com', 'sunil@ost.com', 'kedar@ost.com', 'alpesh@ost.com', 'pankaj@ost.com', 'aman@ost.com']
       end
 
       def subject_prefix
