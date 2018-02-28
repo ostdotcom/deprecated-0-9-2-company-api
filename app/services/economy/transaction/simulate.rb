@@ -83,7 +83,7 @@ module Economy
                     id: 1,
                     name: "Upvote",
                     kind: "user_to_user",
-                    currency_type: "bt",
+                    currency_type: "BT",
                     currency_value: "10",
                     commission_percent: "0.000",
                     status: "active"
@@ -117,8 +117,8 @@ module Economy
                 }
             ],
             oracle_price_points: {
-                ost: {
-                    usd: 0.3
+                OST: {
+                    USD: 0.3
                 }
             },
             meta: {

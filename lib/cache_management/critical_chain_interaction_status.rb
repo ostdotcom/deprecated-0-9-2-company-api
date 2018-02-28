@@ -115,14 +115,14 @@ module CacheManagement
         # NOTE: These types should be ordered. First step which needs to be executed should be first
         when GlobalConstant::CriticalChainInteractions.propose_bt_activity_type
           steps = [GlobalConstant::CriticalChainInteractions.propose_bt_activity_type]
-          if db_record.request_params[:airdrop_user_list_type].present?
-            steps << GlobalConstant::CriticalChainInteractions.airdrop_users_activity_type
-          end
           if is_bt_to_be_minted?(db_record)
             steps << GlobalConstant::CriticalChainInteractions.stake_bt_started_activity_type
           end
           if is_st_prime_to_be_minted?(db_record)
             steps << GlobalConstant::CriticalChainInteractions.stake_st_prime_started_activity_type
+          end
+          if db_record.request_params[:airdrop_user_list_type].present?
+            steps << GlobalConstant::CriticalChainInteractions.airdrop_users_activity_type
           end
         when GlobalConstant::CriticalChainInteractions.staker_initial_transfer_activity_type
           steps = []
