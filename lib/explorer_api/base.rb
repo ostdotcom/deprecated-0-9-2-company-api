@@ -59,7 +59,7 @@ module ExplorerApi
           when 200
             parsed_response = Oj.load(response.body.to_s)
             if parsed_response['success']
-              return parsed_response
+              return success_with_data(HashWithIndifferentAccess.new(parsed_response['data']))
             else
               # web3_js_error = true is required because when API is down or any exception is raised or response is not 200
               # front end doesn't need to see invalid ethereum address
