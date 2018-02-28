@@ -44,6 +44,9 @@ module Util
       r = fetch_client_balances
       return r unless r.success?
 
+      r = fetch_pending_transactions
+      return r unless r.success?
+
       return formatted_response
 
     end
