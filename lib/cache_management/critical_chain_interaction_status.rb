@@ -13,36 +13,46 @@ module CacheManagement
     # @return [Hash]
     #
     def fetch_from_db(cache_miss_ids)
+      
+      f_dependent_entity_records = {}
 
+      # Fetch rows with ids in  cache_miss_ids
       db_records = CriticalChainInteractionLog.where(id: cache_miss_ids).
-          or(CriticalChainInteractionLog.where(parent_id: cache_miss_ids)).
-          where(activity_type: GlobalConstant::CriticalChainInteractions.activity_types_to_mark_pending)
+          select(:id, :parent_id, :activity_type, :status, :request_params).all
 
-      aggregared_db_records = {}
-      primary_id_mandatory_steps_map = {}
+      db_records.each do |db_object|
 
-      db_records.each do |db_record|
+        next if GlobalConstant::CriticalChainInteractions.activity_types_to_mark_pending.exclude?(db_object.activity_type)
 
-        if db_record.parent_id.present?
-          id_to_index = db_record.parent_id
-        else
-          id_to_index = db_record.id
-          primary_id_mandatory_steps_map[id_to_index] = mandatory_steps_for_type(db_record)
-        end
+        f_dependent_entity_records[db_object.id] ||= {}
+        f_dependent_entity_records[db_object.id][db_object.activity_type] = db_object
+        
+      end
 
-        aggregared_db_records[id_to_index] ||= {}
+      # Fetch rows with parent_ids in cache_miss_ids
+      CriticalChainInteractionLog.where(parent_id: cache_miss_ids).
+          select(:id, :parent_id, :activity_type, :status, :request_params).all.each do |db_object|
 
-        aggregared_db_records[id_to_index][db_record.activity_type] = db_record
+        next if dependent_activity_types.exclude?(db_object.activity_type)
+
+        f_dependent_entity_records[db_object.parent_id] ||= {}
+        f_dependent_entity_records[db_object.parent_id][db_object.activity_type] = db_object
 
       end
 
-      formatted_data = {}
+      cache_data = {}
 
-      aggregared_db_records.each do |primary_id, data|
-        mandatory_activity_kinds = primary_id_mandatory_steps_map[primary_id]
+      db_records.each do |db_record|
+
+        # if this records had a parent id we ignore it as it should be an independent id to be given dara
+        next if db_record.parent_id.present?
+
+        dependent_entity_records = f_dependent_entity_records[db_record.id]
+        mandatory_activity_kinds = mandatory_steps_for_type(db_record)
+        
         formatted_data_for_id = []
         mandatory_activity_kinds.each do |activity_kind|
-          activity_kind_data = data[activity_kind]
+          activity_kind_data = dependent_entity_records[activity_kind]
           if activity_kind_data.blank?
             # this step has not been initiated yet
             formatted_data_for_id << {
@@ -58,10 +68,12 @@ module CacheManagement
             }
           end
         end
-        formatted_data[primary_id] = formatted_data_for_id
+
+        cache_data[db_record.id] = formatted_data_for_id
+
       end
 
-      success_with_data(formatted_data)
+      success_with_data(cache_data)
 
     end
 
@@ -197,6 +209,14 @@ module CacheManagement
 
     def is_bt_to_be_minted?(db_record)
       db_record.request_params[:bt_to_mint].present? && BigDecimal.new(db_record.request_params[:bt_to_mint]) > 0
+    end
+
+    def dependent_activity_types
+      buffer = GlobalConstant::CriticalChainInteractions.activity_types_to_mark_pending.dup
+      buffer += [
+          GlobalConstant::CriticalChainInteractions.stake_bt_started_activity_type,
+          GlobalConstant::CriticalChainInteractions.stake_st_prime_started_activity_type
+      ]
     end
 
   end
