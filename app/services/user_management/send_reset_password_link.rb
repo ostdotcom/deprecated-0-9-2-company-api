@@ -119,7 +119,7 @@ module UserManagement
           email: @user.email,
           template_name: GlobalConstant::PepoCampaigns.forgot_password_template,
           template_vars: {
-              reset_password_token: @reset_password_token
+              reset_password_token: CGI.escape(@reset_password_token)
           }
       ).perform
     end
