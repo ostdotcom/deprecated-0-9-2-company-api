@@ -10,6 +10,6 @@ end
 # Configure the contact to be notified from god
 God.contact(:email) do |c|
   c.name  = 'Simpletoken Api Team'
-  c.to_email = 'bala@ost.com,sunil@ost.com,kedar@ost.com,alpesh@ost.com,pankaj@ost.com,aman@ost.com'
+  c.to_email = 'backend@ost.com'
   c.group = 'developers'
 end
