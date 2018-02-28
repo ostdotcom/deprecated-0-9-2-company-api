@@ -37,7 +37,7 @@ module Economy
       @ost_to_bt = @params[:ost_to_bt]
       @number_of_users = @params[:number_of_users]
       @airdrop_amount = @params[:airdrop_amount]
-      @airdrop_user_list_type = @params[:airdrop_user_list_type] || 'all'
+      @airdrop_user_list_type = @params[:airdrop_user_list_type]
 
       @user = nil
       @client_token = nil
