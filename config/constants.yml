@@ -42,7 +42,7 @@ constants:
       master_list: <%= ENV['CA_CAMPAIGN_MASTER_LIST']%>
 
   company_restful_api:
-    endpoint: <%= ENV['CA_SAAS_API_ENDPOINT'] %>
+    endpoint: '<%= ENV['CA_SAAS_API_ENDPOINT'] %>/'
     secret_key: <%= ENV['CA_SAAS_API_SECRET_KEY'] %>
 
   ost_explorer:
