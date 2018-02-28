@@ -31,6 +31,7 @@ module ExplorerApi
     #
     def send_request_of_type(request_type, path)
       begin
+        return success_with_data({})
 
         request_path = GlobalConstant::ExplorerApi.base_url + path
 
