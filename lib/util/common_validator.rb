@@ -198,7 +198,9 @@ module Util
     # @return [Boolean] returns a boolean
     #
     def self.is_valid_token_name?(str)
-      (str =~ /^[a-z\s]{3,25}$/i).present?
+      length = str.length
+      return false if length > 25 || length < 3
+      (str =~ /^\w*[a-z]\w*$/i).present?
     end
 
   end

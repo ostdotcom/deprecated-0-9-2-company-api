@@ -52,7 +52,6 @@ class StakeAndMint::GetTransferToStakerStatusJob < ApplicationJob
 
     @critical_chain_interaction_log = nil
     @transaction_hash = nil
-    @bt_to_mint = nil
     @st_prime_to_mint = nil
 
     @client_token = nil
@@ -82,8 +81,7 @@ class StakeAndMint::GetTransferToStakerStatusJob < ApplicationJob
     ) if @critical_chain_interaction_log.blank?
 
     @transaction_hash = @critical_chain_interaction_log.transaction_hash
-    @bt_to_mint = @critical_chain_interaction_log.request_params[:bt_to_mint].to_f
-    @st_prime_to_mint = @critical_chain_interaction_log.request_params[:st_prime_to_mint].to_f
+    @st_prime_to_mint = @critical_chain_interaction_log.request_params[:st_prime_to_mint]
 
     @client_token = ClientToken.where(id: @critical_chain_interaction_log.client_token_id).first
 
@@ -311,17 +309,8 @@ class StakeAndMint::GetTransferToStakerStatusJob < ApplicationJob
     # Frontend is not able to handle converstion properly, so we don't trust the bt_to_mint amount from them
     # Let's recalculate it here. and use it for stake and mint
     transfered_ost = Util::Converter.from_wei_value(buffer.first['value'])
-    @critical_chain_interaction_log.request_params[:bt_to_mint] = (transfered_ost - @critical_chain_interaction_log.request_params[:st_prime_to_mint]) * BigDecimal.new(@client_token.conversion_factor)
-
-    #transfered_ost = Util::Converter.from_wei_value(buffer.first['value']).to_f
-    # required_ost = ((@bt_to_mint / @client_token.conversion_factor) + @st_prime_to_mint).to_f
-    # return error_with_data(
-    #     'j_s_gttssj_8',
-    #     'Invalid Transfer Amount.',
-    #     'Invalid Transfer Amount.',
-    #     GlobalConstant::ErrorAction.default,
-    #     {required_ost: required_ost, transfered_ost: transfered_ost}
-    # ) if required_ost != transfered_ost
+    ost_to_stake_to_mint_bt = transfered_ost - @st_prime_to_mint
+    @critical_chain_interaction_log.request_params[:ost_to_stake_to_mint_bt] = ost_to_stake_to_mint_bt
 
     success
 

@@ -29,7 +29,7 @@ class StakeAndMint::GetApprovalStatusJob < ApplicationJob
       return r unless r.success?
 
       start_stake_st_prime_job if @st_prime_to_mint > 0
-      start_stake_bt_job if @bt_to_mint > 0
+      start_stake_bt_job if @ost_to_stake_to_mint_bt > 0
     else
       enqueue_self
     end
@@ -52,7 +52,7 @@ class StakeAndMint::GetApprovalStatusJob < ApplicationJob
 
     @critical_chain_interaction_log = nil
     @transaction_hash = nil
-    @bt_to_mint = nil
+    @ost_to_stake_to_mint_bt = nil
     @st_prime_to_mint = nil
 
     @existing_st_prime_balance = nil
@@ -84,8 +84,8 @@ class StakeAndMint::GetApprovalStatusJob < ApplicationJob
     ) if @critical_chain_interaction_log.blank?
 
     @transaction_hash = @critical_chain_interaction_log.transaction_hash
-    @bt_to_mint = @critical_chain_interaction_log.request_params[:bt_to_mint].to_f
-    @st_prime_to_mint = @critical_chain_interaction_log.request_params[:st_prime_to_mint].to_f
+    @ost_to_stake_to_mint_bt = @critical_chain_interaction_log.request_params[:ost_to_stake_to_mint_bt]
+    @st_prime_to_mint = @critical_chain_interaction_log.request_params[:st_prime_to_mint]
 
     @client_token = ClientToken.where(id: @critical_chain_interaction_log.client_token_id).first
 
@@ -213,15 +213,12 @@ class StakeAndMint::GetApprovalStatusJob < ApplicationJob
   #
   def start_stake_bt_job
 
-    # convert bt into ost.
-    ost_to_stake_amount = @bt_to_mint / @client_token.conversion_factor
     existing_balance = @existing_bt_balance
 
     params = {
       client_id: @critical_chain_interaction_log.client_id,
       token_symbol: @client_token.symbol,
-      to_stake_amount: ost_to_stake_amount,
-      bt_to_mint: @bt_to_mint
+      to_stake_amount: @ost_to_stake_to_mint_bt,
     }
 
     stake_response = SaasApi::StakeAndMint::StartBrandedToken.new.perform(params)
