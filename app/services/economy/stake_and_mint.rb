@@ -368,7 +368,7 @@ module Economy
     #
     def enqueue_stake_and_mint_job
 
-      return if @bt_to_mint.to_f <= 0 && @st_prime_to_mint.to_f <= 0
+      return success if @bt_to_mint.to_f <= 0 && @st_prime_to_mint.to_f <= 0
 
       @parent_tx_activity_type ||= GlobalConstant::CriticalChainInteractions.staker_initial_transfer_activity_type
 
