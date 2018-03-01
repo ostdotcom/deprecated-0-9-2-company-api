@@ -39,7 +39,8 @@ module ExplorerApi
         ssl_context = OpenSSL::SSL::SSLContext.new
         ssl_context.verify_mode = OpenSSL::SSL::VERIFY_NONE
 
-        parameterized_token = {token: get_jwt_token({request_time: Time.now.to_i})}
+        parameterized_token = {token: get_jwt_token({url: "/#{path}",
+                                                        request_time: Time.now.to_i})}
 
         case request_type
           when 'get'
