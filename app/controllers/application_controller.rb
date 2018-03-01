@@ -65,7 +65,12 @@ class ApplicationController < ActionController::API
       response_hash[:data] = {}
     end
 
+    if !service_response.success? && service_response.go_to.present?
+      response_hash[:err][:go_to] = service_response.go_to
+    end
+
     (render plain: Oj.dump(response_hash, mode: :compat), status: http_status_code)
+
   end
 
   # Handle exceptions gracefully
