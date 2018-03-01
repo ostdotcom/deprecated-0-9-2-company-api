@@ -65,7 +65,7 @@ class ApplicationController < ActionController::API
       response_hash[:data] = {}
     end
 
-    if !service_response.success? && service_response.go_to.present?
+    if !service_response.success? && service_response.respond_to?(:go_to) && service_response.go_to.present?
       response_hash[:err][:go_to] = service_response.go_to
     end
 
