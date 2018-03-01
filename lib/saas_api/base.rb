@@ -16,7 +16,11 @@ module SaasApi
     # @return [SaasApi::Base]
     #
     def initialize
-      @timeouts = {write: 60, connect: 60, read: 60}
+      @timeouts = {
+        write: 5,
+        connect: 5,
+        read: 5
+      }
     end
 
     private
