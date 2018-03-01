@@ -168,9 +168,9 @@ module CacheManagement
         when GlobalConstant::CriticalChainInteractions.propose_bt_activity_type
           'Registering Branded Token'
         when GlobalConstant::CriticalChainInteractions.stake_bt_started_activity_type
-          "Staking #{request_params[:to_stake_amount]} OST to mint #{request_params[:token_symbol]}"
+          "Staking #{request_params[:to_stake_amount].round(2)} OST to mint #{request_params[:token_symbol]}"
         when GlobalConstant::CriticalChainInteractions.stake_st_prime_started_activity_type
-          "Staking #{request_params[:to_stake_amount]} for Transaction Fees"
+          "Staking #{request_params[:to_stake_amount].round(2)} for Transaction Fees"
         when GlobalConstant::CriticalChainInteractions.airdrop_users_activity_type
           "AirDrop #{request_params[:airdrop_amount]}#{request_params[:token_symbol]} to users is In-Process."
         when GlobalConstant::CriticalChainInteractions.staker_initial_transfer_activity_type
