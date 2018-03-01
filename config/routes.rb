@@ -14,6 +14,7 @@ Rails.application.routes.draw do
 
   scope 'api/client', controller: 'client/setup' do
     match 'validate-eth-address' => :validate_eth_address, via: :GET
+    match 'fetch-api-credentials' => :fetch_api_credentials, via: :GET
     match 'get-ost' => :get_test_ost, via: :POST
     match 'get-eth' => :get_test_eth, via: :POST
   end

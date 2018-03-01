@@ -54,11 +54,13 @@ module CacheManagement
         get_credentials_rsp = ClientManagement::GetClientApiCredentials.new(client_id: client_id).perform
         return get_credentials_rsp unless get_credentials_rsp.success?
 
-        encrypt_rsp = encryptor_obj.encrypt(get_credentials_rsp.data[:api_secret])
+        api_credentials = get_credentials_rsp.data[:api_credentials]
+
+        encrypt_rsp = encryptor_obj.encrypt(api_credentials[:api_secret])
         return encrypt_rsp unless encrypt_rsp.success?
 
         cache_data = {
-          api_key: get_credentials_rsp.data[:api_key],
+          api_key: api_credentials[:api_key],
           api_secret: encrypt_rsp.data[:ciphertext_blob]
         }
 

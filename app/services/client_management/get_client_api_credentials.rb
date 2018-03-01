@@ -42,7 +42,12 @@ module ClientManagement
       r = decrypt_api_secret
       return r unless r.success?
 
-      success_with_data(api_key: @client_api_credentials.api_key, api_secret: @api_secret_d)
+      success_with_data(
+        api_credentials: {
+          api_key: @client_api_credentials.api_key,
+          api_secret: @api_secret_d
+        }
+      )
 
     end
 
