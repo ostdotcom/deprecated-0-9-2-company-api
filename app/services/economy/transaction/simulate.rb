@@ -130,7 +130,7 @@ module Economy
         }
 
 
-        return success_with_data(dummy_response)
+        # return success_with_data(dummy_response)
 
 
         r = validate
@@ -194,7 +194,8 @@ module Economy
       def simulate_transaction
 
         params = {
-            token_symbol: @client_token[:symbol]
+            token_symbol: @client_token[:symbol],
+            client_id: @client_token[:client_id]
         }
 
         r = SaasApi::Transaction::Simulate.new.perform(params)
@@ -224,20 +225,9 @@ module Economy
             'Something Went Wrong',
             GlobalConstant::ErrorAction.default,
             {}
-        ) if @saas_api_response_data[:result].length != 1
+        ) if @saas_api_response_data.blank?
 
-        return error_with_data(
-            'e_t_s_3',
-            'Invalid Response from Saas',
-            'Something Went Wrong',
-            GlobalConstant::ErrorAction.default,
-            {}
-        ) if @saas_api_response_data[:result][0][:type] != GlobalConstant::SaasApiEntityType.result_transaction_type
-
-        id = @saas_api_response_data[:result][0][:id]
-        transaction = @saas_api_response_data[GlobalConstant::SaasApiEntityType.transaction_entity_key][id]
-
-        @transaction_uuid = transaction[:uuid]
+        @transaction_uuid = @saas_api_response_data[:transaction_uuid]
 
         return error_with_data(
             'e_t_s_4',
@@ -281,7 +271,9 @@ module Economy
       # Sets @api_response_data
       # ``
       def set_api_response_data
-        @api_response_data = @saas_api_response_data
+        service_response = Economy::Transaction::FetchHistory.new({transaction_uuids: [@transaction_uuid],
+                                                                   client_token_id: @client_token_id}).perform
+        @api_response_data = service_response.data
       end
 
     end

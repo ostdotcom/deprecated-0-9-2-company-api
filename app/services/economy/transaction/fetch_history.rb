@@ -12,6 +12,7 @@ module Economy
       #
       # @params [Integer] client_token_id (mandatory) - client token id
       # @param [Integer] page_no (optional) - page no
+      # @param [Array] transaction_uuids (optional) - Array of transaction uuids
       #
       # @return [Economy::Transaction::FetchHistory]
       #
@@ -26,7 +27,7 @@ module Economy
 
         @client_token = nil
         @saas_api_response_data = nil
-        @transaction_uuids = []
+        @transaction_uuids = @params[:transaction_uuids] || []
       end
 
       # Perform
@@ -197,7 +198,7 @@ module Economy
         }
 
 
-        return success_with_data(dummy_response)
+        # return success_with_data(dummy_response)
 
 
         r = validate_and_sanitize
@@ -210,8 +211,10 @@ module Economy
 
         # introduce has_more concept?
         #
-        r = fetch_transaction_uuids
-        return r unless r.success?
+        if @transaction_uuids.blank?
+          r = fetch_transaction_uuids
+          return r unless r.success?
+        end
 
         return success if @transaction_uuids.blank?
 
@@ -245,6 +248,8 @@ module Economy
         else
           @page_no = 1
         end
+
+        success
 
       end
 
@@ -282,7 +287,7 @@ module Economy
         offset = @page_size * (@page_no - 1)
 
         @transaction_uuids = ClientTokenTransaction.where(client_token_id: @client_token_id).limit(@page_size).
-            offset(offset).sort(id: :desc).pluck(:transaction_uuid)
+            offset(offset).order('id DESC').pluck(:transaction_uuid)
 
         success
       end

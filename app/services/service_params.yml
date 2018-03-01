@@ -197,18 +197,13 @@
     - :client_token_id
   :optional:
     - :page_no
+    - :transaction_uuids
 
 'Economy::Transaction::Simulate':
   :mandatory:
     - :client_token_id
   :optional:
 
-'Economy::Transaction::FetchDetail':
-  :mandatory:
-    - :client_token_id
-    - :transaction_uuids
-  :optional:
-    - :page_no
 
 'FullClassNameOfService':
   :mandatory:

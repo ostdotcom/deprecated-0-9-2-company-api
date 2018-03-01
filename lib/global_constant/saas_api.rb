@@ -92,11 +92,11 @@ module GlobalConstant
     end
 
     def self.simulate_transaction
-      'transaction/simulate'
+      'simulator/create-transaction'
     end
 
     def self.fetch_transaction_details
-      'transaction/fetch_details'
+      'simulator/get-transaction-details'
     end
 
     def self.fetch_cliient_stats
