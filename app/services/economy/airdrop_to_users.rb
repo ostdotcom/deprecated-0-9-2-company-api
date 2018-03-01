@@ -47,24 +47,17 @@ module Economy
       r = validate_airdrop_done
       return r unless r.success?
 
-      insert_initial_db_record
-
       r = make_saas_call
-      if r.success?
-        @chain_interaction.transaction_uuid = @api_response_data["airdrop_uuid"]
-        @chain_interaction.status = GlobalConstant::CriticalChainInteractions.pending_status
-      else
-        @chain_interaction.status = GlobalConstant::CriticalChainInteractions.failed_status
-      end
-      @chain_interaction.save
+      return r unless r.success?
+
+      insert_initial_db_record
 
       enqueue_job
 
       success_with_data(
           pending_critical_interactions:
-            {GlobalConstant::CriticalChainInteractions.airdrop_users_activity_type => @chain_interaction.id }
+              {GlobalConstant::CriticalChainInteractions.airdrop_users_activity_type => @chain_interaction.id}
       )
-
     end
 
     private
@@ -129,7 +122,7 @@ module Economy
           GlobalConstant::ErrorAction.default,
           {}
       ) if (client_chain_interactions.keys & [GlobalConstant::CriticalChainInteractions.queued_status,
-                                             GlobalConstant::CriticalChainInteractions.pending_status]).present?
+                                              GlobalConstant::CriticalChainInteractions.pending_status]).present?
 
       # TODO: Do we have to apply any other checks
 
@@ -147,13 +140,18 @@ module Economy
     # @return [Result::Base]
     #
     def insert_initial_db_record
-      @chain_interaction = CriticalChainInteractionLog.create!(client_id: @client_id, client_token_id: @client_token_id,
+      @chain_interaction = CriticalChainInteractionLog.create!(client_id: @client_id,
+                                                               client_token_id: @client_token_id,
                                                                activity_type: GlobalConstant::CriticalChainInteractions.airdrop_users_activity_type,
                                                                chain_type: GlobalConstant::CriticalChainInteractions.utility_chain_type,
-                                                               status: GlobalConstant::CriticalChainInteractions.queued_status,
-                                                               request_params: {airdrop_amount: @airdrop_amount, token_symbol: @client_token[:symbol],
-                                                                                users_list_to_airdrop: @airdrop_list_type},
-                                                               parent_id: @parent_critical_log_id
+                                                               status: GlobalConstant::CriticalChainInteractions.pending_status,
+                                                               request_params: {
+                                                                   airdrop_amount: @airdrop_amount,
+                                                                   token_symbol: @client_token[:symbol],
+                                                                   users_list_to_airdrop: @airdrop_list_type
+                                                               },
+                                                               parent_id: @parent_critical_log_id,
+                                                               transaction_uuid: @api_response_data["airdrop_uuid"]
       )
     end
 
@@ -186,10 +184,11 @@ module Economy
 
       return error_with_data(
           'e_adu_5',
-          "Coundn't Airdrop Tokens",
+           service_response.error_message,
           'Something Went Wrong.',
           GlobalConstant::ErrorAction.default,
-          {}
+          {},
+          service_response.error_data || {}
       ) unless service_response.success?
 
       @api_response_data = service_response.data
