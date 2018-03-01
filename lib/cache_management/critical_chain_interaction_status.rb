@@ -137,7 +137,7 @@ module CacheManagement
             steps << GlobalConstant::CriticalChainInteractions.airdrop_users_activity_type
           end
         when GlobalConstant::CriticalChainInteractions.staker_initial_transfer_activity_type
-          steps = []
+          steps = [GlobalConstant::CriticalChainInteractions.staker_initial_transfer_activity_type]
           if is_bt_to_be_minted?(db_record)
             steps << GlobalConstant::CriticalChainInteractions.stake_bt_started_activity_type
           end
@@ -173,6 +173,8 @@ module CacheManagement
           "Staking #{request_params[:to_stake_amount]} for Transaction Fees"
         when GlobalConstant::CriticalChainInteractions.airdrop_users_activity_type
           "AirDrop #{request_params[:airdrop_amount]}#{request_params[:token_symbol]} to users is In-Process."
+        when GlobalConstant::CriticalChainInteractions.staker_initial_transfer_activity_type
+          "Verifying Transfer of #{request_params[:to_stake_amount]} to Staker."
         else
           fail "unsupported activity_type: #{db_object.activity_type}"
       end
@@ -198,6 +200,8 @@ module CacheManagement
           'Staking OST for Transaction Fees'
         when GlobalConstant::CriticalChainInteractions.airdrop_users_activity_type
           'AirDrop In Process'
+        when GlobalConstant::CriticalChainInteractions.staker_initial_transfer_activity_type
+          "Verifying Transfer to Staker."
         else
           fail "unsupported activity_type: #{activity_type}"
       end
