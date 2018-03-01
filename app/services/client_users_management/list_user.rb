@@ -14,6 +14,7 @@ module ClientUsersManagement
     # @param [Integer] is_xhr (mandatory) - is request xhr 0/1
     # @param [Integer] page_no (optional) - page no
     # @param [String] order_by (optional) - creation_time
+    # @param [String] filter (optional) - filter on user list type
     #
     # @return [ClientUsersManagement::ListUser]
     #
@@ -27,6 +28,7 @@ module ClientUsersManagement
       @page_no = @params[:page_no]
       @order_by = @params[:order_by]
       @is_xhr = @params[:is_xhr]
+      @filter = @params[:filter]
 
       @page_size = 25
       @client = nil
@@ -173,7 +175,7 @@ module ClientUsersManagement
       credentials = OSTSdk::Util::APICredentials.new(result[:api_key], result[:api_secret])
       @ost_sdk_obj = OSTSdk::Saas::Users.new(GlobalConstant::Base.sub_env, credentials)
 
-      service_response = @ost_sdk_obj.list(page_no: @page_no, sort_by: @order_by)
+      service_response = @ost_sdk_obj.list(page_no: @page_no, sort_by: @order_by, filter: @filter)
 
       return error_with_data(
           'uc_lu_2',

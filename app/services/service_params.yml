@@ -234,6 +234,7 @@
   :optional:
     - :page_no
     - :order_by
+    - :filter
 
 'Economy::AirdropToUsers':
   :mandatory:
