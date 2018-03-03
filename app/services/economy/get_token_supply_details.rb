@@ -41,10 +41,10 @@ module Economy
       r = fetch_client_token
       return r unless r.success?
 
-      r = fetch_common_entities
+      r = fetch_token_supply_details
       return r unless r.success?
 
-      r = fetch_token_supply_details
+      r = fetch_common_entities
       return r unless r.success?
 
       success_with_data(@api_response_data)
