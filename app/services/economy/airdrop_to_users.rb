@@ -75,10 +75,20 @@ module Economy
       r = validate
       return r unless r.success?
 
+      @airdrop_amount = BigDecimal.new(@airdrop_amount)
+
       @client = @client = CacheManagement::Client.new([@client_id]).fetch[@client_id]
 
       return error_with_data(
           'e_adu_1',
+          'Invalid @airdrop_amount.',
+          'Invalid @airdrop_amount.',
+          GlobalConstant::ErrorAction.default,
+          {}
+      ) if @airdrop_amount <=0
+
+      return error_with_data(
+          'e_adu_2',
           'Invalid Client.',
           'Invalid Client.',
           GlobalConstant::ErrorAction.default,
@@ -88,7 +98,7 @@ module Economy
       @client_token = CacheManagement::ClientToken.new([@client_token_id]).fetch[@client_token_id]
 
       return error_with_data(
-          'e_adu_2',
+          'e_adu_3',
           'Invalid Client Token.',
           'Invalid Client Token.',
           GlobalConstant::ErrorAction.default,
