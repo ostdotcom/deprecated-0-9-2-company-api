@@ -5,6 +5,7 @@ class ApplicationController < ActionController::API
 
   # Sanitize URL params
   include Sanitizer
+  include CookieConcern
 
   before_action :sanitize_params
 
