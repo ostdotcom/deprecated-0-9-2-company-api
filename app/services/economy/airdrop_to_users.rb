@@ -10,7 +10,7 @@ module Economy
     #
     # @params [Integer] client_id (mandatory) - client id
     # @params [Integer] client_token_id (mandatory) - client token id
-    # @params [Integer] airdrop_amount (mandatory) - Amount to airdrop in Branded token base unit.
+    # @params [Integer] amount (mandatory) - Amount to airdrop in Branded token base unit.
     # @params [String] airdrop_list_type (mandatory) - List type of users to airdrop eg: all or new
     # @params [Integer] parent_critical_log_id (Optional) - Parent critical log id, if it starts from stake and mint
     #
@@ -22,7 +22,7 @@ module Economy
 
       @client_token_id = @params[:client_token_id]
       @client_id = @params[:client_id]
-      @airdrop_amount = @params[:airdrop_amount]
+      @amount = @params[:amount]
       @airdrop_list_type = @params[:airdrop_list_type]
       @parent_critical_log_id = @params[:parent_critical_log_id]
 
@@ -82,11 +82,11 @@ module Economy
 
       validation_errors = {}
 
-      if @airdrop_amount.present?
-        @airdrop_amount = BigDecimal.new(@airdrop_amount)
-        validation_errors[:airdrop_amount] = 'Airdrop amount should be > 0' if @airdrop_amount <=0
+      if @amount.present?
+        @amount = BigDecimal.new(@amount)
+        validation_errors[:amount] = 'Airdrop amount should be > 0' if @amount <=0
       else
-        validation_errors[:airdrop_amount] = 'Airdrop amount can not be blank'
+        validation_errors[:amount] = 'Airdrop amount can not be blank'
       end
 
       return error_with_data(
@@ -172,7 +172,7 @@ module Economy
                                                                chain_type: GlobalConstant::CriticalChainInteractions.utility_chain_type,
                                                                status: GlobalConstant::CriticalChainInteractions.queued_status,
                                                                request_params: {
-                                                                   airdrop_amount: @airdrop_amount,
+                                                                   amount: @amount,
                                                                    token_symbol: @client_token[:symbol],
                                                                    users_list_to_airdrop: @airdrop_list_type
                                                                },
@@ -204,7 +204,7 @@ module Economy
       credentials = OSTSdk::Util::APICredentials.new(result[:api_key], result[:api_secret])
       @ost_sdk_obj = OSTSdk::Saas::Users.new(GlobalConstant::Base.sub_env, credentials)
 
-      service_response = @ost_sdk_obj.airdrop_tokens(token_symbol: @client_token[:symbol], amount: @airdrop_amount,
+      service_response = @ost_sdk_obj.airdrop_tokens(token_symbol: @client_token[:symbol], amount: @amount,
                                                      list_type: @airdrop_list_type)
 
       return error_with_data(

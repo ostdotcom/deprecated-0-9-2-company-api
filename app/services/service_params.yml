@@ -116,7 +116,7 @@
   :optional:
     - :ost_to_bt
     - :number_of_users
-    - :airdrop_amount
+    - :amount
     - :airdrop_user_list_type
 
 'Economy::TokenSetupDetails::StepOne':
@@ -147,14 +147,6 @@
   :mandatory:
     - :client_token_id
     - :user_id
-  :optional:
-
-'Economy::AirdropUsers':
-  :mandatory:
-    - :client_token_id
-    - :client_id
-    - :airdrop_amount
-    - :airdrop_list_type
   :optional:
 
 'Economy::TransactionKind::Create':
@@ -248,7 +240,7 @@
   :mandatory:
     - :client_id
     - :client_token_id
-    - :airdrop_amount
+    - :amount
     - :airdrop_list_type
   :optional:
     - :parent_critical_log_id

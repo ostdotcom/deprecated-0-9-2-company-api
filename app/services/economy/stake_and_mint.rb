@@ -18,7 +18,7 @@ module Economy
     # @param [Decimal] ost_to_bt (optional) - OST TO Bt conversion Factor sent by FE
     # @param [Integer] number_of_users (optional) - number_of_users which need to be airdropped
     # @param [String] airdrop_user_list_type (optional) - List type of users who needs to be airdropped
-    # @param [Integer] airdrop_amount (optional) - BT amount which needs to be airdropped to users
+    # @param [Integer] amount (optional) - BT amount which needs to be airdropped to users
     #
     # @return [Economy::StakeAndMint]
     #
@@ -36,7 +36,7 @@ module Economy
       #optional params
       @ost_to_bt = @params[:ost_to_bt]
       @number_of_users = @params[:number_of_users]
-      @airdrop_amount = @params[:airdrop_amount]
+      @amount = @params[:amount]
       @airdrop_user_list_type = @params[:airdrop_user_list_type]
 
       @user = nil
@@ -257,7 +257,7 @@ module Economy
 
       return success if @client_token.propose_initiated? || @client_token.registration_done?
 
-      @airdrop_amount = @airdrop_amount.present? ? BigDecimal.new(@airdrop_amount) : @airdrop_amount
+      @amount = @amount.present? ? BigDecimal.new(@amount) : @amount
       @ost_to_bt = @ost_to_bt.present? ? BigDecimal.new(@ost_to_bt) : @ost_to_bt
       @number_of_users = @number_of_users.to_i
 
@@ -267,7 +267,7 @@ module Economy
           'Invalid registeration parameters.',
           GlobalConstant::ErrorAction.default,
           {}
-      ) if @airdrop_amount.blank? || @airdrop_amount < 0 || @ost_to_bt.blank? || @bt_to_mint < 0 || @number_of_users < 0
+      ) if @amount.blank? || @amount < 0 || @ost_to_bt.blank? || @bt_to_mint < 0 || @number_of_users < 0
 
       success
 
@@ -290,7 +290,7 @@ module Economy
       r = Economy::SetUpEconomy.new(
           client_token_id: @client_token_id,
           conversion_factor: @ost_to_bt,
-          airdrop_bt_per_user: @airdrop_amount,
+          airdrop_bt_per_user: @amount,
           initial_number_of_users: @number_of_users
       ).perform
 
@@ -332,7 +332,7 @@ module Economy
             token_conversion_factor: BigDecimal.new(@client_token.conversion_factor),
             bt_to_mint: @bt_to_mint,
             st_prime_to_mint: @st_prime_to_mint,
-            airdrop_amount: @airdrop_amount,
+            amount: @amount,
             airdrop_user_list_type: @airdrop_user_list_type
           },
           status: GlobalConstant::CriticalChainInteractions.queued_status
@@ -427,14 +427,14 @@ module Economy
     # * Reviewed By:
     #
     def enqueue_airdrop_tokens_job
-      if @airdrop_amount.present? && @airdrop_user_list_type.present?
+      if @amount.present? && @airdrop_user_list_type.present?
         BgJob.enqueue(
             Airdrop::InitiateAirdropTokensJob,
             {
                 parent_critical_log_id: @stake_and_mint_init_chain_id,
                 client_token_id: @client_token_id,
                 client_id: @client_id,
-                airdrop_amount: @airdrop_amount,
+                amount: @amount,
                 airdrop_list_type: @airdrop_user_list_type
             },
             {

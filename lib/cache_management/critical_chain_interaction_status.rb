@@ -172,7 +172,7 @@ module CacheManagement
         when GlobalConstant::CriticalChainInteractions.stake_st_prime_started_activity_type
           "Staking #{request_params[:to_stake_amount].round(2)} OST for Transaction Fees"
         when GlobalConstant::CriticalChainInteractions.airdrop_users_activity_type
-          "AirDrop #{request_params[:airdrop_amount]} #{request_params[:token_symbol]} to users is In-Process."
+          "AirDrop #{request_params[:amount]} #{request_params[:token_symbol]} to users is In-Process."
         when GlobalConstant::CriticalChainInteractions.staker_initial_transfer_activity_type
           "Verifying Transfer of #{request_params[:to_stake_amount]} to Staker."
         else

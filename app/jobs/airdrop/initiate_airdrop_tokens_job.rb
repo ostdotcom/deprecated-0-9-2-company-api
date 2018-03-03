@@ -16,7 +16,7 @@ class Airdrop::InitiateAirdropTokensJob < ApplicationJob
   # @param [Integer] parent_critical_log_id (mandatory) - id of ClientChainInteraction of parent
   # @param [Integer] client_id (mandatory) - id of client who want to start Airdrop
   # @param [Integer] client_token_id (mandatory) - client token id
-  # @param [Integer] airdrop_amount (mandatory) - Amount to airdrop in Branded token base unit.
+  # @param [Integer] amount (mandatory) - Amount to airdrop in Branded token base unit.
   # @param [String] airdrop_list_type (mandatory) - List type of users to airdrop eg: all or new
   #
   def perform(params)
@@ -62,7 +62,7 @@ class Airdrop::InitiateAirdropTokensJob < ApplicationJob
     @parent_critical_log_id = params[:parent_critical_log_id]
     @client_token_id = params[:client_token_id]
     @client_id = params[:client_id]
-    @airdrop_amount = params[:airdrop_amount]
+    @amount = params[:amount]
     @airdrop_list_type = params[:airdrop_list_type]
 
     @siblings_process_complete = false
@@ -110,7 +110,7 @@ class Airdrop::InitiateAirdropTokensJob < ApplicationJob
     Economy::AirdropToUsers.new(parent_critical_log_id: @parent_critical_log_id,
                                 client_token_id: @client_token_id,
                                 client_id: @client_id,
-                                airdrop_amount: @airdrop_amount,
+                                amount: @amount,
                                 airdrop_list_type: @airdrop_list_type).perform
   end
 
@@ -128,7 +128,7 @@ class Airdrop::InitiateAirdropTokensJob < ApplicationJob
           parent_critical_log_id: @parent_critical_log_id,
           client_token_id: @client_token_id,
           client_id: @client_id,
-          airdrop_amount: @airdrop_amount,
+          amount: @amount,
           airdrop_list_type: @airdrop_list_type
       },
       {
