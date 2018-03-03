@@ -98,13 +98,11 @@ module Economy
 
       def api_spec_params
         {
-            name: '{{name}}',
-            kind: '{{kind}}',
-            value_currency_type: '{{value_currency_type}}',
-            value_in_usd: '{{value_in_usd}}',
-            value_in_bt: '{{value_in_bt}}',
-            commission_percent: '{{commission_percent}}',
-            use_price_oracle: '{{use_price_oracle}}'
+          name: '{{name}}',
+          kind: '{{kind}}',
+          currency_type: '{{currency_type}}',
+          currency_value: '{{currency_value}}',
+          commission_percent: '{{commission_percent}}'
         }
       end
 
