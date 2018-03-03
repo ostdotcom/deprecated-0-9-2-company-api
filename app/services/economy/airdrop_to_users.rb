@@ -47,10 +47,18 @@ module Economy
       r = validate_airdrop_done
       return r unless r.success?
 
-      r = make_saas_call
-      return r unless r.success?
-
       insert_initial_db_record
+
+      r = make_saas_call
+      if r.success?
+        @chain_interaction.transaction_uuid = @api_response_data["airdrop_uuid"]
+        @chain_interaction.status = GlobalConstant::CriticalChainInteractions.pending_status
+        @chain_interaction.save
+      else
+        @chain_interaction.status = GlobalConstant::CriticalChainInteractions.failed_status
+        @chain_interaction.save
+        return r
+      end
 
       enqueue_job
 
@@ -162,14 +170,13 @@ module Economy
                                                                client_token_id: @client_token_id,
                                                                activity_type: GlobalConstant::CriticalChainInteractions.airdrop_users_activity_type,
                                                                chain_type: GlobalConstant::CriticalChainInteractions.utility_chain_type,
-                                                               status: GlobalConstant::CriticalChainInteractions.pending_status,
+                                                               status: GlobalConstant::CriticalChainInteractions.queued_status,
                                                                request_params: {
                                                                    airdrop_amount: @airdrop_amount,
                                                                    token_symbol: @client_token[:symbol],
                                                                    users_list_to_airdrop: @airdrop_list_type
                                                                },
-                                                               parent_id: @parent_critical_log_id,
-                                                               transaction_uuid: @api_response_data["airdrop_uuid"]
+                                                               parent_id: @parent_critical_log_id
       )
     end
 

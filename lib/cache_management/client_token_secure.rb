@@ -15,7 +15,7 @@ module CacheManagement
     def fetch_from_db(cache_miss_ids)
 
       data_to_cache = ::ClientToken.where(id: cache_miss_ids).
-          select(:id, :reserve_uuid, :token_erc20_address).all.inject({}) do |cache_data, client_token|
+          select(:id, :reserve_uuid, :token_erc20_address, :airdrop_contract_addr, :worker_addr_uuid, :airdrop_holder_addr_uuid).all.inject({}) do |cache_data, client_token|
 
         cache_data[client_token.id] = client_token.formated_secure_cache_data
 

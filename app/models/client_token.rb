@@ -60,7 +60,10 @@ class ClientToken < EstablishCompanyClientEconomyDbConnection
     {
         id: id,
         token_erc20_address: token_erc20_address,
-        reserve_uuid: reserve_uuid
+        airdrop_contract_address: airdrop_contract_addr,
+        reserve_uuid: reserve_uuid,
+        worker_uuid: worker_addr_uuid,
+        airdrop_holder_uuid: airdrop_holder_addr_uuid
     }
   end
 
@@ -75,7 +78,8 @@ class ClientToken < EstablishCompanyClientEconomyDbConnection
   def registration_done?
     send("#{GlobalConstant::ClientToken.propose_done_setup_step}?") &&
       send("#{GlobalConstant::ClientToken.registered_on_uc_setup_step}?") &&
-      send("#{GlobalConstant::ClientToken.registered_on_vc_setup_step}?")
+      send("#{GlobalConstant::ClientToken.registered_on_vc_setup_step}?") &&
+      send("#{GlobalConstant::ClientToken.airdrop_done_setup_step}?")
   end
 
 end
