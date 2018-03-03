@@ -199,7 +199,7 @@ module Util
     #
     def self.is_valid_token_name?(str)
       length = str.length
-      return false if length > 25 || length < 3
+      return false if length > 15 || length < 3
       (str =~ /^\w*[a-z\s]\w*$/i).present?
     end
 
