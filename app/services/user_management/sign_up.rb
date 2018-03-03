@@ -219,6 +219,7 @@ module UserManagement
     # @return [Result::Base]
     #
     def init_user_obj_if_needed
+
       return success if @user.present?
 
       r = generate_login_salt
@@ -232,11 +233,10 @@ module UserManagement
         login_salt: @login_salt_hash[:ciphertext_blob],
         status: GlobalConstant::User.active_status
       )
-      #TODO: This is just for Demo on dev machine purpose. remove it later.
-      @user.send("set_#{GlobalConstant::User.is_user_verified_property}") if Rails.env.development?
       @user.save! if @user.new_record? || @user.changed?
 
       success
+
     end
 
     # Create client
