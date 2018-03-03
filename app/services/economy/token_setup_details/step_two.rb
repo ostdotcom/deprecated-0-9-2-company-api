@@ -151,7 +151,7 @@ module Economy
       def api_spec_params
         # NOTE: Values inside {{}} are strictly for FE use. DO NOT CHANGE THEM
         {
-            name: '{{name}}',
+            name: '{{uri_encoded name}}',
             kind: '{{kind}}',
             currency_type: '{{currency_type}}',
             currency_value: '{{currency_value}}',

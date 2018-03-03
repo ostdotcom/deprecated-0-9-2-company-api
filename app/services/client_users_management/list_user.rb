@@ -190,7 +190,7 @@ module ClientUsersManagement
       else
 
         @ost_spec_sdk_obj = OSTSdk::Saas::Users.new(GlobalConstant::Base.sub_env, credentials, true)
-        api_spec_service_response = @ost_spec_sdk_obj.create({name: "{{name}}"})
+        api_spec_service_response = @ost_spec_sdk_obj.create({name: "{{uri_encoded name}}"})
 
         return error_with_data(
             'cum_lu_fu_1',
