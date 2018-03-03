@@ -138,10 +138,10 @@ module ClientUsersManagement
 
       return error_with_data(
           'cum_lu_2',
-           "Invalid client.",
-           'Something Went Wrong.',
-           GlobalConstant::ErrorAction.mandatory_params_missing,
-           {}
+          "Invalid client.",
+          'Something Went Wrong.',
+          GlobalConstant::ErrorAction.mandatory_params_missing,
+          {}
       ) if @client.blank? || @client[:status] != GlobalConstant::Client.active_status
 
       @client_id = @client_id.to_i
@@ -160,8 +160,6 @@ module ClientUsersManagement
     #
     def fetch_users
 
-      return success unless is_xhr_request?
-
       result = CacheManagement::ClientApiCredentials.new([@client_id]).fetch[@client_id]
       return error_with_data(
           'uc_lu_1',
@@ -173,37 +171,41 @@ module ClientUsersManagement
 
       # Create OST Sdk Obj
       credentials = OSTSdk::Util::APICredentials.new(result[:api_key], result[:api_secret])
-      @ost_sdk_obj = OSTSdk::Saas::Users.new(GlobalConstant::Base.sub_env, credentials)
 
-      service_response = @ost_sdk_obj.list(page_no: @page_no, sort_by: @order_by, filter: @filter)
+      if is_xhr_request?
 
-      return error_with_data(
-          'uc_lu_2',
-          "Coundn't Fetch User List",
-          'Something Went Wrong.',
-          GlobalConstant::ErrorAction.default,
-          {}
-      ) unless service_response.success?
+        @ost_sdk_obj = OSTSdk::Saas::Users.new(GlobalConstant::Base.sub_env, credentials)
 
-      @api_response_data = service_response.data
+        service_response = @ost_sdk_obj.list(page_no: @page_no, sort_by: @order_by, filter: @filter)
 
+        return error_with_data(
+            'uc_lu_2',
+            "Coundn't Fetch User List",
+            'Something Went Wrong.',
+            GlobalConstant::ErrorAction.default,
+            {}
+        ) unless service_response.success?
 
-      @ost_spec_sdk_obj = OSTSdk::Saas::Users.new(GlobalConstant::Base.sub_env, credentials, true)
-      api_spec_service_response = @ost_spec_sdk_obj.create({name: "{{name}}"})
+        @api_response_data = service_response.data
+      else
 
-      return error_with_data(
-          'cum_lu_fu_1',
-          "Coundn't Fetch Api spec for user create",
-          'Something Went Wrong.',
-          GlobalConstant::ErrorAction.default,
-          {}
-      ) unless api_spec_service_response.success?
+        @ost_spec_sdk_obj = OSTSdk::Saas::Users.new(GlobalConstant::Base.sub_env, credentials, true)
+        api_spec_service_response = @ost_spec_sdk_obj.create({name: "{{name}}"})
 
-      @api_response_data[:api_console_data] = {
-          user:{
-              create: api_spec_service_response.data
-          }
-      }
+        return error_with_data(
+            'cum_lu_fu_1',
+            "Coundn't Fetch Api spec for user create",
+            'Something Went Wrong.',
+            GlobalConstant::ErrorAction.default,
+            {}
+        ) unless api_spec_service_response.success?
+
+        @api_response_data[:api_console_data] = {
+            user: {
+                create: api_spec_service_response.data
+            }
+        }
+      end
 
       success
 
