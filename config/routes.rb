@@ -51,6 +51,7 @@ Rails.application.routes.draw do
     match 'execute' => :simulate, via: :POST
     match 'history' => :fetch_history, via: :GET
     match 'fetch-detail' => :fetch_detail, via: :GET
+    match 'fetch-simulator-details' => :fetch_simulator_details, via: :GET
   end
 
 end

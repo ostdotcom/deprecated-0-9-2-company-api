@@ -106,7 +106,11 @@ module Economy
     #
     def fetch_common_entities
 
-      r = Util::FetchEconomyCommonEntities.new(user_id: @user_id, client_token_id: @client_token_id).perform
+      r = Util::FetchEconomyCommonEntities.new(
+        user_id: @user_id,
+        client_token_id: @client_token_id,
+        client_token: @client_token
+      ).perform
       return r unless r.success?
 
       @api_response_data.merge!(r.data)

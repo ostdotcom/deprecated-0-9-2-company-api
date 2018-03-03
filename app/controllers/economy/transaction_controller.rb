@@ -34,4 +34,15 @@ class Economy::TransactionController < Economy::BaseController
     render_api_response(service_response)
   end
 
+  # Fetch details of simulator
+  #
+  # * Author: Puneet
+  # * Date: 29/01/2018
+  # * Reviewed By:
+  #
+  def fetch_simulator_details
+    service_response = Economy::Transaction::FetchSimulatorDetails.new(params).perform
+    render_api_response(service_response)
+  end
+
 end

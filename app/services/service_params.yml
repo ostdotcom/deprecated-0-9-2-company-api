@@ -205,6 +205,11 @@
     - :client_token_id
   :optional:
 
+'Economy::Transaction::FetchSimulatorDetails':
+  :mandatory:
+    - :client_token_id
+    - :user_id
+  :optional:
 
 'FullClassNameOfService':
   :mandatory:
