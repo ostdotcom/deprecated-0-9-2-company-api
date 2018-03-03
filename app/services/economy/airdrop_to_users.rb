@@ -72,20 +72,28 @@ module Economy
     #
     def validate_and_sanitize
 
-      r = validate
-      return r unless r.success?
+      validation_errors = {}
 
-      @airdrop_amount = BigDecimal.new(@airdrop_amount)
-
-      @client = @client = CacheManagement::Client.new([@client_id]).fetch[@client_id]
+      if @airdrop_amount.present?
+        @airdrop_amount = BigDecimal.new(@airdrop_amount)
+        validation_errors[:airdrop_amount] = 'Airdrop amount should be > 0' if @airdrop_amount <=0
+      else
+        validation_errors[:airdrop_amount] = 'Airdrop amount can not be blank'
+      end
 
       return error_with_data(
           'e_adu_1',
-          'Invalid @airdrop_amount.',
-          'Invalid @airdrop_amount.',
+          'Params Error',
+          '',
           GlobalConstant::ErrorAction.default,
-          {}
-      ) if @airdrop_amount <=0
+          {},
+          validation_errors
+      ) if validation_errors.present?
+
+      r = validate
+      return r unless r.success?
+
+      @client = @client = CacheManagement::Client.new([@client_id]).fetch[@client_id]
 
       return error_with_data(
           'e_adu_2',
