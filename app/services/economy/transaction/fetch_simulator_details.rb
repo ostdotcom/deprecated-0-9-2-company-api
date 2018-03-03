@@ -125,10 +125,11 @@ module Economy
       end
 
       def api_spec_params
+        # NOTE: Values inside {{}} are strictly for FE use. DO NOT CHANGE THEM
         {
-          token_symbol: '{{token_symbol}}',
-          from_uuid: '{{from_uuid}}',
-          to_uuid: '{{to_uuid}}',
+          token_symbol: '{{bt_symbol}}',
+          from_uuid: '{{from_user_id}}',
+          to_uuid: '{{to_user_id}}',
           transaction_kind: '{{transaction_kind}}'
         }
       end

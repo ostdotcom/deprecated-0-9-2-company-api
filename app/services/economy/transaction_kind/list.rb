@@ -100,6 +100,7 @@ module Economy
       end
 
       def api_spec_params
+        # NOTE: Values inside {{}} are strictly for FE use. DO NOT CHANGE THEM
         {
           name: '{{name}}',
           kind: '{{kind}}',
