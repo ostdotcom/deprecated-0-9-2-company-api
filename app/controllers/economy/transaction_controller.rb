@@ -29,7 +29,6 @@ class Economy::TransactionController < Economy::BaseController
   # * Reviewed By:
   #
   def fetch_detail
-    params[:transaction_uuids] = [params[:transaction_uuid]]
     service_response = Economy::Transaction::FetchHistory.new(params).perform
     render_api_response(service_response)
   end
