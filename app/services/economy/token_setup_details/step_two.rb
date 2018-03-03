@@ -17,6 +17,8 @@ module Economy
       #
       def initialize(params)
         super
+
+        @ost_spec_sdk_obj = nil
       end
 
       # Perform
@@ -28,7 +30,13 @@ module Economy
       # @return [Result::Base]
       #
       def perform
-        super
+        r = super
+        return r unless r.success?
+
+        r = fetch_api_console_data
+        return r unless r.success?
+
+        success_with_data(@api_response_data)
       end
 
       private
@@ -93,6 +101,61 @@ module Economy
 
         success
 
+      end
+
+
+      # Fetch Api console data for Transaction kind create
+      #
+      # * Author: Aman
+      # * Date: 3/03/2018
+      # * Reviewed By:
+      #
+      # Sets @api_response_data
+      #
+      # @return [Result::Base]
+      #
+      def fetch_api_console_data
+
+        result = CacheManagement::ClientApiCredentials.new([@client_id]).fetch[@client_id]
+        return error_with_data(
+            'e_tss_st_4',
+            "Invalid client",
+            'Something Went Wrong.',
+            GlobalConstant::ErrorAction.default,
+            {}
+        ) if result.blank?
+
+        # Create OST Sdk Obj
+        credentials = OSTSdk::Util::APICredentials.new(result[:api_key], result[:api_secret])
+        @ost_spec_sdk_obj = OSTSdk::Saas::TransactionKind.new(GlobalConstant::Base.sub_env, credentials, true)
+
+        api_spec_service_response = @ost_spec_sdk_obj.create(api_spec_params)
+
+        return error_with_data(
+            'e_tss_st_5',
+            "Coundn't fetch api spec for transaction kind create",
+            'Something Went Wrong.',
+            GlobalConstant::ErrorAction.default,
+            {}
+        ) unless api_spec_service_response.success?
+
+        @api_response_data[:api_console_data] = {
+            transaction_kind: {
+                create: api_spec_service_response.data
+            }
+        }
+
+        success
+      end
+
+      def api_spec_params
+        {
+            name: '{{name}}',
+            kind: '{{kind}}',
+            currency_type: '{{currency_type}}',
+            currency_value: '{{currency_value}}',
+            commission_percent: '{{commission_percent}}'
+        }
       end
 
     end
