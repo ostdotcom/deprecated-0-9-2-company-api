@@ -21,6 +21,10 @@ module GlobalConstant
         10000
       end
 
+      def default_eth_grant_amount
+        0.1
+      end
+
     end
 
   end

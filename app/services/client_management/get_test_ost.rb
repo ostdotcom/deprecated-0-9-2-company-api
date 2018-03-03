@@ -196,49 +196,27 @@ module ClientManagement
     # * Date: 16/02/2018
     # * Reviewed By:
     #
-    # Sets @client_address, @eth_address
+    # Sets @eth_address
     #
     # @return [Result::Base]
     #
     def fetch_client_eth_address
-      @client_address = ClientAddress.where(client_id: @client_id, status: GlobalConstant::ClientAddress.active_status).first
+
+      client_address_data = CacheManagement::ClientAddress.new([@client_id]).fetch[@client_id]
+
       return error_with_data(
           'cm_gto_5',
           'Ethereum Address not associated.',
           'Ethereum Address not associated.',
           GlobalConstant::ErrorAction.default,
           {}
-      ) if @client_address.blank?
+      ) if client_address_data.blank? || client_address_data[:ethereum_address_d].blank?
 
-      @eth_address = decrypt_client_eth_address
-      return error_with_data(
-          'cm_gto_6',
-          'Ethereum Address is Invalid.',
-          'Ethereum Address is Invalid.',
-          GlobalConstant::ErrorAction.default,
-          {}
-      ) if @eth_address.blank?
+      @eth_address = client_address_data[:ethereum_address_d]
 
       success
+
     end
-
-    # Decrypt Client Eth address
-    #
-    # * Author: Pankaj
-    # * Date: 16/02/2018
-    # * Reviewed By:
-    #
-    # @return [String]
-    #
-    def decrypt_client_eth_address
-      r = Aws::Kms.new('api_key','user').decrypt(@client_address.address_salt)
-      return nil unless r.success?
-      info_salt_d = r.data[:plaintext]
-
-      r = LocalCipher.new(info_salt_d).decrypt(@client_address.ethereum_address)
-      return (r.success? ? r.data[:plaintext] : nil)
-    end
-
 
   end
 
