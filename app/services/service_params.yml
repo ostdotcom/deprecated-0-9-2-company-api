@@ -208,6 +208,7 @@
 'Economy::Transaction::FetchSimulatorDetails':
   :mandatory:
     - :client_token_id
+    - :client_id
     - :user_id
   :optional:
 

@@ -10,6 +10,7 @@ module Economy
       # * Date: 31/01/2018
       # * Reviewed By:
       #
+      # @params [Integer] client_id (mandatory) - client id
       # @params [Integer] client_token_id (mandatory) - client token id
       # @params [Integer] user_id (mandatory) - user id
       #
@@ -20,6 +21,7 @@ module Economy
         super
 
         @client_token_id = @params[:client_token_id]
+        @client_id = @params[:client_id]
         @user_id = @params[:user_id]
 
         @client_token = nil
@@ -41,6 +43,9 @@ module Economy
         return r unless r.success?
 
         r = fetch_client_token
+        return r unless r.success?
+
+        r = fetch_api_console_data
         return r unless r.success?
 
         r = fetch_common_entities
@@ -72,6 +77,60 @@ module Economy
 
         success
 
+      end
+
+      # Fetch Api console data for Transaction kind create
+      #
+      # * Author: Puneet
+      # * Date: 3/03/2018
+      # * Reviewed By:
+      #
+      # Sets @api_response_data
+      #
+      # @return [Result::Base]
+      #
+      def fetch_api_console_data
+
+        result = CacheManagement::ClientApiCredentials.new([@client_id]).fetch[@client_id]
+        return error_with_data(
+            'e_gtss_2',
+            "Invalid client",
+            'Something Went Wrong.',
+            GlobalConstant::ErrorAction.default,
+            {}
+        ) if result.blank?
+
+        # Create OST Sdk Obj
+        credentials = OSTSdk::Util::APICredentials.new(result[:api_key], result[:api_secret])
+        @ost_spec_sdk_obj = OSTSdk::Saas::Transaction.new(GlobalConstant::Base.sub_env, credentials, true)
+
+        api_spec_service_response = @ost_spec_sdk_obj.execute(api_spec_params)
+
+        return error_with_data(
+            'e_gtss_3',
+            "Coundn't fetch api spec for transaction execute",
+            'Something Went Wrong.',
+            GlobalConstant::ErrorAction.default,
+            {}
+        ) unless api_spec_service_response.success?
+
+        @api_response_data[:api_console_data] = {
+            transaction: {
+                execute: api_spec_service_response.data
+            }
+        }
+
+        success
+
+      end
+
+      def api_spec_params
+        {
+          token_symbol: '{{token_symbol}}',
+          from_uuid: '{{from_uuid}}',
+          to_uuid: '{{to_uuid}}',
+          transaction_kind: '{{transaction_kind}}'
+        }
       end
 
       #
