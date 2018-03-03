@@ -121,7 +121,8 @@ class Economy::TokenController < Economy::BaseController
   #
   def top_users_graph
     client_token = CacheManagement::ClientTokenSecure.new([params[:client_token_id]]).fetch[params[:client_token_id]]
-    service_response = ExplorerApi::TopUsersGraph.new().perform({token_erc_addr: client_token[:token_erc20_address]})
+    service_response = ExplorerApi::TopUsersGraph.new().perform({token_erc_addr: client_token[:token_erc20_address],
+                                                                 client_id: params[:client_id]})
     render_api_response(service_response)
   end
 

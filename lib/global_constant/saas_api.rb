@@ -103,6 +103,10 @@ module GlobalConstant
       'client/fetch-stats'
     end
 
+    def self.get_user_details_path
+      'client-users/get-details'
+    end
+
   end
 
 end
