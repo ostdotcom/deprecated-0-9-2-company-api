@@ -153,7 +153,7 @@ module UserManagement
       end
 
       unless Util::CommonValidator.is_valid_token_name?(@token_name)
-        validation_errors[:token_name] = 'Token name should contain only alphabets btw 3 and 25 characters.'
+        validation_errors[:token_name] = 'Token name should contain only alphabets btw 3 and 15 characters.'
       end
 
       if Util::CommonValidator.has_stop_words?(@token_name)
