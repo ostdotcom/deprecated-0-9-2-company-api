@@ -160,12 +160,12 @@
   :mandatory:
     - :client_id
     - :client_token_id
+  :optional:
     - :name
     - :kind
     - :currency_type
     - :currency_value
     - :commission_percent
-  :optional:
 
 'Economy::TransactionKind::Edit':
   :mandatory:
