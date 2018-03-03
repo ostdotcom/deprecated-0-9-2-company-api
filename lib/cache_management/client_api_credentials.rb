@@ -112,6 +112,7 @@ module CacheManagement
     # @return [String]
     #
     def get_cache_key(id)
+      # It uses shared cache key between company api and saas.
       memcache_key_object.key_template % @options.merge(id: id)
     end
 
