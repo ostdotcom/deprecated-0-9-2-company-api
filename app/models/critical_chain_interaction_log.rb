@@ -85,7 +85,8 @@ class CriticalChainInteractionLog < EstablishCompanyBigDbConnection
           data: {
               'previous_status' => self.status_before_last_save,
               'current_status' => self.status,
-              'chain_interaction_log_id' => self.id
+              'chain_interaction_log_id' => self.id,
+              'activity_type' => self.activity_type
           },
           subject: 'Critical Chain Interaction Status Marked as ' + self.status
       ).deliver

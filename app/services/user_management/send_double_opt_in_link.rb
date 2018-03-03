@@ -43,7 +43,8 @@ module UserManagement
 
       send_double_optin_email
 
-      success_with_data(reset_token: @reset_password_token)
+      success
+
     end
 
     private
