@@ -58,7 +58,6 @@ module CompanyApi
     # NOTE: We are handling environment specific namespace in MemcacheKey file
     # so let it be st_Rails.env
     memcache_options = {
-      namespace: "ca_#{Rails.env}",
       expires_in: 1.day,
       compress: false,
       down_retry_delay: 5,

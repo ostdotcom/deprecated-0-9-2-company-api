@@ -11,6 +11,14 @@ module GlobalConstant
       @sub_env ||= fetch_config.fetch('sub_env')
     end
 
+    def self.environment_name_short
+      Rails.env[0,2]
+    end
+
+    def self.sub_env_short
+      sub_env[0,2]
+    end
+
     def self.postman_testing?
       Rails.env.development? && ENV['CA_POSTMAN_TESTING']=='1'
     end

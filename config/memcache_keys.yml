@@ -17,6 +17,7 @@ client:
     key_template: 'c_td_s_%{id}'
     expiry_in_seconds: 86400
   api_credentials:
+    used_in_shared_env: 1
     key_template: 'c_api_crd_%{id}'
     expiry_in_seconds: 86400
   token_planner_details:
@@ -34,5 +35,6 @@ client:
 
 mics:
   ost_fiat_conversion_factors:
-    key_template: 'm_oucf_%{id}'
-    expiry_in_seconds: 86400
+    used_in_shared_env: 1
+    key_template: 'c_ost_pp_%{id}'
+    expiry_in_seconds: 600

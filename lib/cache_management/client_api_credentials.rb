@@ -35,6 +35,26 @@ module CacheManagement
 
     end
 
+    # Clear cache
+    #
+    # * Author: Pankaj
+    # * Date: 03/03/2018
+    # * Reviewed By:
+    #
+    def clear
+
+      set_id_to_cache_key_map
+
+      cache_response = fetch
+      @id_to_cache_key_map.each do |id, key|
+        Memcache.delete(key)
+        Memcache.delete("ca_sa_shared_de_sa_cs_#{cache_response[id][:api_key]}")
+      end
+
+      nil
+
+    end
+
     private
 
     # Fetch from db
