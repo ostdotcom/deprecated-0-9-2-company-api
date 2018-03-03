@@ -21,7 +21,7 @@ module Economy
         @client_id = @params[:client_id]
 
         @ost_sdk_obj = nil
-
+        @ost_spec_sdk_obj = nil
       end
 
       # Perform
@@ -65,6 +65,7 @@ module Economy
         # Create OST Sdk Obj
         credentials = OSTSdk::Util::APICredentials.new(result[:api_key], result[:api_secret])
         @ost_sdk_obj = OSTSdk::Saas::TransactionKind.new(GlobalConstant::Base.sub_env, credentials)
+        @ost_spec_sdk_obj = OSTSdk::Saas::TransactionKind.new(GlobalConstant::Base.sub_env, credentials, true)
 
         success
 

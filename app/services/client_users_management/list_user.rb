@@ -187,6 +187,24 @@ module ClientUsersManagement
 
       @api_response_data = service_response.data
 
+
+      @ost_spec_sdk_obj = OSTSdk::Saas::Users.new(GlobalConstant::Base.sub_env, credentials, true)
+      api_spec_service_response = @ost_spec_sdk_obj.create({name: "{{name}}"})
+
+      return error_with_data(
+          'cum_lu_fu_1',
+          "Coundn't Fetch Api spec for user create",
+          'Something Went Wrong.',
+          GlobalConstant::ErrorAction.default,
+          {}
+      ) unless api_spec_service_response.success?
+
+      @api_response_data[:api_console_data] = {
+          user:{
+              create: api_spec_service_response.data
+          }
+      }
+
       success
 
     end
