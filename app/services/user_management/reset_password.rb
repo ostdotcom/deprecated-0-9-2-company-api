@@ -26,6 +26,7 @@ module UserManagement
       @user_validation_hash_obj = nil
       @user = nil
       @login_salt_d = nil
+      @new_e_password = nil
     end
 
     # Perform
@@ -52,10 +53,17 @@ module UserManagement
       r = decrypt_login_salt
       return r unless r.success?
 
+      @new_e_password = User.get_encrypted_password(@password, @login_salt_d)
+
+      r = validate_previous_password
+      return r unless r.success?
+
       update_password
 
       r = update_user_validation_hashes_status
       return r unless r.success?
+
+      clear_cache
 
       success
 
@@ -189,6 +197,29 @@ module UserManagement
       success
     end
 
+    # Validate if new password is not equal to prev password
+    #
+    # * Author: Aman
+    # * Date: 03/03/2018
+    # * Reviewed By:
+    #
+    # Sets @new_e_password
+    #
+    def validate_previous_password
+
+      return error_with_data(
+          'um_cp_vpp_1',
+          'Invalid password',
+          '',
+          GlobalConstant::ErrorAction.default,
+          {},
+          {password: 'Please use a new different password'}
+      ) if @user.password == @new_e_password
+
+      success
+
+    end
+
     # Update password
     #
     # * Author: Pankaj
@@ -196,7 +227,7 @@ module UserManagement
     # * Reviewed By:
     #
     def update_password
-      @user.password = User.get_encrypted_password(@password, @login_salt_d)
+      @user.password = @new_e_password
       if GlobalConstant::User.auto_blocked_status == @user.status
         # if we had blocked a user for more than a threshhold failed login attemps we set status to blocked
         # now we should reset it to active
@@ -223,6 +254,19 @@ module UserManagement
           status: GlobalConstant::UserValidationHash.inactive_status
       )
       success
+    end
+
+    # Clear cache
+    #
+    # * Author: Puneet
+    # * Date: 11/01/2018
+    # * Reviewed By: Sunil
+    #
+    # @return [Result::Base]
+    #
+    def clear_cache
+      CacheManagement::User.new([@user.id]).clear
+      CacheManagement::UserSecure.new([@user.id]).clear
     end
 
     # Invalid User access response
