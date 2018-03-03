@@ -1,4 +1,4 @@
-class Economy::DeveloperApiConsole < Economy::BaseController
+class Economy::DeveloperApiConsoleController < Economy::BaseController
 
   # Fetch Develper API Console details
   #
