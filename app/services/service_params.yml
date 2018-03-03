@@ -211,6 +211,12 @@
     - :user_id
   :optional:
 
+'Economy::GetDeveloperConsoleDetails':
+  :mandatory:
+    - :client_token_id
+    - :user_id
+  :optional:
+
 'FullClassNameOfService':
   :mandatory:
     - :p1

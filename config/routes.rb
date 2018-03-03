@@ -54,4 +54,8 @@ Rails.application.routes.draw do
     match 'fetch-simulator-details' => :fetch_simulator_details, via: :GET
   end
 
+  scope 'api/economy/developer-api-console', controller: 'economy/developer_api_console' do
+    match '' => :fetch, via: :GET
+  end
+
 end
