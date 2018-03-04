@@ -75,6 +75,12 @@ class CriticalChainInteractionLog < EstablishCompanyBigDbConnection
   #
   def flush_cache
 
+    id_to_flush = parent_id.present? ? parent_id : id
+    CacheManagement::CriticalChainInteractionStatus.new([id_to_flush]).clear
+
+    # This can be optimized later
+    CacheManagement::PendingCriticalInteractionIds.new([client_token_id]).clear if client_token_id.present?
+
     if [
         GlobalConstant::CriticalChainInteractions.timeout_status,
         GlobalConstant::CriticalChainInteractions.failed_status
@@ -92,12 +98,6 @@ class CriticalChainInteractionLog < EstablishCompanyBigDbConnection
       ).deliver
 
     end
-
-    id_to_flush = parent_id.present? ? parent_id : id
-    CacheManagement::CriticalChainInteractionStatus.new([id_to_flush]).clear
-
-    # This can be optimized later
-    CacheManagement::PendingCriticalInteractionIds.new([client_token_id]).clear if client_token_id.present?
 
   end
 
