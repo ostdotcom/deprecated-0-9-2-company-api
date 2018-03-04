@@ -174,7 +174,10 @@ module CacheManagement
         when GlobalConstant::CriticalChainInteractions.airdrop_users_activity_type
           "AirDrop #{request_params[:amount]} #{request_params[:token_symbol]} to users is In-Process."
         when GlobalConstant::CriticalChainInteractions.staker_initial_transfer_activity_type
-          "Verifying Transfer of #{request_params[:to_stake_amount]} to Staker."
+          to_stake_amount = 0
+          to_stake_amount += BigDecimal.new(request_params[:ost_to_stake_to_mint_bt]) if request_params[:ost_to_stake_to_mint_bt].present?
+          to_stake_amount += BigDecimal.new(request_params[:st_prime_to_mint]) if request_params[:st_prime_to_mint].present?
+          "Verifying Transfer of #{to_stake_amount} to Staker."
         else
           fail "unsupported activity_type: #{db_object.activity_type}"
       end
