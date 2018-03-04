@@ -232,6 +232,7 @@ module UserManagement
         # if we had blocked a user for more than a threshhold failed login attemps we set status to blocked
         # now we should reset it to active
         @user.status = GlobalConstant::User.active_status
+        @user.failed_login_attempt_count = 0
       end
       @user.save!
     end
