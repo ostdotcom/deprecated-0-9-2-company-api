@@ -234,9 +234,6 @@ module UserManagement
         status: GlobalConstant::User.active_status
       )
 
-      #TODO: This is just for Demo on dev machine purpose. remove it later.
-      @user.send("set_#{GlobalConstant::User.is_user_verified_property}") if Rails.env.development?
-
       @user.save! if @user.new_record? || @user.changed?
 
       success
