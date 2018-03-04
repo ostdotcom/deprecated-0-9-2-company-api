@@ -66,10 +66,17 @@ module UserManagement
     def fetch_user
       @user = User.where(email: @email).first
 
-      return unauthorized_access_response('um_l_1') if !@user.present? ||
+      return unauthorized_access_response('um_l_fu_1') if !@user.present? ||
         !@user.password.present? ||
-        (@user.status != GlobalConstant::User.active_status) ||
         !@user.login_salt.present?
+
+      return error_with_data(
+          'um_l_fu_2',
+          'Invalid login details.',
+          'Your account has been locked. please use forgot password to unblock account',
+          GlobalConstant::ErrorAction.default,
+          {}
+      ) if (@user.status != GlobalConstant::User.active_status)
 
       success
     end

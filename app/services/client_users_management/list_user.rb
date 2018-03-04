@@ -14,6 +14,7 @@ module ClientUsersManagement
     # @param [Integer] is_xhr (mandatory) - is request xhr 0/1
     # @param [Integer] page_no (optional) - page no
     # @param [String] order_by (optional) - creation_time
+    # @param [String] order (optional) - Order type('asc', 'desc')
     # @param [String] filter (optional) - filter on user list type
     #
     # @return [ClientUsersManagement::ListUser]
@@ -27,6 +28,7 @@ module ClientUsersManagement
       @user_id = @params[:user_id]
       @page_no = @params[:page_no]
       @order_by = @params[:order_by]
+      @order = @params[:order]
       @is_xhr = @params[:is_xhr]
       @filter = @params[:filter]
 
@@ -108,7 +110,7 @@ module ClientUsersManagement
 
       if @order_by.present?
         return error_with_data(
-            'cum_lu_1',
+            'cum_lu_vpp_1',
             "Invalid @order_by",
             "Invalid @order_by",
             GlobalConstant::ErrorAction.mandatory_params_missing,
@@ -116,6 +118,18 @@ module ClientUsersManagement
         ) if [creation_time_order_by].exclude?(@order_by)
       else
         @order_by = ''
+      end
+
+      if @order.present?
+        return error_with_data(
+            'cum_lu_vpp_2',
+            "Invalid @order",
+            "Invalid @order",
+            GlobalConstant::ErrorAction.mandatory_params_missing,
+            {}
+        ) if ['asc', 'desc'].exclude?(@order.downcase)
+      else
+        @order = ''
       end
 
       success
@@ -176,7 +190,7 @@ module ClientUsersManagement
 
         @ost_sdk_obj = OSTSdk::Saas::Users.new(GlobalConstant::Base.sub_env, credentials)
 
-        service_response = @ost_sdk_obj.list(page_no: @page_no, sort_by: @order_by, filter: @filter)
+        service_response = @ost_sdk_obj.list(page_no: @page_no, order_by: @order_by, order: @order, filter: @filter)
 
         return error_with_data(
             'uc_lu_2',
