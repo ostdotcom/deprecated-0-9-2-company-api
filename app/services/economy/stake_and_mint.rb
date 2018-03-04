@@ -105,7 +105,7 @@ module Economy
         'Invalid stake and mint parameters.',
         GlobalConstant::ErrorAction.default,
         {}
-      ) if @transaction_hash.blank? || (@bt_to_mint < 0 && @st_prime_to_mint < 0)
+      ) if @transaction_hash.blank? || (@bt_to_mint <= 0 && @st_prime_to_mint <= 0)
 
       r = validate_user
       return r unless r.success?

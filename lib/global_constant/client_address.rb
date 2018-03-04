@@ -22,7 +22,7 @@ module GlobalConstant
       end
 
       def default_eth_grant_amount
-        0.1
+        Rails.env.production? ? 1 : 0.1
       end
 
     end
