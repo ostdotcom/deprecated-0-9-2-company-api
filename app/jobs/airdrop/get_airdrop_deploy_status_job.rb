@@ -168,6 +168,8 @@ class Airdrop::GetAirdropDeployStatusJob < ApplicationJob
     ClientToken.where(id: @critical_chain_interaction_log.client_token_id).
       update_all(airdrop_contract_addr: contract_address)
 
+    CacheManagement::ClientTokenSecure.new([@critical_chain_interaction_log.client_token_id]).clear
+
     SaasApi::OnBoarding::EditBt.new.perform(
       symbol: client_token.symbol,
       client_id: client_token.client_id,
