@@ -24,8 +24,7 @@ module GlobalConstant
     end
 
     def self.chain_id
-      # TODO:: Change this after support of chain_id in Company APi
-      2000
+      200
     end
 
   end
