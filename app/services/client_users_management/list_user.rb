@@ -51,6 +51,9 @@ module ClientUsersManagement
       r = validate_and_sanitize
       return r unless r.success?
 
+      r = fetch_client_token
+      return r unless r.success?
+
       r = fetch_users
       return r unless r.success?
 
@@ -83,6 +86,35 @@ module ClientUsersManagement
 
     end
 
+    #
+    # * Author: Puneet
+    # * Date: 31/01/2018
+    # * Reviewed By:
+    #
+    # Sets @client_token
+    #
+    def fetch_client_token
+
+      @client_token = CacheManagement::ClientToken.new([@client_token_id]).fetch[@client_token_id]
+      return error_with_data(
+          'cum_lu_4',
+          'Token not found.',
+          'Token not found.',
+          GlobalConstant::ErrorAction.default,
+          {}
+      ) if @client_token.blank?
+
+      return error_with_go_to(
+          'cum_lu_5',
+          'Token SetUp Not Complete.',
+          'Token SetUp Not Complete.',
+          GlobalConstant::GoTo.economy_planner_step_one
+      ) if @client_token[:setup_steps].exclude?(GlobalConstant::ClientToken.airdrop_done_setup_step)
+
+      success
+
+    end
+
     # Validate pagination params
     #
     # * Author: Puneet
@@ -110,7 +142,7 @@ module ClientUsersManagement
 
       if @order_by.present?
         return error_with_data(
-            'cum_lu_vpp_1',
+            'cum_lu_2',
             "Invalid @order_by",
             "Invalid @order_by",
             GlobalConstant::ErrorAction.mandatory_params_missing,
@@ -151,7 +183,7 @@ module ClientUsersManagement
       @client = CacheManagement::Client.new([@client_id]).fetch[@client_id]
 
       return error_with_data(
-          'cum_lu_2',
+          'cum_lu_3',
           "Invalid client.",
           'Something Went Wrong.',
           GlobalConstant::ErrorAction.mandatory_params_missing,
@@ -176,7 +208,7 @@ module ClientUsersManagement
 
       result = CacheManagement::ClientApiCredentials.new([@client_id]).fetch[@client_id]
       return error_with_data(
-          'uc_lu_1',
+          'uc_lu_6',
           "Invalid client.",
           'Something Went Wrong.',
           GlobalConstant::ErrorAction.default,
@@ -193,7 +225,7 @@ module ClientUsersManagement
         service_response = @ost_sdk_obj.list(page_no: @page_no, order_by: @order_by, order: @order, filter: @filter)
 
         return error_with_data(
-            'uc_lu_2',
+            'uc_lu_7',
             "Coundn't Fetch User List",
             'Something Went Wrong.',
             GlobalConstant::ErrorAction.default,
@@ -207,7 +239,7 @@ module ClientUsersManagement
         api_spec_service_response = @ost_spec_sdk_obj.create({name: "{{uri_encoded name}}"})
 
         return error_with_data(
-            'cum_lu_fu_1',
+            'cum_lu_fu_8',
             "Coundn't Fetch Api spec for user create",
             'Something Went Wrong.',
             GlobalConstant::ErrorAction.default,
@@ -236,7 +268,9 @@ module ClientUsersManagement
     def api_response
 
       unless is_xhr_request?
-        r = Util::FetchEconomyCommonEntities.new(user_id: @user_id, client_token_id: @client_token_id).perform
+        r = Util::FetchEconomyCommonEntities.new(
+            user_id: @user_id, client_token_id: @client_token_id, client_token: @client_token
+        ).perform
         return r unless r.success?
         @api_response_data.merge!(r.data)
       end

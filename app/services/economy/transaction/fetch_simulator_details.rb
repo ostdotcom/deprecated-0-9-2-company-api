@@ -68,12 +68,19 @@ module Economy
 
         @client_token = CacheManagement::ClientToken.new([@client_token_id]).fetch[@client_token_id]
         return error_with_data(
-            'e_gtss_1',
+            'e_sd_1',
             'Token not found.',
             'Token not found.',
             GlobalConstant::ErrorAction.default,
             {}
         ) if @client_token.blank?
+
+        return error_with_go_to(
+            'e_sd_2',
+            'Token SetUp Not Complete.',
+            'Token SetUp Not Complete.',
+            GlobalConstant::GoTo.economy_planner_step_one
+        ) if @client_token[:setup_steps].exclude?(GlobalConstant::ClientToken.airdrop_done_setup_step)
 
         success
 
@@ -104,7 +111,7 @@ module Economy
         credentials = OSTSdk::Util::APICredentials.new(result[:api_key], result[:api_secret])
         @ost_spec_sdk_obj = OSTSdk::Saas::Transaction.new(GlobalConstant::Base.sub_env, credentials, true)
 
-        api_spec_service_response = @ost_spec_sdk_obj.execute(api_spec_params)
+        api_spec_service_response = @ost_spec_sdk_obj.transfer_bt_by_transaction_kind(api_spec_params)
 
         return error_with_data(
             'e_gtss_3',

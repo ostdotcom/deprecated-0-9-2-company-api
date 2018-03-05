@@ -68,6 +68,13 @@ module Economy
           {}
       ) if @client_token.blank?
 
+      return error_with_go_to(
+          'e_gtss_2',
+          'Token SetUp Not Complete.',
+          'Token SetUp Not Complete.',
+          GlobalConstant::GoTo.economy_planner_step_one
+      ) if @client_token[:setup_steps].exclude?(GlobalConstant::ClientToken.airdrop_done_setup_step)
+
       success
 
     end

@@ -61,12 +61,19 @@ module Economy
 
       @client_token = CacheManagement::ClientToken.new([@client_token_id]).fetch[@client_token_id]
       return error_with_data(
-          'e_gtss_1',
+          'e_gdd_1',
           'Token not found.',
           'Token not found.',
           GlobalConstant::ErrorAction.default,
           {}
       ) if @client_token.blank?
+
+      return error_with_go_to(
+          'e_gdd_2',
+          'Token SetUp Not Complete.',
+          'Token SetUp Not Complete.',
+          GlobalConstant::GoTo.economy_planner_step_one
+      ) if @client_token[:setup_steps].exclude?(GlobalConstant::ClientToken.airdrop_done_setup_step)
 
       success
 

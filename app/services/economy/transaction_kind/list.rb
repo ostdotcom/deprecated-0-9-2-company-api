@@ -44,6 +44,9 @@ module Economy
         r = validate
         return r unless r.success?
 
+        r = fetch_client_token
+        return r unless r.success?
+
         r = fetch_kinds
         return r unless r.success?
 
@@ -110,6 +113,35 @@ module Economy
         }
       end
 
+      #
+      # * Author: Puneet
+      # * Date: 31/01/2018
+      # * Reviewed By:
+      #
+      # Sets @client_token
+      #
+      def fetch_client_token
+
+        @client_token = CacheManagement::ClientToken.new([@client_token_id]).fetch[@client_token_id]
+        return error_with_data(
+            'cum_lu_4',
+            'Token not found.',
+            'Token not found.',
+            GlobalConstant::ErrorAction.default,
+            {}
+        ) if @client_token.blank?
+
+        return error_with_go_to(
+            'cum_lu_5',
+            'Token SetUp Not Complete.',
+            'Token SetUp Not Complete.',
+            GlobalConstant::GoTo.economy_planner_step_one
+        ) if @client_token[:setup_steps].exclude?(GlobalConstant::ClientToken.airdrop_done_setup_step)
+
+        success
+
+      end
+
       # fetch supporting data for pi responce
       #
       # * Author: Puneet
@@ -123,7 +155,9 @@ module Economy
       def fetch_supporting_data
 
         unless is_xhr_request?
-          r = Util::FetchEconomyCommonEntities.new(user_id: @user_id, client_token_id: @client_token_id).perform
+          r = Util::FetchEconomyCommonEntities.new(
+              user_id: @user_id, client_token_id: @client_token_id, client_token: @client_token
+          ).perform
           return r unless r.success?
           @api_response_data.merge!(r.data)
         end
