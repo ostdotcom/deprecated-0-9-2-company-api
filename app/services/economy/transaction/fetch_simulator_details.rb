@@ -109,7 +109,7 @@ module Economy
 
         # Create OST Sdk Obj
         credentials = OSTSdk::Util::APICredentials.new(result[:api_key], result[:api_secret])
-        @ost_spec_sdk_obj = OSTSdk::Saas::Transaction.new(GlobalConstant::Base.sub_env, credentials, true)
+        @ost_spec_sdk_obj = OSTSdk::Saas::TransactionKind.new(GlobalConstant::Base.sub_env, credentials, true)
 
         api_spec_service_response = @ost_spec_sdk_obj.transfer_bt_by_transaction_kind(api_spec_params)
 
