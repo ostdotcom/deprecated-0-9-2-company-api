@@ -10,7 +10,6 @@ module ClientManagement
     #
     # @param [Integer] client_id (mandatory) - Client Id to get Test Ost
     # @param [Integer] client_token_id (mandatory) - Client Token Id to get Test Ost.
-    # @param [Float] requested_amount (mandatory) - Amount of Test OST requested by client.
     # @param [String] eth_address (Optional) - eth address for first time in client set up flow
     #
     # @return [ClientManagement::GetTestOst]
@@ -21,7 +20,6 @@ module ClientManagement
 
       @client_id = @params[:client_id]
       @client_token_id = @params[:client_token_id]
-      @amount = @params[:requested_amount] || GlobalConstant::ClientAddress.default_ost_grant_amount
       @eth_address = @params[:eth_address]
 
       @client = nil
@@ -103,7 +101,6 @@ module ClientManagement
     end
 
     # Validate, Whether OST is given to client before or not.
-    # TODO:: Put duration checks if required. For now one day check is kept.
     #
     # * Author: Pankaj
     # * Date: 12/02/2018
@@ -112,11 +109,15 @@ module ClientManagement
     # @return [Result::Base]
     #
     def validate_ost_given
+
       client_chain_interactions = CriticalChainInteractionLog.of_activity_type(GlobalConstant::CriticalChainInteractions.
           request_ost_activity_type).where(client_id: @client_id).order('created_at DESC').group_by(&:status)
 
-      # No requests present
-      return success if client_chain_interactions.blank?
+      if client_chain_interactions.blank?
+        # Client had never requested
+        @amount = GlobalConstant::ClientAddress.default_first_time_ost_grant_amount
+        return success
+      end
 
       # Pending requests present then send error
       return error_with_data(
@@ -126,6 +127,9 @@ module ClientManagement
           GlobalConstant::ErrorAction.default,
           {}
       ) if client_chain_interactions.keys.include?(GlobalConstant::CriticalChainInteractions.pending_status)
+
+      # If client had requested before we would give him lesser OST
+      @amount = GlobalConstant::ClientAddress.default_recurring_ost_grant_amount
 
       # Check for last processed request time
       processed_records = client_chain_interactions[GlobalConstant::CriticalChainInteractions.processed_status]

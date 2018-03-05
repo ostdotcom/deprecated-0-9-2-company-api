@@ -20,7 +20,7 @@ module CacheManagement
       data_from_cache = data_from_cache.deep_dup ## Deep DUP is important here
 
       ost_to_fiat = BigDecimal.new(FetchOraclePricePoints.perform[GlobalConstant::ConversionRates.ost_currency][GlobalConstant::ConversionRates.usd_currency])
-      default_ost_grant_amount = GlobalConstant::ClientAddress.default_ost_grant_amount
+      default_first_time_ost_grant_amount = GlobalConstant::ClientAddress.default_first_time_ost_grant_amount
       default_initial_users = GlobalConstant::Client.default_initial_users
       max_initial_bt_airdrop_amount = GlobalConstant::Client.max_initial_bt_airdrop_amount
       buffer_mint_factor_over_airdrop = GlobalConstant::Client.buffer_mint_factor_over_airdrop
@@ -45,10 +45,10 @@ module CacheManagement
 
         required_ost_to_airdrop_max = max_initial_ost_airdrop_amount * default_initial_users * buffer_mint_factor_over_airdrop
 
-        if required_ost_to_airdrop_max <= default_ost_grant_amount
+        if required_ost_to_airdrop_max <= default_first_time_ost_grant_amount
           airdrop_bt_amount = max_initial_bt_airdrop_amount
         else
-          airdrop_bt_amount = (default_ost_grant_amount * ost_to_bt / (default_initial_users * buffer_mint_factor_over_airdrop)).round
+          airdrop_bt_amount = (default_first_time_ost_grant_amount * ost_to_bt / (default_initial_users * buffer_mint_factor_over_airdrop)).round
         end
 
         token_planner_data[:initial_airdrop] = airdrop_bt_amount.to_s

@@ -17,8 +17,12 @@ module GlobalConstant
 
       ### Status End ###
 
-      def default_ost_grant_amount
+      def default_first_time_ost_grant_amount
         10000
+      end
+
+      def default_recurring_ost_grant_amount
+        2000
       end
 
       def default_eth_grant_amount

@@ -94,13 +94,13 @@ module UserManagement
       @token_symbol = @token_symbol.to_s.strip
 
       validation_errors = {}
-      validation_errors[:email] = 'Please enter a valid email address' unless Util::CommonValidator.is_valid_email?(@email)
+      validation_errors[:email] = 'The email address you entered is not valid.' unless Util::CommonValidator.is_valid_email?(@email)
 
-      validation_errors[:password] = 'Password should be minimum 8 characters' unless Util::CommonValidator.is_valid_password?(@password)
+      validation_errors[:password] = 'The password you entered is incorrect. Please try again.' unless Util::CommonValidator.is_valid_password?(@password)
 
-      validation_errors[:agreed_terms_of_service] = 'Tos not selected' unless @agreed_terms_of_service == 'on'
+      validation_errors[:agreed_terms_of_service] = 'Please read the Term & Conditions  and Polic of Use before registration.' unless @agreed_terms_of_service == 'on'
 
-      validation_errors[:token_icon] = 'Icon Not Selected' if @token_symbol_icon.blank?
+      validation_errors[:token_icon] = "Please select one icon for #{@token_name} for the list" if @token_symbol_icon.blank?
 
       r = validate_token_creation_params
       validation_errors.merge!(r.data) unless r.success?
@@ -149,27 +149,27 @@ module UserManagement
       validation_errors = {}
 
       unless Util::CommonValidator.is_valid_token_symbol?(@token_symbol)
-        validation_errors[:token_symbol] = 'Token symbol should contain only alphabets btw 3 and 4 characters.'
+        validation_errors[:token_symbol] = 'Please enter from 3 to 4 letters or numbers. No special characters allowed. '
       end
 
       unless Util::CommonValidator.is_valid_token_name?(@token_name)
-        validation_errors[:token_name] = 'Token name should contain only alphabets btw 3 and 15 characters.'
+        validation_errors[:token_name] = 'Only letters, numbers and spaces allowed. (Max 20 characters)'
       end
 
       if Util::CommonValidator.has_stop_words?(@token_name)
-        validation_errors[:token_name] = 'Token name does not pass Profanity check.'
+        validation_errors[:token_name] = "Come on, the #{@token_name} you entered is inappropriate. Please choose a nicer word."
       end
 
       if Util::CommonValidator.has_stop_words?(@token_symbol)
-        validation_errors[:token_symbol] = 'Token symbol does not pass Profanity check.'
+        validation_errors[:token_symbol] = "Come on, the #{@token_symbol} you entered is inappropriate. Please choose a nicer word."
       end
 
       if ClientToken.where('name = ?', @token_name).first.present?
-        validation_errors[:token_name] = 'Token name already exists.'
+        validation_errors[:token_name] = "This #{@token_name} is already in use. Please try a different one"
       end
 
       if ClientToken.where('symbol = ?', @token_symbol).first.present?
-        validation_errors[:token_symbol] = 'Token symbol already exists.'
+        validation_errors[:token_symbol] = "This #{@token_symbol} is already in use. Please try a different one"
       end
 
       validation_errors.blank? ? success : error_with_data(
@@ -199,7 +199,7 @@ module UserManagement
           '',
           GlobalConstant::ErrorAction.default,
           {},
-          {email: 'Email address is already registered.'}
+          {email: 'This email address is already in use. Please try logging in.'}
       ) if @user.present?
 
       r = init_user_obj_if_needed

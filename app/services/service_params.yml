@@ -70,7 +70,6 @@
     - :client_token_id
   :optional:
     - :eth_address
-    - :requested_amount
 
 'ClientManagement::GetTestEth':
   :mandatory:

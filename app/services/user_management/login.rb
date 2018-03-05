@@ -64,21 +64,26 @@ module UserManagement
     # @return [Result::Base]
     #
     def fetch_user
+
       @user = User.where(email: @email).first
 
-      return unauthorized_access_response('um_l_fu_1') if !@user.present? ||
-        !@user.password.present? ||
-        !@user.login_salt.present?
+      return unauthorized_access_response(
+          'um_l_fu_1',
+          'The email address you provided is not associated. Please sign up.'
+      ) if !@user.present? || !@user.password.present? || !@user.login_salt.present?
 
-      return error_with_data(
+      return unauthorized_access_response(
           'um_l_fu_2',
-          'Invalid login details.',
-          'Your account has been locked. please use forgot password to unblock account',
-          GlobalConstant::ErrorAction.default,
-          {}
+          "Your password has been reset. Please use Forgot Password to access your account."
+      ) if @user.status == GlobalConstant::User.auto_blocked_status
+
+      return unauthorized_access_response(
+          'um_l_fu_3',
+          'Your account has been locked. please use forgot password to unblock account'
       ) if (@user.status != GlobalConstant::User.active_status)
 
       success
+
     end
 
     # Decrypt login salt
@@ -118,7 +123,7 @@ module UserManagement
         user.failed_login_attempt_count = user.failed_login_attempt_count + 1
         user.status = GlobalConstant::User.auto_blocked_status if user.failed_login_attempt_count >= 5
         user.save
-        return unauthorized_access_response('um_l_2')
+        return unauthorized_access_response('um_l_2', 'The password you entered is incorrect. Please try again.')
       end
 
       success

@@ -4,7 +4,6 @@ module Util
 
     REGEX_EMAIL = /\A[A-Z0-9]+[A-Z0-9_%+-]*(\.[A-Z0-9_%+-]{1,})*@(?:[A-Z0-9](?:[A-Z0-9-]*[A-Z0-9])?\.)+[A-Z]{2,24}\Z/mi
 
-
     # Check for numeric-ness of an input
     #
     # * Author: Kedar
@@ -186,7 +185,9 @@ module Util
     # @return [Boolean] returns a boolean
     #
     def self.is_valid_token_symbol?(str)
-      (str =~ /^[a-z]{3,4}$/i).present?
+      length = str.length
+      return false if length > 4 || length < 3
+      (str =~ /^\w*[a-z\s]\w*$/i).present?
     end
 
     # check if string is a valid Token name
@@ -199,8 +200,8 @@ module Util
     #
     def self.is_valid_token_name?(str)
       length = str.length
-      return false if length > 15 || length < 3
-      (str =~ /^\w*[a-z\s]\w*$/i).present?
+      return false if length > 20 || length < 3
+      (str =~ /^\w*[a-z\s]\w*[a-z\s]\w*$/i).present?
     end
 
   end

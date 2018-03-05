@@ -75,8 +75,8 @@ module Economy
 
       return error_with_data(
           'e_sup_1',
-          'Conversion should be greater than 0.',
-          'Conversion should be greater than 0.',
+          'Should be greater than 0',
+          'Should be greater than 0',
           GlobalConstant::ErrorAction.default,
           {}
       ) if @conversion_factor <= 0

@@ -63,14 +63,21 @@ module UserManagement
 
       @user = User.where(email: @email).first
 
+      error = ''
+      if @user.blank?
+        error = 'Email address not registered.'
+      elsif !@user.is_eligible_for_reset_passowrd?
+        error = 'The email address you provided is blocked. Please contact Support.'
+      end
+
       return error_with_data(
           'um_srpl_1',
           'User not present',
           '',
           GlobalConstant::ErrorAction.default,
           {},
-          {email: 'This user is not registered or is blocked'}
-      ) if @user.blank? || !@user.is_eligible_for_reset_passowrd?
+          {email: error}
+      ) if error.present?
 
       success
 

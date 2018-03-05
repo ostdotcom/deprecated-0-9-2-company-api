@@ -64,11 +64,9 @@ module Economy
       @token_worth_in_usd = BigDecimal.new(@token_worth_in_usd)
 
       validation_errors = {}
-      validation_errors[:token_worth_in_usd] = 'BT To Fiat Value should be > 0' if @token_worth_in_usd <= 0
 
-      max_allowed_token_worth_in_usd = ClientTokenPlanner.max_allowed_token_worth_in_usd
-      if @token_worth_in_usd > max_allowed_token_worth_in_usd
-        validation_errors[:token_worth_in_usd] = "BT To Fiat Value should be < #{max_allowed_token_worth_in_usd}"
+      if @token_worth_in_usd < 0.01 || @token_worth_in_usd > ClientTokenPlanner.max_allowed_token_worth_in_usd
+        validation_errors[:token_worth_in_usd] = 'Value entered is out of range. (Min 0.01$, Max 10$)'
       end
 
       return error_with_data(
