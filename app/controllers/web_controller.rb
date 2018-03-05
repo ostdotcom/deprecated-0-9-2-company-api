@@ -35,7 +35,7 @@ class WebController < ApplicationController
         expires: expires,
         domain: :all,
         http_only: true,
-        secure: !Rails.env.development?,
+        secure: Rails.env.production?,
         same_site: :strict
     }
   end
@@ -49,7 +49,7 @@ class WebController < ApplicationController
   # @params [String] cookie_name (mandatory)
   #
   def delete_cookie(cookie_name)
-    cookies.delete(cookie_name.to_sym, domain: :all, secure: !Rails.env.development?, same_site: :strict)
+    cookies.delete(cookie_name.to_sym, domain: :all, secure: Rails.env.production?, same_site: :strict)
   end
 
   private
