@@ -18,7 +18,7 @@ module CacheManagement
 
       ::ClientToken.where(id: cache_miss_ids).
           select(:id, :client_id, :reserve_uuid, :token_erc20_address, :airdrop_contract_addr,
-                 :worker_addr_uuid, :airdrop_holder_addr_uuid).all do |client_token|
+                 :worker_addr_uuid, :airdrop_holder_addr_uuid).all.each do |client_token|
 
         buffer = client_token.formated_secure_cache_data
 
