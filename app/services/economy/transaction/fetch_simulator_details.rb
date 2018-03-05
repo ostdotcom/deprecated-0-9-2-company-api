@@ -111,7 +111,7 @@ module Economy
         credentials = OSTSdk::Util::APICredentials.new(result[:api_key], result[:api_secret])
         @ost_spec_sdk_obj = OSTSdk::Saas::TransactionKind.new(GlobalConstant::Base.sub_env, credentials, true)
 
-        api_spec_service_response = @ost_spec_sdk_obj.transfer_bt_by_transaction_kind(api_spec_params)
+        api_spec_service_response = @ost_spec_sdk_obj.execute(api_spec_params)
 
         return error_with_data(
             'e_gtss_3',
