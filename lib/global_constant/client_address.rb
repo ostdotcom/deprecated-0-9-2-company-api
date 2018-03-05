@@ -22,7 +22,7 @@ module GlobalConstant
       end
 
       def default_recurring_ost_grant_amount
-        2000
+        10000
       end
 
       def default_eth_grant_amount
