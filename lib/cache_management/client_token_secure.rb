@@ -14,12 +14,38 @@ module CacheManagement
     #
     def fetch_from_db(cache_miss_ids)
 
-      data_to_cache = ::ClientToken.where(id: cache_miss_ids).
-          select(:id, :reserve_uuid, :token_erc20_address, :airdrop_contract_addr, :worker_addr_uuid, :airdrop_holder_addr_uuid).all.inject({}) do |cache_data, client_token|
+      data_to_cache = {}
 
-        cache_data[client_token.id] = client_token.formated_secure_cache_data
+      ::ClientToken.where(id: cache_miss_ids).
+          select(:id, :client_id, :reserve_uuid, :token_erc20_address, :airdrop_contract_addr,
+                 :worker_addr_uuid, :airdrop_holder_addr_uuid).all do |client_token|
 
-        cache_data
+        buffer = client_token.formated_secure_cache_data
+
+        uuids_for_fetching_addresses = []
+        uuids_for_fetching_addresses << buffer[:reserve_uuid]
+        uuids_for_fetching_addresses << buffer[:airdrop_holder_uuid]
+
+        data_to_cache[client_token.id] = buffer
+
+        resp = SaasApi::FetchClientAddressesByUuids.new().perform(
+          uuids: uuids_for_fetching_addresses,
+          client_id: buffer[:client_id]
+        )
+
+        next unless resp.success?
+
+        user_addresses = resp.data['user_addresses']
+
+        next if user_addresses.blank?
+
+        reserve_address = user_addresses[buffer[:reserve_uuid]]
+        buffer[:reserve_address] = reserve_address if reserve_address.present?
+
+        airdrop_holder_address = user_addresses[buffer[:airdrop_holder_uuid]]
+        buffer[:airdrop_holder_address] = reserve_address if airdrop_holder_address.present?
+
+        data_to_cache[client_token.id] = buffer
 
       end
 

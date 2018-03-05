@@ -59,6 +59,7 @@ class ClientToken < EstablishCompanyClientEconomyDbConnection
   def formated_secure_cache_data
     {
         id: id,
+        client_id: client_id,
         token_erc20_address: token_erc20_address,
         airdrop_contract_address: airdrop_contract_addr,
         reserve_uuid: reserve_uuid,

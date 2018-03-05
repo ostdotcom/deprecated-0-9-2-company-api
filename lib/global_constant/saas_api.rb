@@ -107,6 +107,10 @@ module GlobalConstant
       'client-users/get-details'
     end
 
+    def self.get_addresses_by_uuids
+      'client-users/get-addresses-by-uuid'
+    end
+
   end
 
 end
