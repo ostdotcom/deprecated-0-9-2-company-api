@@ -43,7 +43,7 @@ module CacheManagement
         buffer[:reserve_address] = reserve_address if reserve_address.present?
 
         airdrop_holder_address = user_addresses[buffer[:airdrop_holder_uuid]]
-        buffer[:airdrop_holder_address] = reserve_address if airdrop_holder_address.present?
+        buffer[:airdrop_holder_address] = airdrop_holder_address if airdrop_holder_address.present?
 
         data_to_cache[client_token.id] = buffer
 
