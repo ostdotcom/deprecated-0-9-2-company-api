@@ -55,7 +55,8 @@ module Economy
           return r unless r.success?
         end
 
-        return success_with_data({meta: {next_page_payload: {}}}) if @transaction_uuids.blank?
+        return success_with_data({result_type: "transactions", transactions: [],
+                                  meta: {next_page_payload: {}}}) if @transaction_uuids.blank?
 
         r = fetch_transaction_data_from_saas
         return r unless r.success?
