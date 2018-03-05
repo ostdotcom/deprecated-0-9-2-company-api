@@ -44,6 +44,9 @@ module Util
       r = fetch_client_balances
       return r unless r.success?
 
+      r = fetch_token_supply_details
+      return r unless r.success?
+
       r = fetch_pending_transactions
       return r unless r.success?
 
@@ -175,6 +178,30 @@ module Util
 
     end
 
+    #
+    # * Author: Puneet
+    # * Date: 31/01/2018
+    # * Reviewed By:
+    #
+    # sets @token_supply_details
+    #
+    # @return [Result::Base]
+    #
+    def fetch_token_supply_details
+
+      r = FetchClientTokenSupplyDetails.new(
+          client_id: @client_token[:client_id],
+          client_token_id: @client_token_id,
+          token_symbol: @client_token[:symbol]
+      ).perform
+      return r unless r.success?
+
+      @token_supply_details = r.data
+
+      success
+
+    end
+
     # Fetch Pending Transactions
     #
     # * Author: Puneet
@@ -212,7 +239,8 @@ module Util
           user: @user,
           client_balances: @client_balances_data || {},
           oracle_price_points: FetchOraclePricePoints.perform,
-          pending_critical_interactions: @client_token_pending_transactions || {}
+          pending_critical_interactions: @client_token_pending_transactions || {},
+          token_supply_details: @token_supply_details || {}
       }
 
       data[:chain_interaction_params] = chain_interaction_params if chain_interaction_params.present?

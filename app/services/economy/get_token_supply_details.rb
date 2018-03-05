@@ -41,9 +41,6 @@ module Economy
       r = fetch_client_token
       return r unless r.success?
 
-      r = fetch_token_supply_details
-      return r unless r.success?
-
       r = fetch_common_entities
       return r unless r.success?
 
@@ -70,28 +67,6 @@ module Economy
           GlobalConstant::ErrorAction.default,
           {}
       ) if @client_token.blank?
-
-      success
-
-    end
-
-    #
-    # * Author: Puneet
-    # * Date: 31/01/2018
-    # * Reviewed By:
-    #
-    # @return [Result::Base]
-    #
-    def fetch_token_supply_details
-
-      r = FetchClientTokenSupplyDetails.new(
-          client_id: @client_token[:client_id],
-          client_token_id: @client_token_id,
-          token_symbol: @client_token[:symbol]
-      ).perform
-      return r unless r.success?
-
-      @api_response_data[:token_supply_details] = r.data
 
       success
 

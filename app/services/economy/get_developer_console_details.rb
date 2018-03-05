@@ -21,6 +21,7 @@ module Economy
       @client_token_id = @params[:client_token_id]
 
       @client_token = nil
+      @client_token_secure = nil
       @api_response_data = {}
 
     end
@@ -39,6 +40,9 @@ module Economy
       return r unless r.success?
 
       r = fetch_client_token
+      return r unless r.success?
+
+      r = fetch_client_token_secure
       return r unless r.success?
 
       r = fetch_common_entities
@@ -73,25 +77,29 @@ module Economy
     end
 
     #
-    # * Author: Puneet
-    # * Date: 31/01/2018
+    # * Author: Aman
+    # * Date: 05/03/2018
     # * Reviewed By:
     #
-    # @return [Result::Base]
+    # Sets @client_token_secure
     #
-    def fetch_token_supply_details
+    def fetch_client_token_secure
+      @client_token_secure = CacheManagement::ClientTokenSecure.new([@client_token_id]).fetch[@client_token_id]
 
-      r = FetchClientTokenSupplyDetails.new(
-          client_id: @client_token[:client_id],
-          client_token_id: @client_token_id,
-          token_symbol: @client_token[:symbol]
-      ).perform
-      return r unless r.success?
+      return error_with_data(
+          'e_gtss_fcts_1',
+          'Token not found.',
+          'Token not found.',
+          GlobalConstant::ErrorAction.default,
+          {}
+      ) if @client_token_secure.blank?
 
-      @api_response_data[:token_supply_details] = r.data
+      @api_response_data[:contract_addresses] = {
+          erc20_contract_address: @client_token_secure[:token_erc20_address],
+          airdrop_contract_address: @client_token_secure[:airdrop_contract_address]
+      }
 
       success
-
     end
 
     #
