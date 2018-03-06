@@ -250,9 +250,9 @@ module CacheManagement
         when GlobalConstant::CriticalChainInteractions.staker_initial_transfer_activity_type
           case db_object.status
             when GlobalConstant::CriticalChainInteractions.processed_status
-              'Transfer to staker contract successfully verified'
+              'Transfer to staker address successfully verified'
             else
-              'Verifying transfer to staker contract'
+              'Verifying transfer to staker address'
           end
         else
           fail "unsupported activity_type: #{db_object.activity_type}"
