@@ -165,11 +165,11 @@ module UserManagement
       end
 
       if ClientToken.where('name = ?', @token_name).first.present?
-        validation_errors[:token_name] = "This #{@token_name} is already in use. Please try a different one"
+        validation_errors[:token_name] = "This token name is already in use. Please try a different one"
       end
 
       if ClientToken.where('symbol = ?', @token_symbol).first.present?
-        validation_errors[:token_symbol] = "This #{@token_symbol} is already in use. Please try a different one"
+        validation_errors[:token_symbol] = "This token symbol is already in use. Please try a different one"
       end
 
       validation_errors.blank? ? success : error_with_data(
