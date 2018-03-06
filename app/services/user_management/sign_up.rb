@@ -153,7 +153,7 @@ module UserManagement
       end
 
       unless Util::CommonValidator.is_valid_token_name?(@token_name)
-        validation_errors[:token_name] = 'Only letters, numbers and spaces allowed. (Max 20 characters)'
+        validation_errors[:token_name] = 'Max 3 words with letters, numbers and spaces allowed. (Max 20 characters)'
       end
 
       if Util::CommonValidator.has_stop_words?(@token_name)
