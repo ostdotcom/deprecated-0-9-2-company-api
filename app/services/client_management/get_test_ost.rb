@@ -122,8 +122,8 @@ module ClientManagement
       # Pending requests present then send error
       return error_with_data(
           'cm_gto_3',
-          'Pending Test OST requests.',
-          'Pending Test OST requests.',
+          'OSTα grant request is pending execution. Please wait for sometime.',
+          'OSTα grant request is pending execution. Please wait for sometime.',
           GlobalConstant::ErrorAction.default,
           {}
       ) if client_chain_interactions.keys.include?(GlobalConstant::CriticalChainInteractions.pending_status)
@@ -138,8 +138,8 @@ module ClientManagement
       # Check last processed record created_at is less than 1 day
       return error_with_data(
           'cm_gto_4',
-          'Test OST cannot be given before 24 hours from last given.',
-          'Test OST cannot be given before 24 hours from last given.',
+          'OSTα can only be requested once in 24 hours since the last request.',
+          'OSTα can only be requested once in 24 hours since the last request.',
           GlobalConstant::ErrorAction.default,
           {}
       ) if (Time.now - 1.day).to_i < processed_records.first.created_at.to_i

@@ -157,11 +157,11 @@ module UserManagement
       end
 
       if Util::CommonValidator.has_stop_words?(@token_name)
-        validation_errors[:token_name] = "Come on, the #{@token_name} you entered is inappropriate. Please choose a nicer word."
+        validation_errors[:token_name] = "Come on, the token name you entered is inappropriate. Please choose a nicer word."
       end
 
       if Util::CommonValidator.has_stop_words?(@token_symbol)
-        validation_errors[:token_symbol] = "Come on, the #{@token_symbol} you entered is inappropriate. Please choose a nicer word."
+        validation_errors[:token_symbol] = "Come on, the token symbol you entered is inappropriate. Please choose a nicer word."
       end
 
       if ClientToken.where('name = ?', @token_name).first.present?
