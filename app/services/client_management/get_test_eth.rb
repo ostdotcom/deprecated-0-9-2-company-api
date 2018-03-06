@@ -159,7 +159,11 @@ module ClientManagement
     def make_saas_api_call
 
       r = SaasApi::OnBoarding::GrantEth.new.perform(ethereum_address: @eth_address, amount: @amount)
-      return r unless r.success?
+      unless r.success?
+        @chain_interaction.status = GlobalConstant::CriticalChainInteractions.failed_status
+        @chain_interaction.save!
+        return r
+      end
 
       @chain_interaction.transaction_uuid = r.data[:transaction_uuid]
       @chain_interaction.transaction_hash = r.data[:transaction_hash]
@@ -167,6 +171,7 @@ module ClientManagement
       @chain_interaction.save!
 
       r
+
     end
 
     # Fetch Eth Address of client
