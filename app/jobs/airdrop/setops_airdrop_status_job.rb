@@ -150,7 +150,7 @@ class Airdrop::SetopsAirdropStatusJob < ApplicationJob
   def enqueue_self
 
     BgJob.enqueue(
-      Airdrop::GetAirdropDeployStatusJob,
+      Airdrop::SetopsAirdropStatusJob,
       {
         critical_log_id: @critical_log_id,
         parent_id: @parent_id
