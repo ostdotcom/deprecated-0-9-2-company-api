@@ -41,7 +41,7 @@ module CacheManagement
             has_pending = statuses_to_mark_pending.include?(row[:status])
           end
           if !has_failed
-            has_failed = row[:status] == GlobalConstant::CriticalChainInteractions.failed_status
+            has_failed = statuses_to_mark_failed.include?(row[:status])
           end
         end
         if has_pending && !has_failed
@@ -89,6 +89,13 @@ module CacheManagement
     #
     def get_cache_expiry
       memcache_key_object.expiry
+    end
+
+    def statuses_to_mark_failed
+      [
+          GlobalConstant::CriticalChainInteractions.failed_status,
+          GlobalConstant::CriticalChainInteractions.timeout_status
+      ]
     end
 
     def statuses_to_mark_pending
