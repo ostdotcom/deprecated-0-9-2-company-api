@@ -245,7 +245,7 @@ module CacheManagement
           elsif response_data['steps_complete'].include?('tokens_transfered')
             'Budget holder to approving the Airdrop smart contract address'
           elsif response_data['steps_complete'].include?('users_identified')
-            "Reserving ? #{client_token[:symbol]} for budget holder"
+            "Reserving #{client_token[:symbol]} for budget holder"
           end
         when GlobalConstant::CriticalChainInteractions.staker_initial_transfer_activity_type
           case db_object.status
