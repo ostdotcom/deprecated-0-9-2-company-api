@@ -56,6 +56,7 @@ module Economy
         @chain_interaction.save
       else
         @chain_interaction.status = GlobalConstant::CriticalChainInteractions.failed_status
+        @chain_interaction.response_data = r.to_hash
         @chain_interaction.save
         return r
       end

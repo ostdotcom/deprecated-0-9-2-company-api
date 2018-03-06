@@ -180,6 +180,7 @@ module ClientManagement
       r = SaasApi::OnBoarding::GrantTestOst.new.perform(ethereum_address: @eth_address, amount: @amount)
       unless r.success?
         @chain_interaction.status = GlobalConstant::CriticalChainInteractions.failed_status
+        @chain_interaction.response_data = r.to_hash
         @chain_interaction.save!
         return r
       end
