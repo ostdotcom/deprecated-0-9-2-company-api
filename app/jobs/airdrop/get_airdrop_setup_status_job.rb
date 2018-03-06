@@ -164,6 +164,7 @@ class Airdrop::GetAirdropSetupStatusJob < ApplicationJob
     if processed_post_airdrop_steps == 3
       client_token = ClientToken.where(id: @critical_chain_interaction_log.client_token_id).first
       client_token.send("set_#{GlobalConstant::ClientToken.airdrop_done_setup_step}")
+      CacheManagement::ClientToken.new([@critical_chain_interaction_log.client_token_id]).clear
       client_token.save!
     end
   end
