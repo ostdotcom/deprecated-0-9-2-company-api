@@ -47,9 +47,20 @@ module Economy
 
         response = execute
 
+        unless response.success?
+          return exception_with_data(
+            Exception.new('saas call failed'),
+            's_e_tk_c_1',
+            'saas call failed',
+            'saas call failed',
+            GlobalConstant::ErrorAction.default,
+            response.to_hash
+          )
+        end
+
         edit_client_token_status
 
-        return response
+        response
 
       end
 
@@ -70,6 +81,12 @@ module Economy
 
       end
 
+      # Edit client token status
+      #
+      # * Author: Puneet
+      # * Date: 29/01/2018
+      # * Reviewed By:
+      #
       def edit_client_token_status
         bit_value = ClientToken.setup_steps_config[GlobalConstant::ClientToken.configure_transactions_setup_step]
         ClientToken.where(id: @client_token_id).
