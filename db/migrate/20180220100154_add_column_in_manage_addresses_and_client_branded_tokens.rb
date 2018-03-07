@@ -3,8 +3,6 @@ class AddColumnInManageAddressesAndClientBrandedTokens < DbMigrationConnection
 
     run_migration_for_db(EstablishSaasClientEconomyDbConnection) do
 
-      add_column :managed_addresses, :address_type, :tinyint, null: false, limit: 1, default: 1, after: :name
-
       add_column :client_branded_tokens, :worker_managed_address_id, :integer, after: :reserve_managed_address_id
       add_column :client_branded_tokens, :airdrop_holder_managed_address_id, :integer, after: :worker_managed_address_id
       add_column :client_branded_tokens, :simple_stake_contract_addr, :string, after: :token_erc20_address
@@ -23,8 +21,6 @@ class AddColumnInManageAddressesAndClientBrandedTokens < DbMigrationConnection
   def down
 
     run_migration_for_db(EstablishSaasClientEconomyDbConnection) do
-
-      remove_column :managed_addresses, :address_type
 
       remove_column :client_branded_tokens, :worker_managed_address_id
       remove_column :client_branded_tokens, :airdrop_holder_managed_address_id

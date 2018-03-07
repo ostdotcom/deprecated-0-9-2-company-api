@@ -1,4 +1,5 @@
 class CreateManagedAddressSalts < DbMigrationConnection
+
   def up
     run_migration_for_db(EstablishSaasClientEconomyDbConnection) do
 
@@ -8,10 +9,10 @@ class CreateManagedAddressSalts < DbMigrationConnection
         t.timestamps
       end
 
-      add_index :managed_address_salts, :client_id, name: 'uniq_client_id', unique: true
-
       execute ("ALTER TABLE managed_address_salts AUTO_INCREMENT = 60000")
+
     end
+
   end
 
   def down
