@@ -3,7 +3,7 @@ class CreateManagedAddresses < DbMigrationConnection
     run_migration_for_db(EstablishSaasClientEconomyDbConnection) do
 
       create_table :managed_addresses do |t|
-        t.column :client_id, :integer, null: false
+        t.column :client_id, :integer, null: true
         t.column :managed_address_salt_id, :integer, null: true
         t.column :address_type, :tinyint, null: false, limit: 1
         t.column :uuid, :string, null: false
