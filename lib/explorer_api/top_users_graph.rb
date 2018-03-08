@@ -50,7 +50,7 @@ module ExplorerApi
             next if not_allowed_user_uuids.include?(resp.data[eth_address]['uuid'])
             user_data['name'] = resp.data[eth_address]['name']
             user_data['tokens'] = resp.data[eth_address]['token_balance']
-            user_data['tokens_earned'] = (user_data['tokens_earned'].to_f + resp.data[eth_address]['total_airdropped_tokens'].to_f).to_s
+            user_data['tokens_earned'] = (user_data['tokens_earned'].to_f + resp.data[eth_address]['balance_airdrop_amount'].to_f).to_s
             new_response << user_data
           end
         end
