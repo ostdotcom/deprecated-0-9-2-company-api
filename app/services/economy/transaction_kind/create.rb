@@ -77,7 +77,7 @@ module Economy
       #
       def execute
 
-        @ost_sdk_obj.create(@params)
+        @ost_sdk_obj.create(@params.to_hash)
 
       end
 
