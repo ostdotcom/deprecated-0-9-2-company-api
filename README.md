@@ -23,7 +23,7 @@
 
 * Start redis
 ```main
-> sudo redis-server --requirepass 'st123'
+> sudo redis-server --port 6379 --requirepass 'st123'
 ```
 
 * Start MySQL
