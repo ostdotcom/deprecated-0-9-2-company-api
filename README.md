@@ -59,8 +59,7 @@
 > rails s -p 4001
 ```
 
-* Set Cron Jobs 
-###### NOTE: set set_env_vars.sh in .bash_profile
+* Set Cron Jobs (<b>NOTE: set set_env_vars.sh in .bash_profile for crons to run independently.</b>)
 ```bash
 # Every one minute
 > rake RAILS_ENV=development cron_task:continuous:process_email_service_api_call_hooks lock_key_suffix=1
