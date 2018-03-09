@@ -47,23 +47,11 @@ module Economy
 
         response = execute
 
-        unless response.success?
-          return exception_with_data(
-            Exception.new('saas call failed'),
-            's_e_tk_c_1',
-            'saas call failed',
-            'saas call failed',
-            GlobalConstant::ErrorAction.default,
-            response.to_hash
-          )
-        end
-
-        edit_client_token_status
+        edit_client_token_status if response.success?
 
         response
 
       end
-
 
       private
 

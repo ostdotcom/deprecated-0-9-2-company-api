@@ -1,17 +1,18 @@
 class CreateManagedAddressSalts < DbMigrationConnection
+
   def up
     run_migration_for_db(EstablishSaasClientEconomyDbConnection) do
 
       create_table :managed_address_salts do |t|
-        t.column :client_id, :integer, null: false
+        t.column :client_id, :integer, null: true
         t.column :managed_address_salt, :blob, null: false #kms_encrypted
         t.timestamps
       end
 
-      add_index :managed_address_salts, :client_id, name: 'uniq_client_id', unique: true
-
       execute ("ALTER TABLE managed_address_salts AUTO_INCREMENT = 60000")
+
     end
+
   end
 
   def down
