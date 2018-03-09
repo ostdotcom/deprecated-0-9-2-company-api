@@ -1,11 +1,13 @@
 # Pre Setup
 
+* Setup Company Web. Instrunctions are published: https://github.com/OpenSTFoundation/company-web/blob/master/README.md
+
 * Install Mysql
 ```bash
 > brew install mysql
 ```
+
 * Create root user and set Password as root in Mysql
-* Create a default db - company_sandbox_development
 
 * Install redis
 ```main
@@ -39,27 +41,25 @@
 > cd company-api
 > source set_env_vars.sh
 > bundle install
+> rake db:create:all
 > rake db:migrate
-# NOTE: remove and create db again
-rake db:drop:all
-rake db:create:all
 ```
 
-* Start SideKiq
+* Start SideKiq in New Terminal
 ```bash
 > cd company-api
 > source set_env_vars.sh
 > sidekiq -C ./config/sidekiq.yml -q sk_api_high_task  -q sk_api_med_task -q sk_api_default
 ```
 
-* Start server
+* Start server in New Terminal
 ```bash
 > cd company-api
 > source set_env_vars.sh
-> rails s -p 4000
+> rails s -p 4001
 ```
 
-* Start Cron Jobs
+* Start Cron Jobs in New Terminal
 ```bash
 > rake RAILS_ENV=development cron_task:continuous:process_email_service_api_call_hooks lock_key_suffix=1
 ```
