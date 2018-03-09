@@ -45,7 +45,7 @@
 > rake db:migrate
 ```
 
-* Start SideKiq in New Terminal
+* Start SideKiq
 ```bash
 > cd company-api
 > source set_env_vars.sh
