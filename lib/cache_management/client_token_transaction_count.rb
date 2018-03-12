@@ -22,8 +22,8 @@ module CacheManagement
 
         batched_db_records.each do |db_record|
 
-          data_to_cache[db_record.client_token_id] ||= 0
-          data_to_cache[db_record.client_token_id] += 1
+          data_to_cache[db_record.client_token_id] ||= {count: 0}
+          data_to_cache[db_record.client_token_id][:count] += 1
 
         end
 

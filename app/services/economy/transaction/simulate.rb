@@ -96,8 +96,8 @@ module Economy
       #
       def simulate_transaction
 
-        simulated_tx_cnt = CacheManagement::ClientTokenTransactionCount.new([@client_token_id]).fetch[@client_token_id]
-        simulated_tx_cnt = simulated_tx_cnt.to_i
+        simulated_tx_cnts = CacheManagement::ClientTokenTransactionCount.new([@client_token_id]).fetch[@client_token_id]
+        simulated_tx_cnt = simulated_tx_cnts[:count].to_i
 
         params = {
           token_symbol: @client_token[:symbol],
