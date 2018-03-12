@@ -189,7 +189,7 @@ module CacheManagement
           elsif response_data['registration_status']['is_registered_on_vc'] == 1
             "#{client_token[:symbol]} successfully registered"
           elsif response_data['registration_status']['is_registered_on_uc'] == 1
-            "Registering #{client_token[:symbol]} on Ethereum"
+            "Registering #{client_token[:symbol]} on Ropsten"
           elsif response_data['registration_status']['is_proposal_done'] == 1
             "Registering #{client_token[:symbol]} on OpenST Utility Blockchain"
           end
