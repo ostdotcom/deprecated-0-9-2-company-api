@@ -58,4 +58,7 @@ Rails.application.routes.draw do
     match '' => :fetch, via: :GET
   end
 
+  # Handle any other routes
+  match '*permalink', to: 'application#not_found', via: :all
+
 end
