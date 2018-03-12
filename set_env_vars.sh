@@ -62,3 +62,4 @@ export CA_SAAS_API_SECRET_KEY='1somethingsarebetterkeptinenvironemntvariables'
 # OST Explorer Apis
 export CA_EXPLORER_BASE_URL='http://view.developmentost.com:7000/'
 export CA_EXPLORER_SECRET_KEY='6p5BkI0uGHI1JPrAKP3eB1Zm88KZ84a9Th9o4syhwZhxlv0oe0'
+export CA_EXPLORER_CHAIN_ID='200'

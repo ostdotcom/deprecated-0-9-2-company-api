@@ -48,3 +48,4 @@ constants:
   ost_explorer:
     base_url: <%= ENV['CA_EXPLORER_BASE_URL']%>
     secret: <%= ENV['CA_EXPLORER_SECRET_KEY']%>
+    chain_id: <%= ENV['CA_EXPLORER_CHAIN_ID']%>

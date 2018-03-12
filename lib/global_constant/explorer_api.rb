@@ -24,7 +24,7 @@ module GlobalConstant
     end
 
     def self.chain_id
-      200
+      GlobalConstant::Base.explorer_api['chain_id']
     end
 
   end
