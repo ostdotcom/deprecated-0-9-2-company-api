@@ -11,22 +11,27 @@ namespace :one_timers do
 
       @transaction_kind_names = []
 
-      @client_id = 1043
-      result = CacheManagement::ClientApiCredentials.new([@client_id]).fetch[@client_id]
-      credentials = OSTSdk::Util::APICredentials.new(result[:api_key], result[:api_secret])
+      # @client_id = 1043
+      # result = CacheManagement::ClientApiCredentials.new([@client_id]).fetch[@client_id]
+      # credentials = OSTSdk::Util::APICredentials.new(result[:api_key], result[:api_secret])
+
+      api_key = ''
+      api_secret = ''
+
+      credentials = OSTSdk::Util::APICredentials.new(api_key, api_secret)
       @user_sdk_obj = OSTSdk::Saas::Users.new(GlobalConstant::Base.sub_env, credentials)
       @tx_kind_sdk_obj = OSTSdk::Saas::TransactionKind.new(GlobalConstant::Base.sub_env, credentials)
 
     end
 
-    def create_dummy_users
-      i = 0
-      while true
-        SaasApi::OnBoarding::CreateDummyUsers.new.perform(client_id: @client_id, number_of_users: 25)
-        i = i + 1
-        break if i == 40
-      end
-    end
+    # def create_dummy_users
+    #   i = 0
+    #   while true
+    #     SaasApi::OnBoarding::CreateDummyUsers.new.perform(client_id: @client_id, number_of_users: 25)
+    #     i = i + 1
+    #     break if i == 40
+    #   end
+    # end
 
     def fetch_tx_names
 
