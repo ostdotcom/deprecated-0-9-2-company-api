@@ -18,7 +18,7 @@ namespace :one_timers do
 
     @ost_spec_sdk_obj = OSTSdk::Saas::TransactionKind.new(GlobalConstant::Base.sub_env, credentials)
 
-    procs = []
+    procs = {}
 
     uuids.each_with_index do |to_uuid, i|
       api_params = {
