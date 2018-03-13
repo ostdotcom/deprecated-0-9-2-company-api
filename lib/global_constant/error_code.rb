@@ -27,12 +27,17 @@ module GlobalConstant
       302
     end
 
+    def self.under_maintenance
+      503
+    end
+
     def self.allowed_http_codes
       [
         ok,
         unauthorized_access,
         not_found,
-        forbidden
+        forbidden,
+        under_maintenance
       ]
     end
 

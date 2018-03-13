@@ -33,6 +33,11 @@ client:
     key_template: 'c_addr_%{id}'
     expiry_in_seconds: 86400
 
+system:
+  services_statuses:
+    key_template: 'c_sys_ss'
+    expiry_in_seconds: 86400
+
 mics:
   ost_fiat_conversion_factors:
     used_in_shared_env: 1

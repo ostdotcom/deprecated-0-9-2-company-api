@@ -8,6 +8,7 @@ class ApplicationController < ActionController::API
   include CookieConcern
 
   before_action :sanitize_params
+  before_action :check_service_statuses
 
   after_action :set_response_headers
 
@@ -21,6 +22,30 @@ class ApplicationController < ActionController::API
   end
 
   private
+
+  #
+  # Check if all services are up and running.
+  # If not render Error Responses for all API's
+  #
+  # * Author: Puneet
+  # * Date: 01/02/2018
+  # * Reviewed By:
+  #
+  def check_service_statuses
+
+    r = CacheManagement::SystemServiceStatuses.new().fetch
+
+    if r.success? && r.data.present? && (r.data[:saas_api_available] != 1 || r.data[:company_api_available] != 1)
+      r = Result::Base.error(
+        error: 'ac_2',
+        error_message: 'Service Temporarily Unavailable',
+        http_code: GlobalConstant::ErrorCode.under_maintenance,
+        go_to: GlobalConstant::GoTo.service_unavailable
+      )
+      render_api_response(r)
+    end
+
+  end
 
   def sanitize_params
     sanitize_params_recursively(params)

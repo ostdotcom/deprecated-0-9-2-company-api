@@ -29,6 +29,12 @@ module GlobalConstant
         }
       end
 
+      def service_unavailable
+        {
+            by_screen_name: :service_unavailable
+        }
+      end
+
     end
 
   end
