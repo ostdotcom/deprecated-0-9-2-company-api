@@ -97,6 +97,7 @@ module Economy
       @api_response_data[:client_bt_addresses] = {
           erc20_contract_address: @client_token_secure[:token_erc20_address],
           airdrop_contract_address: @client_token_secure[:airdrop_contract_address],
+          reserve_uuid: @client_token_secure[:reserve_uuid],
           reserve_address: @client_token_secure[:reserve_address],
           airdrop_holder_address: @client_token_secure[:airdrop_holder_address]
       }
