@@ -6,8 +6,8 @@ namespace :one_timers do
 
     def init_variables
 
-      @txs_to_execute = 4000
-      @no_of_concurrrent_txs = 100
+      @txs_to_execute = 900
+      @no_of_concurrrent_txs = 75
 
       @transaction_kind_names = []
 
@@ -24,14 +24,14 @@ namespace :one_timers do
 
     end
 
-    # def create_dummy_users
-    #   i = 0
-    #   while true
-    #     SaasApi::OnBoarding::CreateDummyUsers.new.perform(client_id: @client_id, number_of_users: 25)
-    #     i = i + 1
-    #     break if i == 40
-    #   end
-    # end
+    def create_dummy_users
+      i = 0
+      while true
+        SaasApi::OnBoarding::CreateDummyUsers.new.perform(client_id: @client_id, number_of_users: 25)
+        i = i + 1
+        break if i == 40
+      end
+    end
 
     def fetch_tx_names
 
@@ -70,20 +70,28 @@ namespace :one_timers do
       procs_length = 0
       transaction_kind_names_length = @transaction_kind_names.length
       while true
-        @uuids.each_with_index do |to_uuid, i|
+        half_length = @uuids.length / 2
+
+        (half_length-1).times do |i|
+          j = 2*i
+
           transaction_kind_name = @transaction_kind_names[Random.rand(transaction_kind_names_length)]
-          from_uuid = @uuids[i]
-          to_uuid = @uuids[i+1] || @uuids[0]
+
+          from_uuid = @uuids[j]
+          to_uuid = @uuids[j+1] || @uuids[0]
+
           api_params = {
-              from_uuid: from_uuid,
-              to_uuid: to_uuid,
-              transaction_kind: transaction_kind_name
+            from_uuid: from_uuid,
+            to_uuid: to_uuid,
+            transaction_kind: transaction_kind_name
           }
+
           procs[procs_length] = Proc.new do
             api_spec_service_response = @tx_kind_sdk_obj.execute(api_params)
           end
           procs_length += 1
         end
+
         puts procs_length
         break if procs_length >= @txs_to_execute
       end
