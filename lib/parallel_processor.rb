@@ -10,8 +10,9 @@ class ParallelProcessor
   #
   # @param [Hash] methods_to_process (mandatory) - indexed by some key value should be Procs
   #
-  def initialize(methods_to_process)
+  def initialize(no_of_concurrrent_txs, methods_to_process)
 
+    @no_of_concurrrent_txs = no_of_concurrrent_txs
     @methods_to_process = methods_to_process
 
     @response = {}
@@ -50,7 +51,7 @@ class ParallelProcessor
   private
 
   def max_allowed_threads
-    5
+    @no_of_concurrrent_txs
   end
 
 end
