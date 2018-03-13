@@ -6,8 +6,8 @@ namespace :one_timers do
 
     def init_variables
 
-      @txs_to_execute = 900
-      @no_of_concurrrent_txs = 75
+      @txs_to_execute = 1000
+      @no_of_concurrrent_txs = 50
 
       @transaction_kind_names = []
 
@@ -15,19 +15,19 @@ namespace :one_timers do
       # result = CacheManagement::ClientApiCredentials.new([@client_id]).fetch[@client_id]
       # credentials = OSTSdk::Util::APICredentials.new(result[:api_key], result[:api_secret])
 
-      api_key = '8164d6ab1f479db3a10e'
-      api_secret = 'a8730c94f916ad95351b0182d246e996315eba5be2353dd11e5f9ad5a6331240'
+      api_key = '586ad037200f8bd41001'
+      api_secret = '3aa64f6169d8736fba16372fde456956f3ebe72939d7599ff11a7a28adce0cee'
 
       credentials = OSTSdk::Util::APICredentials.new(api_key, api_secret)
-      @user_sdk_obj = OSTSdk::Saas::Users.new(GlobalConstant::Base.sub_env, credentials)
-      @tx_kind_sdk_obj = OSTSdk::Saas::TransactionKind.new(GlobalConstant::Base.sub_env, credentials)
+      @user_sdk_obj = OSTSdk::Saas::Users.new('sandbox', credentials)
+      @tx_kind_sdk_obj = OSTSdk::Saas::TransactionKind.new('sandbox', credentials)
 
     end
 
     def create_dummy_users
       i = 0
       while true
-        SaasApi::OnBoarding::CreateDummyUsers.new.perform(client_id: @client_id, number_of_users: 25)
+        SaasApi::OnBoarding::CreateDummyUsers.new.perform(client_id: 1105, number_of_users: 25)
         i = i + 1
         break if i == 40
       end
@@ -57,6 +57,7 @@ namespace :one_timers do
         @uuids += r.data['economy_users'].map{|k| k['uuid']}
         if r.data['meta']['next_page_payload'].present? && r.data['meta']['next_page_payload']['page_no'].present?
           page_no = r.data['meta']['next_page_payload']['page_no']
+          puts "setting page_no: #{page_no}"
         else
           break
         end
@@ -90,6 +91,7 @@ namespace :one_timers do
             api_spec_service_response = @tx_kind_sdk_obj.execute(api_params)
           end
           procs_length += 1
+          break if procs_length >= @txs_to_execute
         end
 
         puts procs_length
@@ -97,7 +99,7 @@ namespace :one_timers do
       end
       puts @no_of_concurrrent_txs
       parallelProcessed = ParallelProcessor.new(@no_of_concurrrent_txs, procs).perform
-      puts parallelProcessed.data
+      # puts parallelProcessed.data
     end
 
     def perform
