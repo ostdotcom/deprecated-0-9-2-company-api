@@ -69,7 +69,7 @@ module UserManagement
 
       return unauthorized_access_response(
           'um_l_fu_1',
-          'The email address you provided is not associated. Please sign up.'
+          'The email address you provided is not associated with an OST KIT⍺ account. Please sign up.'
       ) if !@user.present? || !@user.password.present? || !@user.login_salt.present?
 
       return unauthorized_access_response(

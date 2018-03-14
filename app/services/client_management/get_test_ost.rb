@@ -138,8 +138,8 @@ module ClientManagement
       # Check last processed record created_at is less than 1 day
       return error_with_data(
           'cm_gto_4',
-          'OSTα can only be requested once in 24 hours since the last request.',
-          'OSTα can only be requested once in 24 hours since the last request.',
+          'OSTα can only be requested once every 24 hours. Please try again later.',
+          'OSTα can only be requested once every 24 hours. Please try again later.',
           GlobalConstant::ErrorAction.default,
           {}
       ) if (Time.now - 1.day).to_i < processed_records.first.created_at.to_i
