@@ -96,13 +96,12 @@ module Economy
       #
       def simulate_transaction
 
-        simulated_tx_cnts = CacheManagement::ClientTokenTransactionCount.new([@client_token_id]).fetch[@client_token_id]
-        simulated_tx_cnt = simulated_tx_cnts[:count].to_i
+        prioritize_tx_flags = CacheManagement::ClientPrioritizeTxFlag.new([@client_token_id]).fetch[@client_token_id]
 
         params = {
           token_symbol: @client_token[:symbol],
           client_id: @client_token[:client_id],
-          prioritize_company_txs: simulated_tx_cnt <= 3
+          prioritize_company_txs: prioritize_tx_flags[:company_to_user]
         }
 
         r = SaasApi::Transaction::Simulate.new.perform(params)

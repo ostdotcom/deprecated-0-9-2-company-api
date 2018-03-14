@@ -1,6 +1,6 @@
 module CacheManagement
 
-  class ClientTokenTransactionCount < CacheManagement::Base
+  class ClientPrioritizeTxFlag < CacheManagement::Base
 
     private
 
@@ -16,17 +16,19 @@ module CacheManagement
 
       data_to_cache = {}
 
-      # Avoiding doing a count(*) query here as this could be a big table
-      ClientTokenTransaction.where(client_token_id: cache_miss_ids).
-          select(:id, :client_token_id).find_in_batches(batch_size: 1000) do |batched_db_records|
+      cache_miss_ids.each do |client_token_id|
 
-        batched_db_records.each do |db_record|
+        db_records = ClientTokenTransaction.where(client_token_id: client_token_id).
+            select(:id, :client_token_id).limit(3).all
 
-          data_to_cache[db_record.client_token_id] ||= {count: 0}
-          data_to_cache[db_record.client_token_id][:count] += 1
+        proritize_company_to_user = db_records.length < 3
 
-        end
+        data_to_cache[client_token_id] = {company_to_user: proritize_company_to_user}
 
+      end
+
+      cache_miss_ids.each do |client_token_id|
+        data_to_cache[client_token_id] ||= {company_to_user: true}
       end
 
       success_with_data(data_to_cache)
