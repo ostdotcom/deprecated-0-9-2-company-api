@@ -47,19 +47,6 @@ module ExplorerApi
 
         case request_type
           when 'get'
-            # response = nil
-            # Timeout.timeout(@timeouts[:read]) do
-            #   uri = URI(request_path)
-            #
-            #   req = Net::HTTP::Get.new(uri + "?token=#{parameterized_token[:token]}")
-            #   req.basic_auth 'root', 'root'
-            #
-            #   response = Net::HTTP.start(uri.host, uri.port, :use_ssl => uri.scheme == 'https',
-            #                              :verify_mode => OpenSSL::SSL::VERIFY_NONE) {|http|
-            #      http.request(req)
-            #   }
-            # end
-
             response = HTTP.timeout(@timeouts)
                          .get(request_path, params: parameterized_token, ssl_context: ssl_context)
           when 'post'
