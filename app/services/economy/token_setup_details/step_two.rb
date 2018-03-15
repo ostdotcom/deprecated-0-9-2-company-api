@@ -139,6 +139,8 @@ module Economy
             {}
         ) unless api_spec_service_response.success?
 
+        api_spec_service_response.data[:request_uri] = GlobalConstant::SaasApi.display_only_base_url
+
         @api_response_data[:api_console_data] = {
             transaction_kind: {
                 create: api_spec_service_response.data

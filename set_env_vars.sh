@@ -57,6 +57,7 @@ export CA_CAMPAIGN_MASTER_LIST="3722"
 
 # Company Restful API (SAAS) details
 export CA_SAAS_API_ENDPOINT='http://api.developmentost.com:7001'
+export CA_SAAS_API_DISPLAY_ONLY_ENDPOINT='https://display.playgroundapi.stagingost.com'
 export CA_SAAS_API_SECRET_KEY='1somethingsarebetterkeptinenvironemntvariables'
 
 # OST Explorer Apis

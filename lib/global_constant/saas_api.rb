@@ -7,6 +7,10 @@ module GlobalConstant
       GlobalConstant::Base.company_restful_api[:endpoint]
     end
 
+    def self.display_only_base_url
+      GlobalConstant::Base.company_restful_api[:display_endpoint]
+    end
+
     def self.secret_key
       GlobalConstant::Base.company_restful_api[:secret_key]
     end
