@@ -5,7 +5,7 @@ Rails.application.routes.draw do
     match 'verify-cookie' => :verify_cookie, via: :GET
     match 'sign-up' => :sign_up, via: :POST
     match 'login' => :login, via: :POST
-    match 'logout' => :logout, via: :POST
+    match 'logout' => :logout, via: :GET
     match 'reset-password' => :reset_password, via: :POST
     match 'send-reset-password-link' => :send_reset_password_link, via: :POST
     match 'verify-email' => :verify_email, via: :GET
