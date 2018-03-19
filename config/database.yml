@@ -11,7 +11,19 @@ default_db_identifier: &default_db
   host: <%= ENV['CA_DEFAULT_DB_HOST']%>
   username: <%= ENV['CA_DEFAULT_DB_USER']%>
   password: <%= ENV['CA_DEFAULT_DB_PASSWORD']%>
-  
+
+economy_db_identifier: &economy_db
+  <<: *default
+  host: <%= ENV['CA_ECONOMY_DB_MYSQL_HOST']%>
+  username: <%= ENV['CA_ECONOMY_DB_MYSQL_USER']%>
+  password: <%= ENV['CA_ECONOMY_DB_MYSQL_PASSWORD']%>
+
+transaction_db_identifier: &transaction_db
+  <<: *default
+  host: <%= ENV['CA_TRANSACTION_DB_MYSQL_HOST']%>
+  username: <%= ENV['CA_TRANSACTION_DB_MYSQL_USER']%>
+  password: <%= ENV['CA_TRANSACTION_DB_MYSQL_PASSWORD']%>
+
 sub_env_shared_db_identifier: &sub_env_shared_db
   <<: *default
   host: <%= ENV['CA_SUB_ENV_SHARED_DB_HOST']%>
@@ -64,11 +76,11 @@ company_saas_shared_<%= GlobalConstant::Base.sub_env%>_<%= Rails.env%>:
 
 # NOTE: TEMP LOCATION - Until sass has it's own DB migration management
 saas_client_economy_<%= GlobalConstant::Base.sub_env%>_<%= Rails.env%>:
-  <<: *saas_default_db
+  <<: *economy_db
   database: saas_client_economy_<%= GlobalConstant::Base.sub_env%>_<%= Rails.env%>
 
 saas_transaction_<%= GlobalConstant::Base.sub_env%>_<%= Rails.env%>:
-  <<: *saas_default_db
+  <<: *transaction_db
   database: saas_transaction_<%= GlobalConstant::Base.sub_env%>_<%= Rails.env%>
 
 saas_airdrop_<%= GlobalConstant::Base.sub_env%>_<%= Rails.env%>:
