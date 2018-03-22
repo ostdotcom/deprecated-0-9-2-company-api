@@ -5,7 +5,7 @@ class CreateClientWorkerManagedAddressIds < DbMigrationConnection
       create_table :client_worker_managed_address_ids do |t|
         t.column :client_id, :integer, null: false
         t.column :managed_address_id, :integer, null: false
-        t.column :properties, :tinyint, null: false, limit: 1
+        t.column :properties, :tinyint, null: false, limit: 1, default: 0
         t.column :status, :tinyint, null: false, limit: 1
         t.timestamps
       end
