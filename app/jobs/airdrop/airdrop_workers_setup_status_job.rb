@@ -87,7 +87,7 @@ class Airdrop::AirdropWorkersSetupStatusJob < ApplicationJob
     # Initial transfer transaction is done
     return success if @critical_chain_interaction_log.is_processed?
 
-    r = SaasApi::StakeAndMint::FetchWorkerStatus.new.perform(
+    r = SaasApi::OnBoarding::FetchWorkerStatus.new.perform(
       {
           transaction_records: @transaction_hash_records
       }
