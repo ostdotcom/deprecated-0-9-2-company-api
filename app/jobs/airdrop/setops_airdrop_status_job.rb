@@ -177,10 +177,9 @@ class Airdrop::SetopsAirdropStatusJob < ApplicationJob
 
     saas_api_response = SaasApi::OnBoarding::SetWorker.new.perform(request_params)
 
-    process_saas_response(
+    process_set_worker_response(
       request_params,
-      saas_api_response,
-      GlobalConstant::CriticalChainInteractions.set_worker_activity_type
+      saas_api_response
     )
 
   end
@@ -265,6 +264,44 @@ class Airdrop::SetopsAirdropStatusJob < ApplicationJob
       {
         wait: 10.seconds
       }
+    ) if critical_log.is_pending?
+  end
+
+  # Process Set Worker response from Saas
+  #
+  # * Author: Pankaj
+  # * Date: 22/03/2018
+  # * Reviewed By:
+  #
+  def process_set_worker_response(request_params, saas_api_response)
+
+    if saas_api_response.success?
+      status = GlobalConstant::CriticalChainInteractions.pending_status
+    else
+      status = GlobalConstant::CriticalChainInteractions.failed_status
+    end
+
+    critical_log = CriticalChainInteractionLog.create!(
+        {
+            parent_id: @parent_id,
+            client_id: @client_id,
+            activity_type: GlobalConstant::CriticalChainInteractions.set_worker_activity_type,
+            client_token_id: @critical_chain_interaction_log.client_token_id,
+            chain_type: GlobalConstant::CriticalChainInteractions.utility_chain_type,
+            request_params: request_params,
+            response_data: saas_api_response.to_hash,
+            status: status
+        }
+    )
+
+    BgJob.enqueue(
+        Airdrop::AirdropWorkersSetupStatusJob,
+        {
+            critical_log_id: critical_log.id
+        },
+        {
+            wait: 10.seconds
+        }
     ) if critical_log.is_pending?
   end
 

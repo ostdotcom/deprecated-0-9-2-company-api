@@ -59,6 +59,10 @@ module GlobalConstant
       'on-boarding/set-worker'
     end
 
+    def self.fetch_worker_status_path
+      'on-boarding/fetch-worker-status'
+    end
+
     def self.set_price_oracle_path
       'on-boarding/set-price-oracle'
     end
