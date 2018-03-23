@@ -70,7 +70,7 @@ class Airdrop::AirdropWorkersSetupStatusJob < ApplicationJob
       {}
     ) if @critical_chain_interaction_log.blank?
 
-    @transaction_hash_records = @critical_chain_interaction_log.response_data['data']
+    @transaction_hash_records = @critical_chain_interaction_log.response_data[:data]
 
     success
   end
@@ -102,15 +102,15 @@ class Airdrop::AirdropWorkersSetupStatusJob < ApplicationJob
     else
       # r.data will be blank when transaction is yet not mined.
       if r.data.present?
-        is_complete = false
-        # Assuming if one worker is set up properly then client can do transactions.
-        # So mark this step as complete.
+        is_pending = false
+        # If any one transaction of setting worker is pending then process is not complete
         r.data.each_value do |value|
-          is_complete = (value['status'] == 'complete')
+          is_pending = (value['status'] != 'complete')
+          break if is_pending
         end
         # processed
-        @critical_chain_interaction_log.status = is_complete ? GlobalConstant::CriticalChainInteractions.processed_status :
-                                                     GlobalConstant::CriticalChainInteractions.pending_status
+        @critical_chain_interaction_log.status = is_pending ? GlobalConstant::CriticalChainInteractions.pending_status :
+                                                     GlobalConstant::CriticalChainInteractions.processed_status
       end
     end
 
