@@ -9,7 +9,7 @@ class CreateClientWorkerManagedAddressIds < DbMigrationConnection
         t.column :status, :tinyint, null: false, limit: 1
         t.timestamps
       end
-      add_index :client_worker_managed_address_ids, [:client_id, :managed_address_id], name: 'i_1', unique: false
+      add_index :client_worker_managed_address_ids, [:client_id, :managed_address_id], name: 'i_1', unique: true
     end
     run_migration_for_db(EstablishCompanyClientEconomyDbConnection) do
       remove_column :client_tokens, :worker_addr_uuid
