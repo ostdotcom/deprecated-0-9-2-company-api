@@ -24,9 +24,11 @@ client:
     key_template: 'c_td_p_%{id}'
     expiry_in_seconds: 86400
   tx_status_details:
+    used_in_shared_env: 1
     key_template: 'c_tx_s_%{id}'
     expiry_in_seconds: 86400
   pending_critical_interaction_ids:
+    used_in_shared_env: 1
     key_template: 'c_pci_ids_%{id}'
     expiry_in_seconds: 86400
   address:

@@ -1,5 +1,7 @@
 class CriticalChainInteractionLog < EstablishCompanySaasSharedDbConnection
 
+  #NOTE: This is a shared DB with SAAS. ANY Changes in Enum should be synced with SAAS
+
   enum activity_type: {
       GlobalConstant::CriticalChainInteractions.request_ost_activity_type => 1,
       GlobalConstant::CriticalChainInteractions.transfer_to_staker_activity_type => 2,

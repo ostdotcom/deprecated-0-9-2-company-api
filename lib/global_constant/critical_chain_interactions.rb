@@ -1,6 +1,7 @@
 # frozen_string_literal: true
 module GlobalConstant
 
+  #NOTE: This is a shared DB with SAAS. ANY Changes here should be synced with SAAS
   class CriticalChainInteractions
 
     class << self
