@@ -1,4 +1,8 @@
-class CriticalChainInteractionLog < EstablishCompanySaasSharedDbConnection
+class CriticalChainInteractionLogTemp < EstablishCompanyBigDbConnection
+
+  self.table_name = 'critical_chain_interaction_logs'
+
+  #TODO: To be deleted after data is moved to new table
 
   enum activity_type: {
       GlobalConstant::CriticalChainInteractions.request_ost_activity_type => 1,
@@ -34,8 +38,8 @@ class CriticalChainInteractionLog < EstablishCompanySaasSharedDbConnection
     where(activity_type: activity_type)
   }
 
-  serialize :request_params, JSON
-  serialize :response_data, JSON
+  serialize :request_params, Hash
+  serialize :response_data, Hash
 
   MARK_AS_TIMED_OUT_AFTER = 30.minutes
 
