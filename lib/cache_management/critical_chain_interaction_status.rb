@@ -192,6 +192,8 @@ module CacheManagement
             "Registering #{client_token[:symbol]} on Ropsten"
           elsif response_data['registration_status']['is_proposal_done'] == 1
             "Registering #{client_token[:symbol]} on OpenST Utility Blockchain"
+          else
+            "Proposing #{client_token[:symbol]} on OpenST Utility Blockchain"
           end
         when GlobalConstant::CriticalChainInteractions.deploy_airdrop_activity_type
           case db_object.status
@@ -246,6 +248,8 @@ module CacheManagement
             'Budget holder approving the Airdrop smart contract'
           elsif response_data['steps_complete'].include?('users_identified')
             "Reserving #{client_token[:symbol]} for budget holder"
+          else
+            'Verifying the list of users to receive airdrop'
           end
         when GlobalConstant::CriticalChainInteractions.staker_initial_transfer_activity_type
           case db_object.status
