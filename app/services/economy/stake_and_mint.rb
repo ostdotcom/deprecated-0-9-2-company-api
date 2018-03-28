@@ -76,7 +76,7 @@ module Economy
       #NOTE: Returned this and not fetched from PendingCriticalInteractionIds to avoid extra query
       success_with_data(
         pending_critical_interactions: {
-          @parent_tx_activity_type => r.data[:critical_chain_interaction_log_id]
+          @parent_tx_activity_type => r.data[:parent_critical_chain_interaction_log_id]
         }
       )
 
@@ -367,12 +367,17 @@ module Economy
       params = {
         token_symbol: @token_symbol,
         client_id: @client_token.client_id,
-        bt_to_mint: @bt_to_mint,
-        st_prime_to_mint: @st_prime_to_mint,
-        client_eth_address: @client_eth_address,
-        airdrop_amount: @airdrop_amount,
-        airdrop_user_list_type: @airdrop_user_list_type,
-        transfer_to_staker_tx_hash: @transaction_hash
+        client_token_id: @client_token.id,
+        stake_and_mint_params: {
+          bt_to_mint: @bt_to_mint,
+          st_prime_to_mint: @st_prime_to_mint,
+          client_eth_address: @client_eth_address,
+          transfer_to_staker_tx_hash: @transaction_hash
+        },
+        airdrop_params: {
+          airdrop_amount: @airdrop_amount,
+          airdrop_user_list_type: @airdrop_user_list_type
+        }
       }
 
       SaasApi::OnBoarding::Start.new.perform(params)
@@ -392,12 +397,15 @@ module Economy
       @parent_tx_activity_type = GlobalConstant::CriticalChainInteractions.staker_initial_transfer_activity_type
 
       params = {
-          token_symbol: @token_symbol,
-          client_id: @client_token.client_id,
+        token_symbol: @token_symbol,
+        client_id: @client_token.client_id,
+        client_token_id: @client_token.id,
+        stake_and_mint_params: {
           bt_to_mint: @bt_to_mint,
           st_prime_to_mint: @st_prime_to_mint,
           client_eth_address: @client_eth_address,
           transfer_to_staker_tx_hash: @transaction_hash
+        }
       }
 
       SaasApi::StakeAndMint::Start.new.perform(params)
