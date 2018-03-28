@@ -15,16 +15,12 @@ module GlobalConstant
       GlobalConstant::Base.company_restful_api[:secret_key]
     end
 
-    def self.propose_bt_api_path
-      'on-boarding/propose-branded-token'
+    def self.start_on_boarding_api_path
+      'on-boarding/start'
     end
 
-    def self.deploy_airdrop_contract_path
-      'on-boarding/deploy-airdrop-contract'
-    end
-
-    def self.get_registration_status_api_path
-      'on-boarding/registration-status'
+    def self.start_stake
+      'stake/start'
     end
 
     def self.grant_test_ost_path
@@ -49,6 +45,44 @@ module GlobalConstant
 
     def self.create_dummy_users_path
       'on-boarding/create-dummy-users'
+    end
+
+    def self.get_staked_amount
+      'stake/get-staked-amount'
+    end
+
+    def self.simulate_transaction
+      'simulator/create-transaction'
+    end
+
+    def self.fetch_transaction_details
+      'simulator/get-transaction-details'
+    end
+
+    def self.fetch_cliient_stats
+      'client/fetch-stats'
+    end
+
+    def self.get_user_details_path
+      'client-users/get-details'
+    end
+
+    def self.get_addresses_by_uuids
+      'client-users/get-addresses-by-uuid'
+    end
+
+    ############### Routes to be deprecated #######################
+
+    def self.get_tx_receipt
+      'stake/get-receipt'
+    end
+
+    def self.deploy_airdrop_contract_path
+      'on-boarding/deploy-airdrop-contract'
+    end
+
+    def self.get_registration_status_api_path
+      'on-boarding/registration-status'
     end
 
     def self.get_balances_path
@@ -89,34 +123,6 @@ module GlobalConstant
 
     def self.start_stake_st_prime
       'stake/start-st-prime'
-    end
-
-    def self.get_tx_receipt
-      'stake/get-receipt'
-    end
-
-    def self.get_staked_amount
-      'stake/get-staked-amount'
-    end
-
-    def self.simulate_transaction
-      'simulator/create-transaction'
-    end
-
-    def self.fetch_transaction_details
-      'simulator/get-transaction-details'
-    end
-
-    def self.fetch_cliient_stats
-      'client/fetch-stats'
-    end
-
-    def self.get_user_details_path
-      'client-users/get-details'
-    end
-
-    def self.get_addresses_by_uuids
-      'client-users/get-addresses-by-uuid'
     end
 
   end
