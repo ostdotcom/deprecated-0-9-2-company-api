@@ -25,12 +25,14 @@ class ProposeBrandedToken::GetProposeStatusJob < ApplicationJob
         'BT Registration failed.',
         GlobalConstant::ErrorAction.default,
         {}
-    )  if @critical_chain_interaction_log.is_failed?
+    ) if @critical_chain_interaction_log.is_failed?
 
     save_registration_status
 
     if @critical_chain_interaction_log.is_pending?
       enqueue_self
+    else
+      enqueue_verify_airdrop_deploy_status_job
     end
 
     success
@@ -95,7 +97,7 @@ class ProposeBrandedToken::GetProposeStatusJob < ApplicationJob
 
   end
 
-  # Enqueue job
+  # Enqueue self
   #
   # * Author: Kedar
   # * Date: 24/01/2018
@@ -111,6 +113,24 @@ class ProposeBrandedToken::GetProposeStatusJob < ApplicationJob
       {
         wait: 30.seconds
       }
+    )
+  end
+
+  # Enqueue GetAirdropDeployStatusJob
+  #
+  # * Author: Kedar
+  # * Date: 24/01/2018
+  # * Reviewed By: Sunil
+  #
+  def enqueue_verify_airdrop_deploy_status_job
+    BgJob.enqueue(
+        ProposeBrandedToken::GetAirdropDeployStatusJob,
+        {
+            parent_id: @parent_id
+        },
+        {
+            wait: 30.seconds
+        }
     )
   end
 
