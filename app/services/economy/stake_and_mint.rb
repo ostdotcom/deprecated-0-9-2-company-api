@@ -372,7 +372,7 @@ module Economy
           bt_to_mint: @bt_to_mint,
           st_prime_to_mint: @st_prime_to_mint,
           client_eth_address: @client_eth_address,
-          transfer_to_staker_tx_hash: @transaction_hash
+          transaction_hash: @transaction_hash
         },
         airdrop_params: {
           airdrop_amount: @airdrop_amount,

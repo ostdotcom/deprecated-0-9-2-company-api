@@ -29,7 +29,7 @@ class Airdrop::GetAirdropDeployStatusJob < ApplicationJob
 
     data = @critical_chain_interaction_log.response_data['data']
 
-    update_airdrop_contract_address(data['formattedTransactionReceipt']['contractAddress'])
+    update_airdrop_contract_address(data['transaction_receipt']['contractAddress'])
 
     if @critical_chain_interaction_log.is_pending?
       enqueue_self
