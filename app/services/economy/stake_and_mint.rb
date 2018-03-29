@@ -349,7 +349,7 @@ module Economy
     # @return [Result::Base]
     #
     def initiate_task_in_saas
-      @client_token.registration_done? ? initiate_registeration_in_saas : initiate_stake_and_mint_in_saas
+      @client_token.registration_done? ? initiate_stake_and_mint_in_saas : initiate_registeration_in_saas
     end
 
     # Initiate Registeration TASK in saas (this would setup token + first time stake / mint + airdrop)
@@ -365,7 +365,7 @@ module Economy
       @parent_tx_activity_type = GlobalConstant::CriticalChainInteractions.propose_bt_activity_type
 
       params = {
-        token_symbol: @token_symbol,
+        token_symbol: @client_token.symbol,
         client_id: @client_token.client_id,
         client_token_id: @client_token.id,
         stake_and_mint_params: {
@@ -397,14 +397,14 @@ module Economy
       @parent_tx_activity_type = GlobalConstant::CriticalChainInteractions.staker_initial_transfer_activity_type
 
       params = {
-        token_symbol: @token_symbol,
+        token_symbol: @client_token.symbol,
         client_id: @client_token.client_id,
         client_token_id: @client_token.id,
         stake_and_mint_params: {
           bt_to_mint: @bt_to_mint,
           st_prime_to_mint: @st_prime_to_mint,
           client_eth_address: @client_eth_address,
-          transfer_to_staker_tx_hash: @transaction_hash
+          transaction_hash: @transaction_hash
         }
       }
 
