@@ -14,22 +14,23 @@ class ProposeBrandedToken::GetProposeStatusJob < ApplicationJob
   #
   def perform(params)
 
-    puts("registration status start :: #{params.inspect}")
-
     init_params(params)
 
     r = validate_and_sanitize
     return unless r.success?
 
-    r = get_registration_status
-    return unless r.success?
+    return error_with_data(
+        'j_s_grsj_2',
+        'BT Registration failed.',
+        'BT Registration failed.',
+        GlobalConstant::ErrorAction.default,
+        {}
+    )  if @critical_chain_interaction_log.is_failed?
 
-    puts("registration status:: #{@registration_status.inspect}")
+    save_registration_status
 
     if @critical_chain_interaction_log.is_pending?
       enqueue_self
-    else
-      deploy_airdrop_contract
     end
 
     success
@@ -82,66 +83,15 @@ class ProposeBrandedToken::GetProposeStatusJob < ApplicationJob
       {}
     ) if @critical_chain_interaction_log.blank?
 
+    response_data = @critical_chain_interaction_log.response_data['data'] || {}
+    @registration_status = response_data['registration_status'] || {}
+
     @client_id = @critical_chain_interaction_log.client_id
     @client_token_id = @critical_chain_interaction_log.client_token_id
-    @transaction_hash = @critical_chain_interaction_log.transaction_hash
 
     @client_token = ClientToken.where(id: @client_token_id).first
 
     success
-  end
-
-  # Get Registration Status
-  #
-  # * Author: Kedar
-  # * Date: 24/01/2018
-  # * Reviewed By: Sunil
-  #
-  # @return [Result::Base]
-  #
-  def get_registration_status
-
-    r = SaasApi::OnBoarding::GetRegistrationStatus.new.perform({
-                                                                 transaction_hash: @transaction_hash
-                                                               })
-    if @critical_chain_interaction_log.can_be_marked_timeout?
-      # Timeout
-      @critical_chain_interaction_log.status = GlobalConstant::CriticalChainInteractions.timeout_status
-    elsif !r.success? || !r.data.present?
-      # failed - service failure
-      @critical_chain_interaction_log.status = GlobalConstant::CriticalChainInteractions.failed_status
-    elsif r.data.present?
-
-      # Save registration status
-      @registration_status = r.data[:registration_status]
-      save_response = save_registration_status
-
-      if !save_response.success?
-        # failed
-        @critical_chain_interaction_log.status = GlobalConstant::CriticalChainInteractions.failed_status
-      elsif registration_done?
-        # processed
-        @critical_chain_interaction_log.status = GlobalConstant::CriticalChainInteractions.processed_status
-      else
-        # pending
-        @critical_chain_interaction_log.status = GlobalConstant::CriticalChainInteractions.pending_status
-      end
-    end
-
-    @critical_chain_interaction_log.response_data = r.to_hash
-    @critical_chain_interaction_log.save!
-
-    if @critical_chain_interaction_log.is_pending? || @critical_chain_interaction_log.is_processed?
-      return success
-    else
-      return error_with_data(
-        'j_s_grsj_2',
-        'BT Registration failed.',
-        'BT Registration failed.',
-        GlobalConstant::ErrorAction.default,
-        {}
-      )
-    end
 
   end
 
@@ -159,64 +109,64 @@ class ProposeBrandedToken::GetProposeStatusJob < ApplicationJob
         parent_id: @parent_id
       },
       {
-        wait: 10.seconds
+        wait: 30.seconds
       }
     )
   end
 
-  # start the deployment of airdrop.
+  # # start the deployment of airdrop.
+  # #
+  # # * Author: Alpesh
+  # # * Date: 21/02/2018
+  # # * Reviewed By:
+  # #
+  # def deploy_airdrop_contract
+  #   request_params = {
+  #     client_id: @client_id,
+  #     token_symbol: @client_token.symbol,
+  #     token_name: @client_token.name
+  #   }
   #
-  # * Author: Alpesh
-  # * Date: 21/02/2018
-  # * Reviewed By:
+  #   deploy_response = SaasApi::OnBoarding::DeployAirdropContract.new.perform(request_params)
   #
-  def deploy_airdrop_contract
-    request_params = {
-      client_id: @client_id,
-      token_symbol: @client_token.symbol,
-      token_name: @client_token.name
-    }
-
-    deploy_response = SaasApi::OnBoarding::DeployAirdropContract.new.perform(request_params)
-
-    Rails.logger.debug(deploy_response)
-
-    if deploy_response.success?
-      status = GlobalConstant::CriticalChainInteractions.pending_status
-      transaction_uuid = deploy_response.data[:transaction_uuid]
-      transaction_hash = deploy_response.data[:transaction_hash]
-    else
-      status = GlobalConstant::CriticalChainInteractions.failed_status
-    end
-
-    Rails.logger.debug("params -------------------------------- p->#{@parent_id}, c->#{@client_id}")
-    critical_log = CriticalChainInteractionLog.create!(
-      {
-        client_id: @client_id,
-        parent_id: @parent_id,
-        activity_type: GlobalConstant::CriticalChainInteractions.deploy_airdrop_activity_type,
-        client_token_id: @client_token_id,
-        chain_type: GlobalConstant::CriticalChainInteractions.utility_chain_type,
-        transaction_uuid: transaction_uuid,
-        transaction_hash: transaction_hash,
-        request_params: request_params,
-        response_data: deploy_response.to_hash,
-        status: status
-      }
-    )
-
-    BgJob.enqueue(
-      Airdrop::GetAirdropDeployStatusJob,
-      {
-        critical_log_id: critical_log.id,
-        parent_id: @parent_id
-      },
-      {
-        wait: 10.seconds
-      }
-    ) if critical_log.is_pending?
-
-  end
+  #   Rails.logger.debug(deploy_response)
+  #
+  #   if deploy_response.success?
+  #     status = GlobalConstant::CriticalChainInteractions.pending_status
+  #     transaction_uuid = deploy_response.data[:transaction_uuid]
+  #     transaction_hash = deploy_response.data[:transaction_hash]
+  #   else
+  #     status = GlobalConstant::CriticalChainInteractions.failed_status
+  #   end
+  #
+  #   Rails.logger.debug("params -------------------------------- p->#{@parent_id}, c->#{@client_id}")
+  #   critical_log = CriticalChainInteractionLog.create!(
+  #     {
+  #       client_id: @client_id,
+  #       parent_id: @parent_id,
+  #       activity_type: GlobalConstant::CriticalChainInteractions.deploy_airdrop_activity_type,
+  #       client_token_id: @client_token_id,
+  #       chain_type: GlobalConstant::CriticalChainInteractions.utility_chain_type,
+  #       transaction_uuid: transaction_uuid,
+  #       transaction_hash: transaction_hash,
+  #       request_params: request_params,
+  #       response_data: deploy_response.to_hash,
+  #       status: status
+  #     }
+  #   )
+  #
+  #   BgJob.enqueue(
+  #     Airdrop::GetAirdropDeployStatusJob,
+  #     {
+  #       critical_log_id: critical_log.id,
+  #       parent_id: @parent_id
+  #     },
+  #     {
+  #       wait: 10.seconds
+  #     }
+  #   ) if critical_log.is_pending?
+  #
+  # end
 
   # Save registration status
   #
@@ -228,11 +178,11 @@ class ProposeBrandedToken::GetProposeStatusJob < ApplicationJob
   #
   def save_registration_status
 
-    set_propose_done if @registration_status[:is_proposal_done] == 1
+    set_propose_done if @registration_status['is_proposal_done'] == 1
 
-    set_registered_on_uc if @registration_status[:is_registered_on_uc] == 1
+    set_registered_on_uc if @registration_status['is_registered_on_uc'] == 1
 
-    set_registered_on_vc if @registration_status[:is_registered_on_vc] == 1
+    set_registered_on_vc if @registration_status['is_registered_on_vc'] == 1
 
     if @client_token.changed?
       @client_token.save!
@@ -240,34 +190,8 @@ class ProposeBrandedToken::GetProposeStatusJob < ApplicationJob
       CacheManagement::ClientTokenSecure.new([@client_token.id]).clear
     end
 
-    # Update BT details in saas
-    saas_response = send_proposed_branded_token_to_saas
-    return saas_response
+    success
 
-  end
-
-  # Send proposed branded token details to SAAS
-  #
-  # * Author: Kedar
-  # * Date: 24/01/2018
-  # * Reviewed By: Sunil
-  #
-  # @return [Result::Base]
-  #
-  def send_proposed_branded_token_to_saas
-    return success unless registration_done?
-
-    r = SaasApi::OnBoarding::EditBt.new.perform(
-      symbol: @client_token.symbol,
-      symbol_icon: @client_token.symbol_icon,
-      client_id: @client_id,
-      token_erc20_address: @registration_status[:erc20_address],
-      token_uuid: @registration_status[:uuid]
-    )
-
-    puts("registration EditBt rsp :: #{r.inspect}")
-
-    return r
   end
 
   # set propose done
@@ -304,7 +228,7 @@ class ProposeBrandedToken::GetProposeStatusJob < ApplicationJob
     @client_token.send(
       "set_#{GlobalConstant::ClientToken.registered_on_vc_setup_step}"
     )
-    @client_token.token_erc20_address = @registration_status[:erc20_address]
+    @client_token.token_erc20_address = @registration_status['erc20_address']
   end
 
   # Is registration done
