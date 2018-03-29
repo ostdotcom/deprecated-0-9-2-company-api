@@ -63,7 +63,6 @@ class ClientToken < EstablishCompanyClientEconomyDbConnection
         token_erc20_address: token_erc20_address,
         airdrop_contract_address: airdrop_contract_addr,
         reserve_uuid: reserve_uuid,
-        worker_uuid: worker_addr_uuid,
         airdrop_holder_uuid: airdrop_holder_addr_uuid
     }
   end
