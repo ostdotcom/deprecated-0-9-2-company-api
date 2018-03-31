@@ -69,7 +69,7 @@ class Airdrop::GetAirdropDeployStatusJob < ApplicationJob
   def validate
 
     @critical_chain_interaction_log = CriticalChainInteractionLog.where(
-        parent_id: @critical_log_id,
+        parent_id: @parent_id,
         activity_type: GlobalConstant::CriticalChainInteractions.deploy_airdrop_activity_type
     ).first
 
@@ -98,7 +98,6 @@ class Airdrop::GetAirdropDeployStatusJob < ApplicationJob
     BgJob.enqueue(
       Airdrop::GetAirdropDeployStatusJob,
       {
-        critical_log_id: @critical_log_id,
         parent_id: @parent_id
       },
       {

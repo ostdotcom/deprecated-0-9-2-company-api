@@ -50,14 +50,12 @@ class ProposeBrandedToken::GetProposeStatusJob < ApplicationJob
   # @param [Hash] params
   #
   def init_params(params)
+
     @critical_log_id = params[:critical_log_id]
-    @parent_id = params[:parent_id]
 
     @critical_chain_interaction_log = nil
     @client_id = nil
     @client_token_id = nil
-    @transaction_hash = nil
-
     @client_token = nil
     @registration_status = nil
 
@@ -69,7 +67,7 @@ class ProposeBrandedToken::GetProposeStatusJob < ApplicationJob
   # * Date: 01/02/2018
   # * Reviewed By: Sunil
   #
-  # Sets @critical_chain_interaction_log, @client_id, @client_token_id, @transaction_hash, @client_token
+  # Sets @critical_chain_interaction_log, @client_id, @client_token_id, @client_token
   #
   # @return [Result::Base]
   #
@@ -107,8 +105,7 @@ class ProposeBrandedToken::GetProposeStatusJob < ApplicationJob
     BgJob.enqueue(
       ProposeBrandedToken::GetProposeStatusJob,
       {
-        critical_log_id: @critical_log_id,
-        parent_id: @parent_id
+        critical_log_id: @critical_log_id
       },
       {
         wait: 30.seconds
@@ -124,9 +121,9 @@ class ProposeBrandedToken::GetProposeStatusJob < ApplicationJob
   #
   def enqueue_verify_airdrop_deploy_status_job
     BgJob.enqueue(
-        ProposeBrandedToken::GetAirdropDeployStatusJob,
+        Airdrop::GetAirdropDeployStatusJob,
         {
-            parent_id: @parent_id
+            parent_id: @critical_log_id
         },
         {
             wait: 30.seconds

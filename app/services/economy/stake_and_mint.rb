@@ -62,21 +62,18 @@ module Economy
       r = set_registeration_params_in_db
       return r unless r.success?
 
-      # r = enqueue_propose_job
-      # return r unless r.success?
-      #
-      # r = enqueue_stake_and_mint_job
-      # return r unless r.success?
-      #
-      # enqueue_airdrop_tokens_job
-
       r = initiate_task_in_saas
+      return r unless r.success?
+
+      @critical_chain_interaction_log_id = r.data[:critical_chain_interaction_log_id]
+
+      r = enqueue_verify_reg_status_job
       return r unless r.success?
 
       #NOTE: Returned this and not fetched from PendingCriticalInteractionIds to avoid extra query
       success_with_data(
         pending_critical_interactions: {
-          @parent_tx_activity_type => r.data[:parent_critical_chain_interaction_log_id]
+          @parent_tx_activity_type => @critical_chain_interaction_log_id
         }
       )
 
@@ -409,6 +406,26 @@ module Economy
       }
 
       SaasApi::StakeAndMint::Start.new.perform(params)
+
+    end
+
+    # Enqueue job which would observe DB to check if registeration is complete.
+    #
+    # * Author: Puneet
+    # * Date: 29/03/2018
+    # * Reviewed By:
+    #
+    # @return [Result::Base]
+    #
+    def enqueue_verify_reg_status_job
+
+      BgJob.enqueue(
+        ::ProposeBrandedToken::GetProposeStatusJob,
+        {critical_log_id: @critical_chain_interaction_log_id},
+        {wait: 30.seconds}
+      )
+
+      success
 
     end
 

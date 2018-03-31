@@ -137,8 +137,8 @@ module CacheManagement
         # NOTE: These types should be ordered. First step which needs to be executed should be first
         when GlobalConstant::CriticalChainInteractions.propose_bt_activity_type
           steps = [
-              GlobalConstant::CriticalChainInteractions.staker_initial_transfer_activity_type,
               GlobalConstant::CriticalChainInteractions.propose_bt_activity_type,
+              GlobalConstant::CriticalChainInteractions.staker_initial_transfer_activity_type,
               GlobalConstant::CriticalChainInteractions.deploy_airdrop_activity_type,
               GlobalConstant::CriticalChainInteractions.setops_airdrop_activity_type,
               GlobalConstant::CriticalChainInteractions.set_worker_activity_type,
