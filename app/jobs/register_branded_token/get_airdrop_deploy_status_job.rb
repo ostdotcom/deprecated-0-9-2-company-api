@@ -1,4 +1,4 @@
-class Airdrop::GetAirdropDeployStatusJob < ApplicationJob
+class RegisterBrandedToken::GetAirdropDeployStatusJob < ApplicationJob
 
   include Util::ResultHelper
 
@@ -27,12 +27,12 @@ class Airdrop::GetAirdropDeployStatusJob < ApplicationJob
         {}
     ) if @critical_chain_interaction_log.is_failed?
 
-    data = @critical_chain_interaction_log.response_data['data']
-
-    update_airdrop_contract_address(data['transaction_receipt']['contractAddress'])
+    update_airdrop_contract_address
 
     if @critical_chain_interaction_log.is_pending?
       enqueue_self
+    else
+      enqueue_get_other_tasks_status_job
     end
 
     success
@@ -87,7 +87,29 @@ class Airdrop::GetAirdropDeployStatusJob < ApplicationJob
 
   end
 
-  # Enqueue job
+  # update contract address.
+  #
+  # * Author: alpesh
+  # * Date: 22/02/2018
+  # * Reviewed By:
+  #
+  def update_airdrop_contract_address
+
+    data = @critical_chain_interaction_log.response_data['data']
+    return if data.blank? || data['transaction_receipt'].blank?
+
+    contract_address = data['transaction_receipt']['contractAddress']
+
+    return if contract_address.blank?
+
+    ClientToken.where(id: @critical_chain_interaction_log.client_token_id).
+        update_all(airdrop_contract_addr: contract_address)
+
+    CacheManagement::ClientTokenSecure.new([@critical_chain_interaction_log.client_token_id]).clear
+
+  end
+
+  # Enqueue self
   #
   # * Author: alpesh
   # * Date: 22/02/2018
@@ -96,7 +118,7 @@ class Airdrop::GetAirdropDeployStatusJob < ApplicationJob
   def enqueue_self
 
     BgJob.enqueue(
-      Airdrop::GetAirdropDeployStatusJob,
+      ::RegisterBrandedToken::GetAirdropDeployStatusJob,
       {
         parent_id: @parent_id
       },
@@ -107,26 +129,23 @@ class Airdrop::GetAirdropDeployStatusJob < ApplicationJob
 
   end
 
-  # update contract address.
+  # Enqueue verify other steps status job
   #
-  # * Author: alpesh
-  # * Date: 22/02/2018
+  # * Author: Puneet
+  # * Date: 29/03/2018
   # * Reviewed By:
   #
-  def update_airdrop_contract_address(contract_address)
+  def enqueue_get_other_tasks_status_job
 
-    return if contract_address.blank?
-
-    ClientToken.where(id: @critical_chain_interaction_log.client_token_id).
-      update_all(airdrop_contract_addr: contract_address)
-
-    CacheManagement::ClientTokenSecure.new([@critical_chain_interaction_log.client_token_id]).clear
-
-    # SaasApi::OnBoarding::EditBt.new.perform(
-    #   symbol: client_token.symbol,
-    #   client_id: client_token.client_id,
-    #   airdrop_contract_addr: contract_address
-    # )
+    BgJob.enqueue(
+      ::RegisterBrandedToken::GetOtherTasksStatusJob,
+      {
+          parent_id: @parent_id
+      },
+      {
+          wait: 30.seconds
+      }
+    )
 
   end
 

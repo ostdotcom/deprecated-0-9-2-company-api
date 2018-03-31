@@ -138,11 +138,11 @@ module CacheManagement
         when GlobalConstant::CriticalChainInteractions.propose_bt_activity_type
           steps = [
               GlobalConstant::CriticalChainInteractions.propose_bt_activity_type,
-              GlobalConstant::CriticalChainInteractions.staker_initial_transfer_activity_type,
               GlobalConstant::CriticalChainInteractions.deploy_airdrop_activity_type,
               GlobalConstant::CriticalChainInteractions.setops_airdrop_activity_type,
               GlobalConstant::CriticalChainInteractions.set_worker_activity_type,
-              GlobalConstant::CriticalChainInteractions.set_price_oracle_activity_type
+              GlobalConstant::CriticalChainInteractions.set_price_oracle_activity_type,
+              GlobalConstant::CriticalChainInteractions.staker_initial_transfer_activity_type
           ]
           if is_bt_to_be_minted?(db_record)
             steps << GlobalConstant::CriticalChainInteractions.stake_bt_started_activity_type
@@ -150,7 +150,7 @@ module CacheManagement
           if is_st_prime_to_be_minted?(db_record)
             steps << GlobalConstant::CriticalChainInteractions.stake_st_prime_started_activity_type
           end
-          if db_record.request_params[:airdrop_user_list_type].present?
+          if db_record.request_params['airdrop_params'].present? && db_record.request_params['airdrop_params']['airdrop_user_list_type'].present?
             steps << GlobalConstant::CriticalChainInteractions.airdrop_users_activity_type
           end
         when GlobalConstant::CriticalChainInteractions.staker_initial_transfer_activity_type
@@ -181,17 +181,17 @@ module CacheManagement
     #
     def activity_type_display_text(db_object, client_token)
       request_params = db_object.request_params
-      response_data = db_object.response_data[:data]
+      response_data = db_object.response_data['data']
       case db_object.activity_type
         when GlobalConstant::CriticalChainInteractions.propose_bt_activity_type
           if response_data.blank? || response_data['registration_status'].blank?
             "Proposing #{client_token[:symbol]} on OpenST Utility Blockchain"
-          elsif response_data['registration_status']['is_registered_on_vc'] == 1
-            "#{client_token[:symbol]} successfully registered"
-          elsif response_data['registration_status']['is_registered_on_uc'] == 1
-            "Registering #{client_token[:symbol]} on Ropsten"
           elsif response_data['registration_status']['is_proposal_done'] == 1
             "Registering #{client_token[:symbol]} on OpenST Utility Blockchain"
+          elsif response_data['registration_status']['is_registered_on_uc'] == 1
+            "Registering #{client_token[:symbol]} on Ropsten"
+          elsif response_data['registration_status']['is_registered_on_vc'] == 1
+            "#{client_token[:symbol]} successfully registered"
           end
         when GlobalConstant::CriticalChainInteractions.deploy_airdrop_activity_type
           case db_object.status
@@ -295,11 +295,11 @@ module CacheManagement
     end
 
     def is_st_prime_to_be_minted?(db_record)
-      db_record.request_params[:st_prime_to_mint].present? && BigDecimal.new(db_record.request_params[:st_prime_to_mint]) > 0
+      db_record.request_params['stake_and_mint_params'].present? && BigDecimal.new(db_record.request_params['stake_and_mint_params']['st_prime_to_mint']) > 0
     end
 
     def is_bt_to_be_minted?(db_record)
-      db_record.request_params[:bt_to_mint].present? && BigDecimal.new(db_record.request_params[:bt_to_mint]) > 0
+      db_record.request_params['stake_and_mint_params'].present? && BigDecimal.new(db_record.request_params['stake_and_mint_params']['bt_to_mint']) > 0
     end
 
     def dependent_activity_types

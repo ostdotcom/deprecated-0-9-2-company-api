@@ -71,59 +71,57 @@ module GlobalConstant
       'client-users/get-addresses-by-uuid'
     end
 
-    ############### Routes to be deprecated #######################
-
-    def self.get_tx_receipt
-      'stake/get-receipt'
-    end
-
-    def self.deploy_airdrop_contract_path
-      'on-boarding/deploy-airdrop-contract'
-    end
-
-    def self.get_registration_status_api_path
-      'on-boarding/registration-status'
-    end
-
     def self.get_balances_path
       'on-boarding/fetch-balances'
     end
 
-    def self.set_worker_path
-      'on-boarding/set-worker'
-    end
-
-    def self.fetch_worker_status_path
-      'on-boarding/fetch-worker-status'
-    end
-
-    def self.set_price_oracle_path
-      'on-boarding/set-price-oracle'
-    end
-
-    def self.set_accepted_margin_path
-      'on-boarding/set-accepted-margin'
-    end
-
-    def self.setops_airdrop_path
-      'on-boarding/setops-airdrop'
-    end
-
-    def self.approve_for_stake_api_path
-      'stake/approve'
-    end
-
-    def self.get_approve_status_for_stake_api_path
-      'stake/approval-status'
-    end
-
-    def self.start_stake_bt
-      'stake/start-bt'
-    end
-
-    def self.start_stake_st_prime
-      'stake/start-st-prime'
-    end
+    # def self.get_tx_receipt
+    #   'stake/get-receipt'
+    # end
+    #
+    # def self.deploy_airdrop_contract_path
+    #   'on-boarding/deploy-airdrop-contract'
+    # end
+    #
+    # def self.get_registration_status_api_path
+    #   'on-boarding/registration-status'
+    # end
+    #
+    # def self.set_worker_path
+    #   'on-boarding/set-worker'
+    # end
+    #
+    # def self.fetch_worker_status_path
+    #   'on-boarding/fetch-worker-status'
+    # end
+    #
+    # def self.set_price_oracle_path
+    #   'on-boarding/set-price-oracle'
+    # end
+    #
+    # def self.set_accepted_margin_path
+    #   'on-boarding/set-accepted-margin'
+    # end
+    #
+    # def self.setops_airdrop_path
+    #   'on-boarding/setops-airdrop'
+    # end
+    #
+    # def self.approve_for_stake_api_path
+    #   'stake/approve'
+    # end
+    #
+    # def self.get_approve_status_for_stake_api_path
+    #   'stake/approval-status'
+    # end
+    #
+    # def self.start_stake_bt
+    #   'stake/start-bt'
+    # end
+    #
+    # def self.start_stake_st_prime
+    #   'stake/start-st-prime'
+    # end
 
   end
 

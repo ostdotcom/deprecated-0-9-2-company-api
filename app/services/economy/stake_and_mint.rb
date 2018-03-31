@@ -420,7 +420,7 @@ module Economy
     def enqueue_verify_reg_status_job
 
       BgJob.enqueue(
-        ::ProposeBrandedToken::GetProposeStatusJob,
+        ::RegisterBrandedToken::GetProposeStatusJob,
         {critical_log_id: @critical_chain_interaction_log_id},
         {wait: 30.seconds}
       )

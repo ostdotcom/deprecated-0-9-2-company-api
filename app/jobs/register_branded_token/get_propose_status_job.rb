@@ -1,4 +1,4 @@
-class ProposeBrandedToken::GetProposeStatusJob < ApplicationJob
+class RegisterBrandedToken::GetProposeStatusJob < ApplicationJob
 
   include Util::ResultHelper
 
@@ -103,7 +103,7 @@ class ProposeBrandedToken::GetProposeStatusJob < ApplicationJob
   #
   def enqueue_self
     BgJob.enqueue(
-      ProposeBrandedToken::GetProposeStatusJob,
+      ::RegisterBrandedToken::GetProposeStatusJob,
       {
         critical_log_id: @critical_log_id
       },
@@ -121,7 +121,7 @@ class ProposeBrandedToken::GetProposeStatusJob < ApplicationJob
   #
   def enqueue_verify_airdrop_deploy_status_job
     BgJob.enqueue(
-        Airdrop::GetAirdropDeployStatusJob,
+      ::RegisterBrandedToken::GetAirdropDeployStatusJob,
         {
             parent_id: @critical_log_id
         },
