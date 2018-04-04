@@ -198,24 +198,14 @@ module Economy
     #
     def make_saas_call
 
-      result = CacheManagement::ClientApiCredentials.new([@client_id]).fetch[@client_id]
-      return error_with_data(
-          'e_adu_4',
-          "Invalid client.",
-          'Something Went Wrong.',
-          GlobalConstant::ErrorAction.default,
-          {}
-      ) if result.blank?
-
-      # Create OST Sdk Obj
-      credentials = OSTSdk::Util::APICredentials.new(result[:api_key], result[:api_secret])
-      @ost_sdk_obj = OSTSdk::Saas::Users.new(GlobalConstant::Base.sub_env, credentials)
-
-      service_response = @ost_sdk_obj.airdrop_tokens(
-        token_symbol: @client_token[:symbol],
-        amount: @amount,
-        list_type: @airdrop_list_type,
-        client_token_id: @client_token_id
+      service_response = SaasApi::KitStartAirdrop.new.perform(
+        {
+          client_id: @client_id,
+          token_symbol: @client_token[:symbol],
+          amount: @amount,
+          list_type: @airdrop_list_type,
+          client_token_id: @client_token_id
+        }
       )
 
       return error_with_data(

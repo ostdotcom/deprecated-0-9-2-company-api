@@ -75,6 +75,10 @@ module GlobalConstant
       'on-boarding/fetch-balances'
     end
 
+    def self.kit_start_airdrop_path
+      'client-users/airdrop/kit-drop'
+    end
+
     # def self.get_tx_receipt
     #   'stake/get-receipt'
     # end
