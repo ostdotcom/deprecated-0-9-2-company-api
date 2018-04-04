@@ -69,9 +69,10 @@ module SaasApi
               # front end doesn't need to see invalid ethereum address
               return error_with_data(parsed_response['err']['code']+':st(l_ma_b_2)',
                                      "Error in API call: #{response.status} - #{parsed_response['err']['msg']}",
-                                     'Something Went Wrong.',
+                                     parsed_response['err']['msg'],
                                      GlobalConstant::ErrorAction.default,
-                                     {web3_js_error: true})
+                                     {web3_js_error: true},
+                                     parsed_response['err']['error_data'])
             end
           else
             return error_with_data('l_ma_b_3',
