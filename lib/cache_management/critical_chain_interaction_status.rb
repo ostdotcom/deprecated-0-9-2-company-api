@@ -181,7 +181,10 @@ module CacheManagement
     #
     def activity_type_display_text(db_object, client_token)
       request_params = db_object.request_params
-      response_data = db_object.response_data['data']
+      response_success = db_object.response_data['success']
+      response_data = db_object.response_data['data'] || {}
+      response_err = db_object.response_data['err'] || {}
+
       case db_object.activity_type
         when GlobalConstant::CriticalChainInteractions.propose_bt_activity_type
           if response_data.blank? || response_data['registration_status'].blank?
@@ -236,7 +239,9 @@ module CacheManagement
               'Staking OSTα as reserve for gas'
           end
         when GlobalConstant::CriticalChainInteractions.airdrop_users_activity_type
-          if response_data.blank? || response_data['steps_complete'].blank?
+          if !response_success
+            response_err['msg'] || 'Something went wrong.'
+          elsif response_data.blank? || response_data['steps_complete'].blank?
             'Verifying the list of users to receive airdrop'
           elsif response_data['steps_complete'].include?('allocation_done')
             'Airdrop successfully completed'
