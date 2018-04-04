@@ -186,12 +186,12 @@ module CacheManagement
         when GlobalConstant::CriticalChainInteractions.propose_bt_activity_type
           if response_data.blank? || response_data['registration_status'].blank?
             "Proposing #{client_token[:symbol]} on OpenST Utility Blockchain"
-          elsif response_data['registration_status']['is_proposal_done'] == 1
-            "Registering #{client_token[:symbol]} on OpenST Utility Blockchain"
-          elsif response_data['registration_status']['is_registered_on_uc'] == 1
-            "Registering #{client_token[:symbol]} on Ropsten"
           elsif response_data['registration_status']['is_registered_on_vc'] == 1
             "#{client_token[:symbol]} successfully registered"
+          elsif response_data['registration_status']['is_registered_on_uc'] == 1
+            "Registering #{client_token[:symbol]} on Ropsten"
+          elsif response_data['registration_status']['is_proposal_done'] == 1
+            "Registering #{client_token[:symbol]} on OpenST Utility Blockchain"
           end
         when GlobalConstant::CriticalChainInteractions.deploy_airdrop_activity_type
           case db_object.status
