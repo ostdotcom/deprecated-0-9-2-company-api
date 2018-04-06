@@ -50,7 +50,7 @@ module ExplorerApi
         return resp unless resp.success?
 
         new_response = []
-        not_allowed_user_uuids = [client_token[:reserve_uuid], client_token[:worker_uuid], client_token[:airdrop_holder_uuid]].map{|k| k.downcase}
+        not_allowed_user_uuids = [client_token[:reserve_uuid], client_token[:airdrop_holder_uuid]].map{|k| k.downcase}
         not_allowed_addresses = [client_token[:token_erc20_address], client_token[:airdrop_contract_address]].map{|k| k.downcase}
         users.each do |user_data|
           eth_address = user_data['address'].downcase
