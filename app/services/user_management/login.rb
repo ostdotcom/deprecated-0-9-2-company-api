@@ -67,7 +67,7 @@ module UserManagement
 
       return unauthorized_access_response(
           'um_l_fu_4',
-          'The email address is not allowed for Dev Program.'
+          'Access to OST KIT⍺ developer program is not approved for this email address.'
       ) unless Util::CommonValidator.is_whitelisted_email?(@email)
 
       @user = User.where(email: @email).first

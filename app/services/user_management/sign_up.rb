@@ -96,7 +96,7 @@ module UserManagement
       validation_errors = {}
       validation_errors[:email] = 'The email address you entered is not valid.' unless Util::CommonValidator.is_valid_email?(@email)
 
-      validation_errors[:email] = 'The email address is not allowed for Dev Program.' unless Util::CommonValidator.is_whitelisted_email?(@email)
+      validation_errors[:email] = 'Access to OST KIT⍺ developer program is not approved for this email address.' unless Util::CommonValidator.is_whitelisted_email?(@email)
 
       validation_errors[:password] = 'The password you entered is incorrect. Please try again.' unless Util::CommonValidator.is_valid_password?(@password)
 

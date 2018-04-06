@@ -118,7 +118,7 @@ module ClientManagement
     #
     def fetch_api_credentials
 
-      @client_api_credentials = ClientApiCredential.where(client_id: @client_id).first
+      @client_api_credentials = ClientApiCredential.where(client_id: @client_id).last
 
       return error_with_data('cm_gcac_2',
                              "Invalid client.",
