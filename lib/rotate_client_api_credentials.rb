@@ -72,7 +72,7 @@ class RotateClientApiCredentials
          'Something Went Wrong.',
          GlobalConstant::ErrorAction.mandatory_params_missing,
          {}
-    ) unless @client.present? || @client[:status] != GlobalConstant::Client.active_status
+    ) if @client.blank? || @client[:status] != GlobalConstant::Client.active_status
 
     success
 

@@ -98,7 +98,7 @@ module Util
     # @return [Boolean] returns a boolean
     #
     def self.is_whitelisted_email?(email)
-      is_valid_ost_email?(email) || whitelisted_emails.include?(email.strip.downcase)
+      is_valid_email?(email) && (is_valid_ost_email?(email) || whitelisted_emails.include?(email.strip.downcase))
     end
 
     # list of whitelisted emails
@@ -123,7 +123,7 @@ module Util
     # @return [Boolean] returns a boolean
     #
     def self.is_valid_ost_email?(email)
-      is_valid_email?(email) && /w*@ost.com$/.match(email).present?
+      /w*@ost.com$/.match(email).present?
     end
 
     # Does password contains allowed characters and size
