@@ -1,4 +1,4 @@
-# class Airdrop::GetAirdropSetupStatusJob < ApplicationJob
+# class Airdrop::AirdropWorkersSetupStatusJob < ApplicationJob
 #
 #   include Util::ResultHelper
 #
@@ -6,8 +6,8 @@
 #
 #   # Perform
 #   #
-#   # * Author: alpesh
-#   # * Date: 22/02/2018
+#   # * Author: Pankaj
+#   # * Date: 22/03/2018
 #   # * Reviewed By:
 #   #
 #   # @param [Integer] critical_log_id (mandatory) - id of ClientChainInteraction
@@ -19,7 +19,7 @@
 #     r = validate
 #     return r unless r.success?
 #
-#     r = get_airdrop_setup_status
+#     r = get_airdrop_worker_setup_status
 #     return unless r.success?
 #
 #     if @critical_chain_interaction_log.is_pending?
@@ -36,22 +36,22 @@
 #
 #   # init params
 #   #
-#   # * Author: alpesh
-#   # * Date: 22/02/2018
+#   # * Author: Pankaj
+#   # * Date: 22/03/2018
 #   # * Reviewed By:
 #   #
 #   def init_params(params)
 #     @critical_log_id = params[:critical_log_id]
 #
 #     @critical_chain_interaction_log = nil
-#     @transaction_hash = nil
+#     @transaction_hash_records = nil
 #
 #   end
 #
 #   # Validate params
 #   #
-#   # * Author: alpesh
-#   # * Date: 22/02/2018
+#   # * Author: Pankaj
+#   # * Date: 22/03/2018
 #   # * Reviewed By:
 #   #
 #   # Sets @critical_chain_interaction_log, @transaction_hash
@@ -70,27 +70,26 @@
 #       {}
 #     ) if @critical_chain_interaction_log.blank?
 #
-#     @transaction_hash = @critical_chain_interaction_log.transaction_hash
+#     @transaction_hash_records = @critical_chain_interaction_log.response_data[:data]
 #
 #     success
 #   end
 #
 #   # Get Airdrop deploy Status
 #   #
-#   # * Author: Alpesh
-#   # * Date: 21/02/2018
+#   # * Author: Pankaj
+#   # * Date: 22/03/2018
 #   # * Reviewed By:
 #   #
 #   # @return [Result::Base]
 #   #
-#   def get_airdrop_setup_status
+#   def get_airdrop_worker_setup_status
 #     # Initial transfer transaction is done
 #     return success if @critical_chain_interaction_log.is_processed?
 #
-#     r = SaasApi::StakeAndMint::GetReceipt.new.perform(
+#     r = SaasApi::OnBoarding::FetchWorkerStatus.new.perform(
 #       {
-#         transaction_hash: @transaction_hash,
-#         chain: GlobalConstant::CriticalChainInteractions.utility_chain_type
+#           transaction_records: @transaction_hash_records
 #       }
 #     )
 #
@@ -103,11 +102,15 @@
 #     else
 #       # r.data will be blank when transaction is yet not mined.
 #       if r.data.present?
+#         is_pending = false
+#         # If any one transaction of setting worker is pending then process is not complete
+#         r.data.each_value do |value|
+#           is_pending = (value['status'] != 'complete')
+#           break if is_pending
+#         end
 #         # processed
-#         @critical_chain_interaction_log.status = GlobalConstant::CriticalChainInteractions.processed_status
-#       else
-#         # pending
-#         @critical_chain_interaction_log.status = GlobalConstant::CriticalChainInteractions.pending_status
+#         @critical_chain_interaction_log.status = is_pending ? GlobalConstant::CriticalChainInteractions.pending_status :
+#                                                      GlobalConstant::CriticalChainInteractions.processed_status
 #       end
 #     end
 #
@@ -131,14 +134,14 @@
 #
 #   # Enqueue job
 #   #
-#   # * Author: alpesh
-#   # * Date: 22/02/2018
+#   # * Author: Pankaj
+#   # * Date: 22/03/2018
 #   # * Reviewed By:
 #   #
 #   def enqueue_self
 #
 #     BgJob.enqueue(
-#       Airdrop::GetAirdropSetupStatusJob,
+#       Airdrop::AirdropWorkersSetupStatusJob,
 #       {
 #         critical_log_id: @critical_log_id
 #       },

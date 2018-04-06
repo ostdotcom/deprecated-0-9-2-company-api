@@ -80,7 +80,7 @@ module Economy
             'Token SetUp Not Complete.',
             'Token SetUp Not Complete.',
             GlobalConstant::GoTo.economy_planner_step_one
-        ) if @client_token[:setup_steps].exclude?(GlobalConstant::ClientToken.airdrop_done_setup_step)
+        ) if @client_token[:setup_steps].exclude?(GlobalConstant::ClientToken.setup_complete_step)
 
         success
 

@@ -14,7 +14,7 @@ class ClientToken < EstablishCompanyClientEconomyDbConnection
       GlobalConstant::ClientToken.registered_on_uc_setup_step => 16,
       GlobalConstant::ClientToken.registered_on_vc_setup_step => 32,
       GlobalConstant::ClientToken.received_test_ost_setup_step => 64,
-      GlobalConstant::ClientToken.airdrop_done_setup_step => 128
+      GlobalConstant::ClientToken.setup_complete_step => 128
     }
   end
 
@@ -79,7 +79,7 @@ class ClientToken < EstablishCompanyClientEconomyDbConnection
     send("#{GlobalConstant::ClientToken.propose_done_setup_step}?") &&
       send("#{GlobalConstant::ClientToken.registered_on_uc_setup_step}?") &&
       send("#{GlobalConstant::ClientToken.registered_on_vc_setup_step}?") &&
-      send("#{GlobalConstant::ClientToken.airdrop_done_setup_step}?")
+      send("#{GlobalConstant::ClientToken.setup_complete_step}?")
   end
 
 end

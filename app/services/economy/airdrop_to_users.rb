@@ -47,26 +47,30 @@ module Economy
       r = validate_airdrop_done
       return r unless r.success?
 
-      insert_initial_db_record
-
       r = make_saas_call
-      if r.success?
-        @chain_interaction.transaction_uuid = @api_response_data["airdrop_uuid"]
-        @chain_interaction.status = GlobalConstant::CriticalChainInteractions.pending_status
-        @chain_interaction.save
-      else
-        @chain_interaction.status = GlobalConstant::CriticalChainInteractions.failed_status
-        @chain_interaction.response_data = r.to_hash
-        @chain_interaction.save
-        return r
-      end
+      return r unless r.success?
 
-      enqueue_job
+      # if r.success?
+      #   @chain_interaction.transaction_uuid = @api_response_data["airdrop_uuid"]
+      #   @chain_interaction.status = GlobalConstant::CriticalChainInteractions.pending_status
+      #   @chain_interaction.save
+      # else
+      #   @chain_interaction.status = GlobalConstant::CriticalChainInteractions.failed_status
+      #   @chain_interaction.response_data = r.to_hash
+      #   @chain_interaction.save
+      #   return r
+      # end
+
+      # enqueue_job
+
+      puts @api_response_data
 
       success_with_data(
-          pending_critical_interactions:
-              {GlobalConstant::CriticalChainInteractions.airdrop_users_activity_type => @chain_interaction.id}
+        pending_critical_interactions: {
+          GlobalConstant::CriticalChainInteractions.airdrop_users_activity_type => @api_response_data['critical_chain_interaction_log_id']
+        }
       )
+
     end
 
     private
@@ -135,6 +139,7 @@ module Economy
     # @return [Result::Base]
     #
     def validate_airdrop_done
+
       client_chain_interactions = CriticalChainInteractionLog.of_activity_type(GlobalConstant::CriticalChainInteractions.
           airdrop_users_activity_type).where(client_id: @client_id).group_by(&:status)
 
@@ -154,6 +159,7 @@ module Economy
       # TODO: Do we have to apply any other checks
 
       success
+
     end
 
     # Create new record
@@ -166,20 +172,20 @@ module Economy
     #
     # @return [Result::Base]
     #
-    def insert_initial_db_record
-      @chain_interaction = CriticalChainInteractionLog.create!(client_id: @client_id,
-                                                               client_token_id: @client_token_id,
-                                                               activity_type: GlobalConstant::CriticalChainInteractions.airdrop_users_activity_type,
-                                                               chain_type: GlobalConstant::CriticalChainInteractions.utility_chain_type,
-                                                               status: GlobalConstant::CriticalChainInteractions.queued_status,
-                                                               request_params: {
-                                                                   amount: @amount,
-                                                                   token_symbol: @client_token[:symbol],
-                                                                   users_list_to_airdrop: @airdrop_list_type
-                                                               },
-                                                               parent_id: @parent_critical_log_id
-      )
-    end
+    # def insert_initial_db_record
+    #   @chain_interaction = CriticalChainInteractionLog.create!(client_id: @client_id,
+    #                                                            client_token_id: @client_token_id,
+    #                                                            activity_type: GlobalConstant::CriticalChainInteractions.airdrop_users_activity_type,
+    #                                                            chain_type: GlobalConstant::CriticalChainInteractions.utility_chain_type,
+    #                                                            status: GlobalConstant::CriticalChainInteractions.queued_status,
+    #                                                            request_params: {
+    #                                                                amount: @amount,
+    #                                                                token_symbol: @client_token[:symbol],
+    #                                                                users_list_to_airdrop: @airdrop_list_type
+    #                                                            },
+    #                                                            parent_id: @parent_critical_log_id
+    #   )
+    # end
 
     # Make Saas Api call
     #
@@ -192,21 +198,15 @@ module Economy
     #
     def make_saas_call
 
-      result = CacheManagement::ClientApiCredentials.new([@client_id]).fetch[@client_id]
-      return error_with_data(
-          'e_adu_4',
-          "Invalid client.",
-          'Something Went Wrong.',
-          GlobalConstant::ErrorAction.default,
-          {}
-      ) if result.blank?
-
-      # Create OST Sdk Obj
-      credentials = OSTSdk::Util::APICredentials.new(result[:api_key], result[:api_secret])
-      @ost_sdk_obj = OSTSdk::Saas::Users.new(GlobalConstant::Base.sub_env, credentials)
-
-      service_response = @ost_sdk_obj.airdrop_tokens(token_symbol: @client_token[:symbol], amount: @amount,
-                                                     list_type: @airdrop_list_type)
+      service_response = SaasApi::KitStartAirdrop.new.perform(
+        {
+          client_id: @client_id,
+          token_symbol: @client_token[:symbol],
+          amount: @amount,
+          list_type: @airdrop_list_type,
+          client_token_id: @client_token_id
+        }
+      )
 
       return error_with_data(
           'e_adu_5',
@@ -229,19 +229,19 @@ module Economy
     # * Date: 22/02/2018
     # * Reviewed By:
     #
-    def enqueue_job
-
-      BgJob.enqueue(
-          Airdrop::GetAirdropTransactionStatusJob,
-          {
-              critical_log_id: @chain_interaction.id
-          },
-          {
-              wait: 10.seconds
-          }
-      )
-
-    end
+    # def enqueue_job
+    #
+    #   BgJob.enqueue(
+    #       Airdrop::GetAirdropTransactionStatusJob,
+    #       {
+    #           critical_log_id: @chain_interaction.id
+    #       },
+    #       {
+    #           wait: 10.seconds
+    #       }
+    #   )
+    #
+    # end
 
   end
 

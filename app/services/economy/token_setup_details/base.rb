@@ -144,7 +144,7 @@ module Economy
       #
       def is_client_setup_complete?
         return @i_s_s_c unless @i_s_s_c.nil?
-        @i_s_s_c = @client_token[:setup_steps].include?(GlobalConstant::ClientToken.airdrop_done_setup_step)
+        @i_s_s_c = @client_token[:setup_steps].include?(GlobalConstant::ClientToken.setup_complete_step)
       end
 
       # Is client's setup complete ?

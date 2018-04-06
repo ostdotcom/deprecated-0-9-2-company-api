@@ -2,15 +2,15 @@
 #
 #   module OnBoarding
 #
-#     class SetPriceOracle < SaasApi::Base
+#     class FetchWorkerStatus < SaasApi::Base
 #
 #       # Initialize
 #       #
-#       # * Author: Alpesh
-#       # * Date: 21/02/2018
+#       # * Author: Pankaj
+#       # * Date: 23/03/2018
 #       # * Reviewed By:
 #       #
-#       # @return [SaasApi::OnBoarding::SetPriceOraclePath]
+#       # @return [SaasApi::OnBoarding::FetchWorkerStatus]
 #       #
 #       def initialize
 #         super
@@ -18,8 +18,8 @@
 #
 #       # Perform
 #       #
-#       # * Author: Alpesh
-#       # * Date: 21/02/2018
+#       # * Author: Pankaj
+#       # * Date: 23/03/2018
 #       # * Reviewed By:
 #       #
 #       # @return [Result::Base]
@@ -27,7 +27,7 @@
 #       def perform(params)
 #         send_request_of_type(
 #           'post',
-#           GlobalConstant::SaasApi.set_price_oracle_path,
+#           GlobalConstant::SaasApi.fetch_worker_status_path,
 #           params
 #         )
 #       end

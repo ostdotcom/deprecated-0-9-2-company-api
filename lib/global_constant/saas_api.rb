@@ -15,16 +15,12 @@ module GlobalConstant
       GlobalConstant::Base.company_restful_api[:secret_key]
     end
 
-    def self.propose_bt_api_path
-      'on-boarding/propose-branded-token'
+    def self.start_on_boarding_api_path
+      'on-boarding/start'
     end
 
-    def self.deploy_airdrop_contract_path
-      'on-boarding/deploy-airdrop-contract'
-    end
-
-    def self.get_registration_status_api_path
-      'on-boarding/registration-status'
+    def self.start_stake
+      'stake/start'
     end
 
     def self.grant_test_ost_path
@@ -51,46 +47,6 @@ module GlobalConstant
       'on-boarding/create-dummy-users'
     end
 
-    def self.get_balances_path
-      'on-boarding/fetch-balances'
-    end
-
-    def self.set_worker_path
-      'on-boarding/set-worker'
-    end
-
-    def self.set_price_oracle_path
-      'on-boarding/set-price-oracle'
-    end
-
-    def self.set_accepted_margin_path
-      'on-boarding/set-accepted-margin'
-    end
-
-    def self.setops_airdrop_path
-      'on-boarding/setops-airdrop'
-    end
-
-    def self.approve_for_stake_api_path
-      'stake/approve'
-    end
-
-    def self.get_approve_status_for_stake_api_path
-      'stake/approval-status'
-    end
-
-    def self.start_stake_bt
-      'stake/start-bt'
-    end
-
-    def self.start_stake_st_prime
-      'stake/start-st-prime'
-    end
-
-    def self.get_tx_receipt
-      'stake/get-receipt'
-    end
-
     def self.get_staked_amount
       'stake/get-staked-amount'
     end
@@ -114,6 +70,62 @@ module GlobalConstant
     def self.get_addresses_by_uuids
       'client-users/get-addresses-by-uuid'
     end
+
+    def self.get_balances_path
+      'on-boarding/fetch-balances'
+    end
+
+    def self.kit_start_airdrop_path
+      'client-users/airdrop/kit-drop'
+    end
+
+    # def self.get_tx_receipt
+    #   'stake/get-receipt'
+    # end
+    #
+    # def self.deploy_airdrop_contract_path
+    #   'on-boarding/deploy-airdrop-contract'
+    # end
+    #
+    # def self.get_registration_status_api_path
+    #   'on-boarding/registration-status'
+    # end
+    #
+    # def self.set_worker_path
+    #   'on-boarding/set-worker'
+    # end
+    #
+    # def self.fetch_worker_status_path
+    #   'on-boarding/fetch-worker-status'
+    # end
+    #
+    # def self.set_price_oracle_path
+    #   'on-boarding/set-price-oracle'
+    # end
+    #
+    # def self.set_accepted_margin_path
+    #   'on-boarding/set-accepted-margin'
+    # end
+    #
+    # def self.setops_airdrop_path
+    #   'on-boarding/setops-airdrop'
+    # end
+    #
+    # def self.approve_for_stake_api_path
+    #   'stake/approve'
+    # end
+    #
+    # def self.get_approve_status_for_stake_api_path
+    #   'stake/approval-status'
+    # end
+    #
+    # def self.start_stake_bt
+    #   'stake/start-bt'
+    # end
+    #
+    # def self.start_stake_st_prime
+    #   'stake/start-st-prime'
+    # end
 
   end
 

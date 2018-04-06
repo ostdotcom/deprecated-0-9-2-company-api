@@ -1,4 +1,6 @@
-class CriticalChainInteractionLog < EstablishCompanyBigDbConnection
+class CriticalChainInteractionLog < EstablishCompanySaasSharedDbConnection
+
+  #NOTE: This is a shared DB with SAAS. ANY Changes in Enum should be synced with SAAS
 
   enum activity_type: {
       GlobalConstant::CriticalChainInteractions.request_ost_activity_type => 1,
@@ -34,8 +36,8 @@ class CriticalChainInteractionLog < EstablishCompanyBigDbConnection
     where(activity_type: activity_type)
   }
 
-  serialize :request_params, Hash
-  serialize :response_data, Hash
+  serialize :request_params, JSON
+  serialize :response_data, JSON
 
   MARK_AS_TIMED_OUT_AFTER = 30.minutes
 

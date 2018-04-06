@@ -36,7 +36,7 @@ module Economy
       #optional params
       @ost_to_bt = @params[:ost_to_bt]
       @number_of_users = @params[:number_of_users]
-      @amount = @params[:amount]
+      @airdrop_amount = @params[:amount]
       @airdrop_user_list_type = @params[:airdrop_user_list_type]
 
       @user = nil
@@ -62,18 +62,18 @@ module Economy
       r = set_registeration_params_in_db
       return r unless r.success?
 
-      r = enqueue_propose_job
+      r = initiate_task_in_saas
       return r unless r.success?
 
-      r = enqueue_stake_and_mint_job
-      return r unless r.success?
+      @critical_chain_interaction_log_id = r.data[:critical_chain_interaction_log_id]
 
-      enqueue_airdrop_tokens_job
+      r = enqueue_verify_reg_status_job
+      return r unless r.success?
 
       #NOTE: Returned this and not fetched from PendingCriticalInteractionIds to avoid extra query
       success_with_data(
         pending_critical_interactions: {
-          @parent_tx_activity_type => @stake_and_mint_init_chain_id.to_i
+          @parent_tx_activity_type => @critical_chain_interaction_log_id
         }
       )
 
@@ -158,7 +158,6 @@ module Economy
 
     end
 
-
     # Validate Client
     #
     # * Author: Puneet
@@ -170,7 +169,9 @@ module Economy
     # @return [Result::Base]
     #
     def validate_client
+
       @client = CacheManagement::Client.new([@client_id]).fetch[@client_id]
+
       return error_with_data(
         'pbj_',
         'Invalid Client.',
@@ -179,7 +180,11 @@ module Economy
         {}
       ) if @client.blank? || @client[:status] != GlobalConstant::Client.active_status
 
+      r = fetch_client_eth_address
+      return r unless r.success?
+
       success
+
     end
 
     # Validate Client Token
@@ -255,9 +260,9 @@ module Economy
     #
     def validate_registeration_params
 
-      return success if @client_token.propose_initiated? || @client_token.registration_done?
+      return success if @client_token.registration_done?
 
-      @amount = @amount.present? ? BigDecimal.new(@amount) : @amount
+      @airdrop_amount = @airdrop_amount.present? ? BigDecimal.new(@airdrop_amount) : @airdrop_amount
       @ost_to_bt = @ost_to_bt.present? ? BigDecimal.new(@ost_to_bt) : @ost_to_bt
       @number_of_users = @number_of_users.to_i
 
@@ -267,7 +272,36 @@ module Economy
           'Invalid registeration parameters.',
           GlobalConstant::ErrorAction.default,
           {}
-      ) if @amount.blank? || @amount < 0 || @ost_to_bt.blank? || @bt_to_mint < 0 || @number_of_users < 0
+      ) if @ost_to_bt.blank? || @bt_to_mint < 0 || @number_of_users < 0 ||
+          @airdrop_amount.blank? || @airdrop_amount < 0 || @airdrop_user_list_type.blank?
+
+      success
+
+    end
+
+    # Fetch Eth Address of client
+    #
+    # * Author: Puneet
+    # * Date: 29/01/2018
+    # * Reviewed By:
+    #
+    # Sets @client_eth_address
+    #
+    # @return [Result::Base]
+    #
+    def fetch_client_eth_address
+
+      client_address_data = CacheManagement::ClientAddress.new([@client_id]).fetch[@client_id]
+
+      return error_with_data(
+          'e_sam_10',
+          'Ethereum Address not associated.',
+          'Ethereum Address not associated.',
+          GlobalConstant::ErrorAction.default,
+          {}
+      ) if client_address_data.blank? || client_address_data[:ethereum_address_d].blank?
+
+      @client_eth_address = client_address_data[:ethereum_address_d]
 
       success
 
@@ -285,12 +319,12 @@ module Economy
     #
     def set_registeration_params_in_db
 
-      return success if @client_token.propose_initiated? || @client_token.registration_done?
+      return success if @client_token.registration_done?
 
       r = Economy::SetUpEconomy.new(
           client_token_id: @client_token_id,
           conversion_factor: @ost_to_bt,
-          airdrop_bt_per_user: @amount,
+          airdrop_bt_per_user: @airdrop_amount,
           initial_number_of_users: @number_of_users
       ).perform
 
@@ -303,147 +337,240 @@ module Economy
 
     end
 
-    # Enqueue propose branded token job
+    # Initiate TASK in saas
     #
     # * Author: Puneet
-    # * Date: 29/01/2018
-    # * Reviewed By: Sunil
-    #
-    # Sets @stake_and_mint_init_chain_id, @propose_critical_log_obj
-    # Updates @client_token
+    # * Date: 20/03/2018
+    # * Reviewed By:
     #
     # @return [Result::Base]
     #
-    def enqueue_propose_job
+    def initiate_task_in_saas
+      @client_token.registration_done? ? initiate_stake_and_mint_in_saas : initiate_registeration_in_saas
+    end
 
-      return success if @client_token.propose_initiated? || @client_token.registration_done?
+    # Initiate Registeration TASK in saas (this would setup token + first time stake / mint + airdrop)
+    #
+    # * Author: Puneet
+    # * Date: 20/03/2018
+    # * Reviewed By:
+    #
+    # @return [Result::Base]
+    #
+    def initiate_registeration_in_saas
 
       @parent_tx_activity_type = GlobalConstant::CriticalChainInteractions.propose_bt_activity_type
 
-      @propose_critical_log_obj = CriticalChainInteractionLog.create!(
-        {
-          client_id: @client_id,
-          client_token_id: @client_token_id,
-          activity_type: GlobalConstant::CriticalChainInteractions.propose_bt_activity_type,
-          chain_type: GlobalConstant::CriticalChainInteractions.utility_chain_type,
-          request_params: {
-            token_symbol: @client_token.symbol,
-            token_name: @client_token.name,
-            token_conversion_factor: BigDecimal.new(@client_token.conversion_factor),
-            bt_to_mint: @bt_to_mint,
-            st_prime_to_mint: @st_prime_to_mint,
-            amount: @amount,
-            airdrop_user_list_type: @airdrop_user_list_type
-          },
-          status: GlobalConstant::CriticalChainInteractions.queued_status
+      params = {
+        token_symbol: @client_token.symbol,
+        client_id: @client_token.client_id,
+        client_token_id: @client_token.id,
+        stake_and_mint_params: {
+          bt_to_mint: @bt_to_mint,
+          st_prime_to_mint: @st_prime_to_mint,
+          client_eth_address: @client_eth_address,
+          transaction_hash: @transaction_hash
+        },
+        airdrop_params: {
+          airdrop_amount: @airdrop_amount,
+          airdrop_user_list_type: @airdrop_user_list_type
         }
-      )
+      }
 
-      @stake_and_mint_init_chain_id ||= @propose_critical_log_obj.id
-
-      @client_token.send("set_#{GlobalConstant::ClientToken.propose_initiated_setup_step}")
-      @client_token.save!
-
-      BgJob.enqueue(
-        ::ProposeBrandedToken::StartProposeJob,
-        {
-          critical_log_id: @propose_critical_log_obj.id,
-          parent_id: @stake_and_mint_init_chain_id
-        }
-      )
-
-      success
+      SaasApi::OnBoarding::Start.new.perform(params)
 
     end
 
-    # Enqueue stake and mint job
+    # Initiate TASK in saas
     #
     # * Author: Puneet
-    # * Date: 29/01/2018
-    # * Reviewed By: Sunil
-    #
-    # Sets @user
+    # * Date: 20/03/2018
+    # * Reviewed By:
     #
     # @return [Result::Base]
     #
-    def enqueue_stake_and_mint_job
+    def initiate_stake_and_mint_in_saas
 
-      return success if @bt_to_mint.to_f <= 0 && @st_prime_to_mint.to_f <= 0
+      @parent_tx_activity_type = GlobalConstant::CriticalChainInteractions.staker_initial_transfer_activity_type
 
-      @parent_tx_activity_type ||= GlobalConstant::CriticalChainInteractions.staker_initial_transfer_activity_type
+      params = {
+        token_symbol: @client_token.symbol,
+        client_id: @client_token.client_id,
+        client_token_id: @client_token.id,
+        stake_and_mint_params: {
+          bt_to_mint: @bt_to_mint,
+          st_prime_to_mint: @st_prime_to_mint,
+          client_eth_address: @client_eth_address,
+          transaction_hash: @transaction_hash
+        }
+      }
 
-      critical_log_obj = nil
+      SaasApi::StakeAndMint::Start.new.perform(params)
 
-      begin
+    end
 
-        critical_log_obj = CriticalChainInteractionLog.create!(
-            {
-                client_id: @client_id,
-                client_token_id: @client_token_id,
-                parent_id: @stake_and_mint_init_chain_id,
-                activity_type: GlobalConstant::CriticalChainInteractions.staker_initial_transfer_activity_type,
-                chain_type: GlobalConstant::CriticalChainInteractions.value_chain_type,
-                transaction_hash: @transaction_hash,
-                request_params: {
-                  bt_to_mint: @bt_to_mint,
-                  st_prime_to_mint: @st_prime_to_mint
-                },
-                status: GlobalConstant::CriticalChainInteractions.queued_status
-            }
-        )
-
-      rescue ActiveRecord::RecordNotUnique => e
-
-        r = error_with_data(
-            'e_sam_9',
-            "Duplicate Tx Hash : #{@transaction_hash}",
-            "Duplicate Tx Hash : #{@transaction_hash}",
-            GlobalConstant::ErrorAction.default,
-            {}
-        )
-
-        return r
-
-      end
-
-      @stake_and_mint_init_chain_id ||= critical_log_obj.id
+    # Enqueue job which would observe DB to check if registeration is complete.
+    #
+    # * Author: Puneet
+    # * Date: 29/03/2018
+    # * Reviewed By:
+    #
+    # @return [Result::Base]
+    #
+    def enqueue_verify_reg_status_job
 
       BgJob.enqueue(
-        ::StakeAndMint::GetTransferToStakerStatusJob,
-        {
-          critical_log_id: critical_log_obj.id,
-          parent_id: @stake_and_mint_init_chain_id
-        }
+        ::RegisterBrandedToken::GetProposeStatusJob,
+        {critical_log_id: @critical_chain_interaction_log_id},
+        {wait: 30.seconds}
       )
 
       success
 
     end
 
-    # Enqueue Initiate Airdrop tokens job if required
-    #
-    # * Author: Pankaj
-    # * Date: 26/02/2018
-    # * Reviewed By:
-    #
-    def enqueue_airdrop_tokens_job
-      if @amount.present? && @airdrop_user_list_type.present?
-        BgJob.enqueue(
-            Airdrop::InitiateAirdropTokensJob,
-            {
-                parent_critical_log_id: @stake_and_mint_init_chain_id,
-                client_token_id: @client_token_id,
-                client_id: @client_id,
-                amount: @amount,
-                airdrop_list_type: @airdrop_user_list_type
-            },
-            {
-                wait: 10.seconds
-            }
-        )
-      end
+    ############################################### CODE TO BE REMOVED ###########################################
 
-    end
+    # # Enqueue propose branded token job
+    # #
+    # # * Author: Puneet
+    # # * Date: 29/01/2018
+    # # * Reviewed By: Sunil
+    # #
+    # # Sets @stake_and_mint_init_chain_id, @propose_critical_log_obj
+    # # Updates @client_token
+    # #
+    # # @return [Result::Base]
+    # #
+    # def enqueue_propose_job
+    #
+    #   return success if @client_token.propose_initiated? || @client_token.registration_done?
+    #
+    #   @parent_tx_activity_type = GlobalConstant::CriticalChainInteractions.propose_bt_activity_type
+    #
+    #   @propose_critical_log_obj = CriticalChainInteractionLog.create!(
+    #     {
+    #       client_id: @client_id,
+    #       client_token_id: @client_token_id,
+    #       activity_type: GlobalConstant::CriticalChainInteractions.propose_bt_activity_type,
+    #       chain_type: GlobalConstant::CriticalChainInteractions.utility_chain_type,
+    #       request_params: {
+    #         token_symbol: @client_token.symbol,
+    #         token_name: @client_token.name,
+    #         bt_to_mint: @bt_to_mint,
+    #         st_prime_to_mint: @st_prime_to_mint,
+    #         amount: @airdrop_amount,
+    #         airdrop_user_list_type: @airdrop_user_list_type
+    #       },
+    #       status: GlobalConstant::CriticalChainInteractions.queued_status
+    #     }
+    #   )
+    #
+    #   @stake_and_mint_init_chain_id ||= @propose_critical_log_obj.id
+    #
+    #   @client_token.send("set_#{GlobalConstant::ClientToken.propose_initiated_setup_step}")
+    #   @client_token.save!
+    #
+    #   BgJob.enqueue(
+    #     ::ProposeBrandedToken::StartProposeJob,
+    #     {
+    #       critical_log_id: @propose_critical_log_obj.id,
+    #       parent_id: @stake_and_mint_init_chain_id
+    #     }
+    #   )
+    #
+    #   success
+    #
+    # end
+    #
+    # # Enqueue stake and mint job
+    # #
+    # # * Author: Puneet
+    # # * Date: 29/01/2018
+    # # * Reviewed By: Sunil
+    # #
+    # # Sets @user
+    # #
+    # # @return [Result::Base]
+    # #
+    # def enqueue_stake_and_mint_job
+    #
+    #   return success if @bt_to_mint.to_f <= 0 && @st_prime_to_mint.to_f <= 0
+    #
+    #   @parent_tx_activity_type ||= GlobalConstant::CriticalChainInteractions.staker_initial_transfer_activity_type
+    #
+    #   critical_log_obj = nil
+    #
+    #   begin
+    #
+    #     critical_log_obj = CriticalChainInteractionLog.create!(
+    #         {
+    #             client_id: @client_id,
+    #             client_token_id: @client_token_id,
+    #             parent_id: @stake_and_mint_init_chain_id,
+    #             activity_type: GlobalConstant::CriticalChainInteractions.staker_initial_transfer_activity_type,
+    #             chain_type: GlobalConstant::CriticalChainInteractions.value_chain_type,
+    #             transaction_hash: @transaction_hash,
+    #             request_params: {
+    #               bt_to_mint: @bt_to_mint,
+    #               st_prime_to_mint: @st_prime_to_mint
+    #             },
+    #             status: GlobalConstant::CriticalChainInteractions.queued_status
+    #         }
+    #     )
+    #
+    #   rescue ActiveRecord::RecordNotUnique => e
+    #
+    #     r = error_with_data(
+    #         'e_sam_9',
+    #         "Duplicate Tx Hash : #{@transaction_hash}",
+    #         "Duplicate Tx Hash : #{@transaction_hash}",
+    #         GlobalConstant::ErrorAction.default,
+    #         {}
+    #     )
+    #
+    #     return r
+    #
+    #   end
+    #
+    #   @stake_and_mint_init_chain_id ||= critical_log_obj.id
+    #
+    #   BgJob.enqueue(
+    #     ::StakeAndMint::GetTransferToStakerStatusJob,
+    #     {
+    #       critical_log_id: critical_log_obj.id,
+    #       parent_id: @stake_and_mint_init_chain_id
+    #     }
+    #   )
+    #
+    #   success
+    #
+    # end
+    #
+    # # Enqueue Initiate Airdrop tokens job if required
+    # #
+    # # * Author: Pankaj
+    # # * Date: 26/02/2018
+    # # * Reviewed By:
+    # #
+    # def enqueue_airdrop_tokens_job
+    #   if @airdrop_amount.present? && @airdrop_user_list_type.present?
+    #     BgJob.enqueue(
+    #         Airdrop::InitiateAirdropTokensJob,
+    #         {
+    #             parent_critical_log_id: @stake_and_mint_init_chain_id,
+    #             client_token_id: @client_token_id,
+    #             client_id: @client_id,
+    #             amount: @airdrop_amount,
+    #             airdrop_list_type: @airdrop_user_list_type
+    #         },
+    #         {
+    #             wait: 10.seconds
+    #         }
+    #     )
+    #   end
+    #
+    # end
 
   end
 
