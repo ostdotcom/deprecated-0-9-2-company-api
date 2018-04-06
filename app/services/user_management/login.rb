@@ -65,6 +65,11 @@ module UserManagement
     #
     def fetch_user
 
+      return unauthorized_access_response(
+          'um_l_fu_4',
+          'The email address is not allowed for Dev Program.'
+      ) unless Util::CommonValidator.is_whitelisted_email?(@email)
+
       @user = User.where(email: @email).first
 
       return unauthorized_access_response(
