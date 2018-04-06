@@ -224,7 +224,7 @@ module Util
     def self.is_valid_token_symbol?(str)
       length = str.length
       return false if length > 4 || length < 3
-      (str =~ /^\w*[0-9a-z\s]\w*$/i).present?
+      (str =~ /^[a-z][0-9a-z]*$/i).present?
     end
 
     # check if string is a valid Token name
@@ -238,7 +238,7 @@ module Util
     def self.is_valid_token_name?(str)
       length = str.length
       return false if length > 20 || length < 3
-      (str =~ /^\w*[0-9a-z\s]\w*[0-9a-z\s]\w*$/i).present?
+      (str =~ /^[a-z][a-z0-9]*[\s]*[0-9a-z]*[\s]*[0-9a-z]*$/i).present?
     end
 
   end
