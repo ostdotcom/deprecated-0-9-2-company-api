@@ -1,5 +1,6 @@
 class CreateTransactionLogs < DbMigrationConnection
-  def change
+
+  def up
     run_migration_for_db(EstablishSaasTransactionDbConnection) do
 
       create_table :transaction_logs do |t|
