@@ -301,10 +301,15 @@ module Economy
           {}
       ) if client_address_data.blank? || client_address_data[:ethereum_address_d].blank?
 
-      @client_eth_address = client_address_data[:ethereum_address_d]
+      @client_eth_address = get_encrypted_eth_address(client_address_data[:ethereum_address_d])
 
       success
 
+    end
+
+    def get_encrypted_eth_address(address)
+      digest = OpenSSL::Digest.new('sha256')
+      OpenSSL::HMAC.hexdigest(digest, GlobalConstant::SecretEncryptor.generic_sha_key, address.downcase)
     end
 
     # Set Registeration related params in DB
