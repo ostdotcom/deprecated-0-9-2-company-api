@@ -82,6 +82,10 @@ class ApplicationController < ActionController::API
     # sanitizing out error and data. only display_text and display_heading are allowed to be sent to FE.
     if !service_response.success? && !Rails.env.development?
       err = response_hash.delete(:err) || {}
+
+      err_trace = (err[:error_data] || {}).delete(:trace) || {}
+      Rails.logger.error "#{err_trace}"
+
       response_hash[:err] = {
           display_text: (err[:display_text].to_s),
           display_heading: (err[:display_heading].to_s),
@@ -118,12 +122,11 @@ class ApplicationController < ActionController::API
           subject: 'Exception in API'
       ).deliver
 
-      r = Result::Base.exception(
-          se,
+      r = Result::Base.error(
           {
               error: 'swr',
               error_message: 'Something Went Wrong',
-              data: params
+              http_code: GlobalConstant::ErrorCode.ok
           }
       )
       render_api_response(r)
