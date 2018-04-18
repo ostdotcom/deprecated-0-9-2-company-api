@@ -72,6 +72,7 @@ class ApplicationController < ActionController::API
   # * Reviewed By: Aman
   #
   def render_api_response(service_response)
+
     # calling to_json of Result::Base
     response_hash = service_response.to_json
     http_status_code = service_response.http_code
@@ -81,10 +82,13 @@ class ApplicationController < ActionController::API
 
     # sanitizing out error and data. only display_text and display_heading are allowed to be sent to FE.
     if !service_response.success? && !Rails.env.development?
-      err = response_hash.delete(:err) || {}
 
-      err_trace = (err[:error_data] || {}).delete(:trace) || {}
-      Rails.logger.error "#{err_trace}"
+      Rails.logger.error "#{response_hash}"
+
+      err = response_hash.delete(:err) || {}
+      if err.has_key?(:error_data)
+        err[:error_data].delete(:trace) if err[:error_data].is_a?(Hash)
+      end
 
       response_hash[:err] = {
           display_text: (err[:display_text].to_s),
@@ -93,6 +97,7 @@ class ApplicationController < ActionController::API
       }
 
       response_hash[:data] = {}
+
     end
 
     if !service_response.success? && service_response.respond_to?(:go_to) && service_response.go_to.present?
