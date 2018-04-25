@@ -99,7 +99,8 @@ module Util
     #
     def self.is_whitelisted_email?(email)
       is_valid_email?(email) &&
-          (is_valid_ost_email?(email) || is_valid_cure53_email?(email) || whitelisted_emails.include?(email.strip.downcase))
+          (is_valid_ost_email?(email) || is_valid_cure53_email?(email) ||
+              is_valid_fincomeco_email?(email) || whitelisted_emails.include?(email.strip.downcase))
     end
 
     # list of whitelisted emails
@@ -137,6 +138,18 @@ module Util
     #
     def self.is_valid_cure53_email?(email)
       /w*@cure53.de$/.match(email).present?
+    end
+
+    # Is the Email a fincomeco.com Email
+    #
+    # * Author: Puneet
+    # * Date: 26/04/2017
+    # * Reviewed By:
+    #
+    # @return [Boolean] returns a boolean
+    #
+    def self.is_valid_fincomeco_email?(email)
+      /w*@fincomeco.com$/.match(email).present?
     end
 
     # Does password contains allowed characters and size
