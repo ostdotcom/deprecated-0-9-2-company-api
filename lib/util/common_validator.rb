@@ -98,9 +98,9 @@ module Util
     # @return [Boolean] returns a boolean
     #
     def self.is_whitelisted_email?(email)
+      downcased_email = email.strip.downcase
       is_valid_email?(email) &&
-          (is_valid_ost_email?(email) || is_valid_cure53_email?(email) ||
-              is_valid_fincomeco_email?(email) || whitelisted_emails.include?(email.strip.downcase))
+          (is_email_from_allowed_domains?(downcased_email) || whitelisted_emails.include?(downcased_email))
     end
 
     # list of whitelisted emails
@@ -124,32 +124,21 @@ module Util
     #
     # @return [Boolean] returns a boolean
     #
-    def self.is_valid_ost_email?(email)
-      /w*@ost.com$/.match(email).present?
+    def self.is_email_from_allowed_domains?(email)
+      /w*@(#{allowed_domains.join('|')})$/.match(email).present?
     end
 
-    # Is the Email a cure53.de Email
+    # List of Domains which we need to support
     #
     # * Author: Puneet
     # * Date: 06/04/2017
     # * Reviewed By:
     #
-    # @return [Boolean] returns a boolean
+    # @return [Array] returns a boolean
     #
-    def self.is_valid_cure53_email?(email)
-      /w*@cure53.de$/.match(email).present?
-    end
-
-    # Is the Email a fincomeco.com Email
-    #
-    # * Author: Puneet
-    # * Date: 26/04/2017
-    # * Reviewed By:
-    #
-    # @return [Boolean] returns a boolean
-    #
-    def self.is_valid_fincomeco_email?(email)
-      /w*@fincomeco.com$/.match(email).present?
+    def self.allowed_domains
+      r = CacheManagement::WhitelistedDomains.new().fetch
+      r.success? ? r.data[:domains] : []
     end
 
     # Does password contains allowed characters and size
