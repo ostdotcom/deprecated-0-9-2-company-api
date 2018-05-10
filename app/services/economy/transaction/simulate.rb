@@ -132,7 +132,7 @@ module Economy
             GlobalConstant::ErrorAction.default
         ) if @saas_api_response_data.blank?
 
-        @transaction_uuid = @saas_api_response_data[:transaction_uuid]
+        @transaction_uuid = @saas_api_response_data[:transaction][:id]
 
         return error_with_data(
             'e_t_s_4',

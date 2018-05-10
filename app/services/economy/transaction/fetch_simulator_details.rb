@@ -108,10 +108,10 @@ module Economy
         ost_sdk = OSTSdk::Saas::Services.new(
             api_key: result[:api_key],
             api_secret: result[:api_secret],
-            api_base_url: "#{GlobalConstant::SaasApi.base_url}",
+            api_base_url: "#{GlobalConstant::SaasApi.base_url}v1",
             api_spec: true
         )
-        @ost_spec_sdk_obj = ost_sdk.manifest.transaction_kind
+        @ost_spec_sdk_obj = ost_sdk.manifest.transactions
 
         api_spec_service_response = @ost_spec_sdk_obj.execute(api_spec_params)
 
@@ -132,10 +132,11 @@ module Economy
       def api_spec_params
         # NOTE: Values inside {{}} are strictly for FE use. DO NOT CHANGE THEM
         {
-          token_symbol: '{{bt_symbol}}',
-          from_uuid: '{{from_user_id}}',
-          to_uuid: '{{to_user_id}}',
-          transaction_kind: '{{transaction_kind}}'
+          from_user_id: '{{from_user_id}}',
+          to_user_id: '{{to_user_id}}',
+          action_id: '{{transaction_kind}}',
+          amount: '{{amount}}',
+          commission_percent: '{{commission_percent}}'
         }
       end
 
