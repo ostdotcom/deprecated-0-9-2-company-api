@@ -83,21 +83,19 @@ module UserManagement
     #
     def validate_and_sanitize
 
-      validation_errors = {}
+      validation_errors = []
 
-      validation_errors[:password] = 'Password should be minimum 8 characters' unless Util::CommonValidator.is_valid_password?(@password)
-      validation_errors[:confirm_password] = 'Passwords do not match' if @confirm_password != @password
+      validation_errors << 'password_invalid' unless Util::CommonValidator.is_valid_password?(@password)
+      validation_errors << 'confirm_password_invalid' if @confirm_password != @password
 
-      return error_with_data(
+      validation_errors << 'invalid_r_t' if @r_t.blank?
+
+      return validation_error(
           'um_cp_1',
-          'Invalid password',
-          '',
-          GlobalConstant::ErrorAction.default,
-          {},
-          validation_errors
+          'invalid_api_params',
+          validation_errors,
+          GlobalConstant::ErrorAction.default
       ) if validation_errors.present?
-
-      return invalid_url_error('um_rp_2') if @r_t.blank?
 
       # NOTE: To be on safe side, check for generic errors as well
       r = validate
@@ -172,7 +170,12 @@ module UserManagement
 
       @user = User.where(id: @user_validation_hash_obj.user_id).first
 
-      return unauthorized_access_response('um_rp_9') if @user.blank? || !@user.is_eligible_for_reset_passowrd?
+      return validation_error(
+          'um_rp_9',
+          'invalid_api_params',
+          ['invalid_r_t'],
+          GlobalConstant::ErrorAction.default
+      ) if @user.blank? || !@user.is_eligible_for_reset_passowrd?
 
       success
 
@@ -207,13 +210,11 @@ module UserManagement
     #
     def validate_previous_password
 
-      return error_with_data(
+      return validation_error(
           'um_cp_vpp_1',
-          'Invalid password',
-          '',
-          GlobalConstant::ErrorAction.default,
-          {},
-          {password: 'Please use a new different password'}
+          'invalid_api_params',
+          ['password_same'],
+          GlobalConstant::ErrorAction.default
       ) if @user.password == @new_e_password
 
       success
@@ -270,24 +271,6 @@ module UserManagement
       CacheManagement::UserSecure.new([@user.id]).clear
     end
 
-    # Invalid User access response
-    #
-    # * Author: Pankaj
-    # * Date: 11/01/2018
-    # * Reviewed By:
-    #
-    # @return [Result::Base]
-    #
-    def unauthorized_access_response(err, display_text = 'Invalid User')
-      error_with_data(
-          err,
-          display_text,
-          display_text,
-          GlobalConstant::ErrorAction.default,
-          {}
-      )
-    end
-
     # Invalid Request Response
     #
     # * Author: Pankaj
@@ -297,12 +280,11 @@ module UserManagement
     # @return [Result::Base]
     #
     def invalid_url_error(code)
-      error_with_data(
+      validation_error(
           code,
-          'Invalid URL',
-          'Invalid URL',
-          GlobalConstant::ErrorAction.default,
-          {}
+          'invalid_api_params',
+          ['invalid_r_t'],
+          GlobalConstant::ErrorAction.default
       )
     end
 

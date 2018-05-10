@@ -15,12 +15,16 @@ namespace :one_timers do
       # result = CacheManagement::ClientApiCredentials.new([@client_id]).fetch[@client_id]
       # credentials = OSTSdk::Util::APICredentials.new(result[:api_key], result[:api_secret])
 
-      api_key = '586ad037200f8bd41001'
-      api_secret = '3aa64f6169d8736fba16372fde456956f3ebe72939d7599ff11a7a28adce0cee'
+      ost_sdk = OSTSdk::Saas::Services.new(
+          api_key: '094785cedc1d78bcee10',
+          api_secret: '6d2e6784d614c0a9aa13c5758633ec98932a5b3305b0bc378ddaae97efa46e88',
+          api_base_url: 'http://devcompany.com:7001/',
+          api_spec: false
+      )
 
-      credentials = OSTSdk::Util::APICredentials.new(api_key, api_secret)
-      @user_sdk_obj = OSTSdk::Saas::Users.new('sandbox', credentials)
-      @tx_kind_sdk_obj = OSTSdk::Saas::TransactionKind.new('sandbox', credentials)
+      @user_sdk_obj = ost_sdk.manifest.users
+      @tx_kind_sdk_obj = ost_sdk.manifest.actions
+      @transactions_sdk_obj = ost_sdk.manifest.transactions
 
     end
 
@@ -88,7 +92,7 @@ namespace :one_timers do
           }
 
           procs[procs_length] = Proc.new do
-            api_spec_service_response = @tx_kind_sdk_obj.execute(api_params)
+            api_spec_service_response = @transactions_sdk_obj.execute(api_params)
           end
           procs_length += 1
           break if procs_length >= @txs_to_execute

@@ -15,7 +15,7 @@ module ClientUsersManagement
     # @param [Integer] page_no (optional) - page no
     # @param [String] order_by (optional) - creation_time
     # @param [String] order (optional) - Order type('asc', 'desc')
-    # @param [String] filter (optional) - filter on user list type
+    # @param [String] airdropped (optional) - true / false for filtering
     #
     # @return [ClientUsersManagement::ListUser]
     #
@@ -30,7 +30,7 @@ module ClientUsersManagement
       @order_by = @params[:order_by]
       @order = @params[:order]
       @is_xhr = @params[:is_xhr]
-      @filter = @params[:filter]
+      @airdropped = @params[:airdropped]
 
       @page_size = 25
       @client = nil
@@ -76,9 +76,6 @@ module ClientUsersManagement
       r = validate
       return r unless r.success?
 
-      r = validate_pagination_params
-      return r unless r.success?
-
       r = validate_client
       return r unless r.success?
 
@@ -98,71 +95,15 @@ module ClientUsersManagement
       @client_token = CacheManagement::ClientToken.new([@client_token_id]).fetch[@client_token_id]
       return error_with_data(
           'cum_lu_4',
-          'Token not found.',
-          'Token not found.',
-          GlobalConstant::ErrorAction.default,
-          {}
+          'something_went_wrong',
+          GlobalConstant::ErrorAction.default
       ) if @client_token.blank?
 
       return error_with_go_to(
           'cum_lu_5',
-          'Token SetUp Not Complete.',
-          'Token SetUp Not Complete.',
+          'token_setup_not_complete',
           GlobalConstant::GoTo.economy_planner_step_one
       ) if @client_token[:setup_steps].exclude?(GlobalConstant::ClientToken.setup_complete_step)
-
-      success
-
-    end
-
-    # Validate pagination params
-    #
-    # * Author: Puneet
-    # * Date: 02/02/2018
-    # * Reviewed By:
-    #
-    # Sets @client
-    #
-    # @return [Result::Base]
-    #
-    def validate_pagination_params
-
-      if @page_no.present?
-        return error_with_data(
-            'cum_lu_1',
-            "Invalid Page No.",
-            "Invalid Page No.",
-            GlobalConstant::ErrorAction.mandatory_params_missing,
-            {}
-        ) unless Util::CommonValidator.is_numeric?(@page_no)
-        @page_no = @page_no.to_i
-      else
-        @page_no = 1
-      end
-
-      if @order_by.present?
-        return error_with_data(
-            'cum_lu_2',
-            "Invalid @order_by",
-            "Invalid @order_by",
-            GlobalConstant::ErrorAction.mandatory_params_missing,
-            {}
-        ) if [creation_time_order_by].exclude?(@order_by)
-      else
-        @order_by = ''
-      end
-
-      if @order.present?
-        return error_with_data(
-            'cum_lu_vpp_2',
-            "Invalid @order",
-            "Invalid @order",
-            GlobalConstant::ErrorAction.mandatory_params_missing,
-            {}
-        ) if ['asc', 'desc'].exclude?(@order.downcase)
-      else
-        @order = ''
-      end
 
       success
 
@@ -182,12 +123,11 @@ module ClientUsersManagement
 
       @client = CacheManagement::Client.new([@client_id]).fetch[@client_id]
 
-      return error_with_data(
+      return validation_error(
           'cum_lu_3',
-          "Invalid client.",
-          'Something Went Wrong.',
-          GlobalConstant::ErrorAction.mandatory_params_missing,
-          {}
+          'invalid_api_params',
+          ['invalid_client_id'],
+          GlobalConstant::ErrorAction.mandatory_params_missing
       ) if @client.blank? || @client[:status] != GlobalConstant::Client.active_status
 
       @client_id = @client_id.to_i
@@ -207,44 +147,49 @@ module ClientUsersManagement
     def fetch_users
 
       result = CacheManagement::ClientApiCredentials.new([@client_id]).fetch[@client_id]
-      return error_with_data(
-          'uc_lu_6',
-          "Invalid client.",
-          'Something Went Wrong.',
-          GlobalConstant::ErrorAction.default,
-          {}
+      return validation_error(
+          'cum_lu_6',
+          'invalid_api_params',
+          ['invalid_client_id'],
+          GlobalConstant::ErrorAction.default
       ) if result.blank?
-
-      # Create OST Sdk Obj
-      credentials = OSTSdk::Util::APICredentials.new(result[:api_key], result[:api_secret])
 
       if is_xhr_request?
 
-        @ost_sdk_obj = OSTSdk::Saas::Users.new(GlobalConstant::Base.sub_env, credentials)
+        ost_sdk = OSTSdk::Saas::Services.new(
+            api_key: result[:api_key],
+            api_secret: result[:api_secret],
+            api_base_url: "#{GlobalConstant::SaasApi.base_url}v1",
+            api_spec: false
+        )
 
-        service_response = @ost_sdk_obj.list(page_no: @page_no, order_by: @order_by, order: @order, filter: @filter)
+        @ost_sdk_obj = ost_sdk.manifest.users
 
-        return error_with_data(
-            'uc_lu_7',
-            "Coundn't Fetch User List",
-            'Something Went Wrong.',
-            GlobalConstant::ErrorAction.default,
-            {}
-        ) unless service_response.success?
+        list_params = {}
+        list_params[:page_no] = @page_no unless @page_no.nil?
+        list_params[:order_by] = @order_by unless @page_no.nil?
+        list_params[:order] = @order unless @page_no.nil?
+        list_params[:airdropped] = @airdropped unless @airdropped.nil?
+
+        service_response = @ost_sdk_obj.list(list_params)
+
+        return service_response unless service_response.success?
 
         @api_response_data = service_response.data
+
       else
 
-        @ost_spec_sdk_obj = OSTSdk::Saas::Users.new(GlobalConstant::Base.sub_env, credentials, true)
+        ost_sdk = OSTSdk::Saas::Services.new(
+            api_key: result[:api_key],
+            api_secret: result[:api_secret],
+            api_base_url: "#{GlobalConstant::SaasApi.base_url}v1",
+            api_spec: true
+        )
+
+        @ost_spec_sdk_obj = ost_sdk.manifest.users
         api_spec_service_response = @ost_spec_sdk_obj.create({name: "{{uri_encoded name}}"})
 
-        return error_with_data(
-            'cum_lu_fu_8',
-            "Coundn't Fetch Api spec for user create",
-            'Something Went Wrong.',
-            GlobalConstant::ErrorAction.default,
-            {}
-        ) unless api_spec_service_response.success?
+        return api_spec_service_response unless api_spec_service_response.success?
 
         api_spec_service_response.data[:request_uri] = GlobalConstant::SaasApi.display_only_base_url
 
@@ -253,6 +198,7 @@ module ClientUsersManagement
                 create: api_spec_service_response.data
             }
         }
+
       end
 
       success

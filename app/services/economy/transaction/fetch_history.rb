@@ -80,18 +80,8 @@ module Economy
       # @return [Result::Base]
       #
       def validate_and_sanitize
-        if @page_no.present?
-          return error_with_data(
-              'e_t_fh_1',
-              "Invalid Page No.",
-              "Invalid Page No.",
-              GlobalConstant::ErrorAction.mandatory_params_missing,
-              {}
-          ) unless Util::CommonValidator.is_numeric?(@page_no)
-          @page_no = @page_no.to_i
-        else
-          @page_no = 1
-        end
+
+        @page_no ||= 1
 
         success
 
@@ -107,12 +97,12 @@ module Economy
       def fetch_client_token
 
         @client_token = CacheManagement::ClientToken.new([@client_token_id]).fetch[@client_token_id]
-        return error_with_data(
+
+        return validation_error(
             'e_t_fh_2',
-            'Token not found.',
-            'Token not found.',
-            GlobalConstant::ErrorAction.default,
-            {}
+            'invalid_api_params',
+            ['invalid_client_id'],
+            GlobalConstant::ErrorAction.default
         ) if @client_token.blank?
 
         success

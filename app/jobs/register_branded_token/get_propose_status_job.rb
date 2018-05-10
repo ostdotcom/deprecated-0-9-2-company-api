@@ -21,10 +21,8 @@ class RegisterBrandedToken::GetProposeStatusJob < ApplicationJob
 
     return error_with_data(
         'j_s_grsj_2',
-        'BT Registration failed.',
-        'BT Registration failed.',
-        GlobalConstant::ErrorAction.default,
-        {}
+        'something_went_wrong',
+        GlobalConstant::ErrorAction.default
     ) if @critical_chain_interaction_log.is_failed?
 
     save_registration_status
@@ -77,10 +75,8 @@ class RegisterBrandedToken::GetProposeStatusJob < ApplicationJob
 
     return error_with_data(
       'j_s_grsj_1',
-      'Critical chain interation log id not found.',
-      'Critical chain interation log id not found.',
-      GlobalConstant::ErrorAction.default,
-      {}
+      'something_went_wrong',
+      GlobalConstant::ErrorAction.default
     ) if @critical_chain_interaction_log.blank?
 
     response_data = @critical_chain_interaction_log.response_data['data'] || {}

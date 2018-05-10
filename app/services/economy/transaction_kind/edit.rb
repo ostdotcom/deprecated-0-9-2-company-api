@@ -11,14 +11,14 @@ module Economy
       # * Reviewed By:
       #
       # @params [String] client_id (mandatory) - client_id
-      # @params [String] client_transaction_id (mandatory) - client_transaction_id
+      # @params [String] id (mandatory) - client_transaction_id
+      # @params [String] arbitrary_amount (mandatory) - boolean determining if this tx has fixed amount
+      # @params [String] arbitrary_commission (mandatory) - boolean determining if this tx has fixed commission
       # @params [String] name (optional) - name of transaction
       # @params [String] kind (optional) - kind of transaction
-      # @params [String] value_currency_type (optional) - value_currency_type of transaction
-      # @params [String] value_in_usd (optional) - value_in_usd of transaction
-      # @params [String] value_in_bt (optional) - value_in_bt of transaction
+      # @params [String] currency (optional) - value_currency_type of transaction
+      # @params [String] amount (optional) - value_in_usd of transaction
       # @params [String] commission_percent (optional) - commission_percent of transaction
-      # @params [Integer] use_price_oracle (optional) - use prie oracle
       #
       # @return [Economy::TransactionKind::Base]
       #
@@ -59,7 +59,7 @@ module Economy
       # @return [Result::Base]
       #
       def execute
-
+puts @params
         @ost_sdk_obj.edit(@params.to_hash)
 
       end

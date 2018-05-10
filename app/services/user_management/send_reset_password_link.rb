@@ -63,20 +63,18 @@ module UserManagement
 
       @user = User.where(email: @email).first
 
-      error = ''
+      error_key = ''
       if @user.blank?
-        error = 'Email address not registered.'
+        error_key = 'unrecognized_email'
       elsif !@user.is_eligible_for_reset_passowrd?
-        error = 'The email address you provided is blocked. Please contact Support.'
+        error_key = 'email_inactive'
       end
 
-      return error_with_data(
+      return validation_error(
           'um_srpl_1',
-          'User not present',
-          '',
-          GlobalConstant::ErrorAction.default,
-          {},
-          {email: error}
+          'invalid_api_params',
+          ['error_key'],
+          GlobalConstant::ErrorAction.default
       ) if error.present?
 
       success

@@ -152,22 +152,26 @@
   :mandatory:
     - :client_id
     - :client_token_id
-  :optional:
+    - :arbitrary_amount
+    - :arbitrary_commission
     - :name
     - :kind
-    - :currency_type
-    - :currency_value
+    - :currency
+  :optional:
+    - :amount
     - :commission_percent
 
 'Economy::TransactionKind::Edit':
   :mandatory:
     - :client_id
-    - :client_transaction_id
+    - :id
+    - :arbitrary_amount
+    - :arbitrary_commission
   :optional:
     - :name
     - :kind
-    - :currency_type
-    - :currency_value
+    - :currency
+    - :amount
     - :commission_percent
 
 'Economy::TransactionKind::BulkCreateEdit':
@@ -234,13 +238,13 @@
     - :page_no
     - :order_by
     - :order
-    - :filter
+    - :airdropped
 
 'Economy::AirdropToUsers':
   :mandatory:
     - :client_id
     - :client_token_id
     - :amount
-    - :airdrop_list_type
   :optional:
     - :parent_critical_log_id
+    - :airdropped

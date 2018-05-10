@@ -72,12 +72,12 @@ module Economy
       def fetch_client_token
 
         @client_token = CacheManagement::ClientToken.new([@client_token_id]).fetch[@client_token_id]
-        return error_with_data(
+
+        return validation_error(
             'e_t_s_1',
-            'Token not found.',
-            'Token not found.',
-            GlobalConstant::ErrorAction.default,
-            {}
+            'invalid_api_params',
+            ['invalid_client_token_id'],
+            GlobalConstant::ErrorAction.default
         ) if @client_token.blank?
 
         success
@@ -128,25 +128,21 @@ module Economy
 
         return error_with_data(
             'e_t_s_2',
-            'Invalid Response from Saas',
-            'Something Went Wrong',
-            GlobalConstant::ErrorAction.default,
-            {}
+            'something_went_wrong',
+            GlobalConstant::ErrorAction.default
         ) if @saas_api_response_data.blank?
 
         @transaction_uuid = @saas_api_response_data[:transaction_uuid]
 
         return error_with_data(
             'e_t_s_4',
-            'Invalid Response from Saas',
-            'Transaction could not be stimulated',
-            GlobalConstant::ErrorAction.default,
-            {}
+            'something_went_wrong',
+            GlobalConstant::ErrorAction.default
         ) if @transaction_uuid.blank?
 
         success
-      end
 
+      end
 
       # create client token transaction
       #

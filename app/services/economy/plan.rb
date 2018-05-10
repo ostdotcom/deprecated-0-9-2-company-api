@@ -63,19 +63,17 @@ module Economy
 
       @token_worth_in_usd = BigDecimal.new(@token_worth_in_usd)
 
-      validation_errors = {}
+      validation_errors = []
 
       if @token_worth_in_usd < 0.01 || @token_worth_in_usd > ClientTokenPlanner.max_allowed_token_worth_in_usd
-        validation_errors[:token_worth_in_usd] = 'Value entered is out of range. (Min 0.01$, Max 10$)'
+        validation_errors.push('invalid_token_worth_in_usd')
       end
 
-      return error_with_data(
+      return validation_error(
           'um_su_1',
-          'Plan Economy Error',
-          '',
-          GlobalConstant::ErrorAction.default,
-          {},
-          validation_errors
+          'invalid_api_params',
+          validation_errors,
+          GlobalConstant::ErrorAction.default
       ) if validation_errors.present?
 
       success
@@ -97,12 +95,11 @@ module Economy
         status: GlobalConstant::ClientToken.active_status
       ).first
 
-      return error_with_data(
-        'e_p_2',
-        'No token found.',
-        'No token found.',
-        GlobalConstant::ErrorAction.default,
-        {}
+      return validation_error(
+          'e_p_2',
+          'invalid_api_params',
+          ['invalid_client_token_id'],
+          GlobalConstant::ErrorAction.default
       ) unless ct.present?
 
       ctp = ClientTokenPlanner.find_or_initialize_by(client_token_id: @client_token_id)

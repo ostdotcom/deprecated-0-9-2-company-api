@@ -60,18 +60,17 @@ module Economy
     def fetch_client_token
 
       @client_token = CacheManagement::ClientToken.new([@client_token_id]).fetch[@client_token_id]
-      return error_with_data(
+
+      return validation_error(
           'e_gdd_1',
-          'Token not found.',
-          'Token not found.',
-          GlobalConstant::ErrorAction.default,
-          {}
+          'invalid_api_params',
+          ['invalid_client_token_id'],
+          GlobalConstant::ErrorAction.default
       ) if @client_token.blank?
 
       return error_with_go_to(
           'e_gdd_2',
-          'Token SetUp Not Complete.',
-          'Token SetUp Not Complete.',
+          'token_setup_not_complete',
           GlobalConstant::GoTo.economy_planner_step_one
       ) if @client_token[:setup_steps].exclude?(GlobalConstant::ClientToken.setup_complete_step)
 

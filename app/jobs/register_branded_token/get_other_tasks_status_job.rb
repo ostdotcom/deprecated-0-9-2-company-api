@@ -63,10 +63,8 @@ class RegisterBrandedToken::GetOtherTasksStatusJob < ApplicationJob
 
     return error_with_data(
         'j_s_gasj_1',
-        'Critical chain interation log id not found.',
-        'Critical chain interation log id not found.',
-        GlobalConstant::ErrorAction.default,
-        {}
+        'something_went_wrong',
+        GlobalConstant::ErrorAction.default
     ) if @parent_critical_chain_interaction_log.blank?
 
     @client_id = @parent_critical_chain_interaction_log.client_id

@@ -67,18 +67,16 @@ module Economy
       def fetch_client_token
 
         @client_token = CacheManagement::ClientToken.new([@client_token_id]).fetch[@client_token_id]
-        return error_with_data(
+        return validation_error(
             'e_sd_1',
-            'Token not found.',
-            'Token not found.',
-            GlobalConstant::ErrorAction.default,
-            {}
+            'invalid_api_params',
+            ['invalid_client_token_id'],
+            GlobalConstant::ErrorAction.default
         ) if @client_token.blank?
 
         return error_with_go_to(
             'e_sd_2',
-            'Token SetUp Not Complete.',
-            'Token SetUp Not Complete.',
+            'token_setup_not_complete',
             GlobalConstant::GoTo.economy_planner_step_one
         ) if @client_token[:setup_steps].exclude?(GlobalConstant::ClientToken.setup_complete_step)
 
@@ -99,27 +97,25 @@ module Economy
       def fetch_api_console_data
 
         result = CacheManagement::ClientApiCredentials.new([@client_id]).fetch[@client_id]
-        return error_with_data(
-            'e_gtss_2',
-            "Invalid client",
-            'Something Went Wrong.',
-            GlobalConstant::ErrorAction.default,
-            {}
+        return validation_error(
+            'e_fss_2',
+            'invalid_api_params',
+            ['invalid_client_id'],
+            GlobalConstant::ErrorAction.default
         ) if result.blank?
 
         # Create OST Sdk Obj
-        credentials = OSTSdk::Util::APICredentials.new(result[:api_key], result[:api_secret])
-        @ost_spec_sdk_obj = OSTSdk::Saas::TransactionKind.new(GlobalConstant::Base.sub_env, credentials, true)
+        ost_sdk = OSTSdk::Saas::Services.new(
+            api_key: result[:api_key],
+            api_secret: result[:api_secret],
+            api_base_url: "#{GlobalConstant::SaasApi.base_url}",
+            api_spec: true
+        )
+        @ost_spec_sdk_obj = ost_sdk.manifest.transaction_kind
 
         api_spec_service_response = @ost_spec_sdk_obj.execute(api_spec_params)
 
-        return error_with_data(
-            'e_gtss_3',
-            "Coundn't fetch api spec for transaction execute",
-            'Something Went Wrong.',
-            GlobalConstant::ErrorAction.default,
-            {}
-        ) unless api_spec_service_response.success?
+        return api_spec_service_response unless api_spec_service_response.success?
 
         api_spec_service_response.data[:request_uri] = GlobalConstant::SaasApi.display_only_base_url
 

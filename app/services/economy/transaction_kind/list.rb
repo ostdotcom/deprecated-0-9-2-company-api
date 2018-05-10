@@ -85,10 +85,8 @@ module Economy
 
           return error_with_data(
               'e_tk_l_fk_1',
-              "Coundn't fetch api Spec for transaction kind create",
-              'Something Went Wrong.',
-              GlobalConstant::ErrorAction.default,
-              {}
+              'something_sent_wrong',
+              GlobalConstant::ErrorAction.default
           ) unless api_spec_service_response.success?
 
           api_spec_service_response.data[:request_uri] = GlobalConstant::SaasApi.display_only_base_url
@@ -109,9 +107,11 @@ module Economy
         {
           name: '{{uri_encoded name}}',
           kind: '{{kind}}',
-          currency_type: '{{currency_type}}',
-          currency_value: '{{currency_value}}',
-          commission_percent: '{{commission_percent}}'
+          currency: '{{currency}}',
+          amount: '{{amount}}',
+          commission_percent: '{{commission_percent}}',
+          arbitrary_amount: '{{arbitrary_amount}}',
+          arbitrary_commission: '{{arbitrary_commission}}'
         }
       end
 
@@ -125,12 +125,11 @@ module Economy
       def fetch_client_token
 
         @client_token = CacheManagement::ClientToken.new([@client_token_id]).fetch[@client_token_id]
-        return error_with_data(
+        return validation_error(
             'cum_lu_4',
-            'Token not found.',
-            'Token not found.',
-            GlobalConstant::ErrorAction.default,
-            {}
+            'invalid_api_params',
+            ['invalid_client_token_id'],
+            GlobalConstant::ErrorAction.default
         ) if @client_token.blank?
 
         success

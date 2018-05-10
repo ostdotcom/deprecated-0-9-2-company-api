@@ -74,14 +74,13 @@ module ClientManagement
       r = validate
       return r unless r.success?
 
-      @client = @client = CacheManagement::Client.new([@client_id]).fetch[@client_id]
+      @client = CacheManagement::Client.new([@client_id]).fetch[@client_id]
 
-      return error_with_data(
+      return validation_error(
           'cm_gto_1',
-          'Invalid Client.',
-          'Invalid Client.',
-          GlobalConstant::ErrorAction.default,
-          {}
+          'invalid_api_params',
+          ['invalid_client_id'],
+          GlobalConstant::ErrorAction.default
       ) if @client.blank?
 
       success
@@ -107,10 +106,8 @@ module ClientManagement
       # Pending requests present then send error
       return error_with_data(
           'cm_gto_3',
-          'Pending Test Eth requests.',
-          'Pending Test Eth requests.',
-          GlobalConstant::ErrorAction.default,
-          {}
+          'pending_grant_requests',
+          GlobalConstant::ErrorAction.default
       ) if client_chain_interactions.keys.include?(GlobalConstant::CriticalChainInteractions.pending_status)
 
       # Check for last processed request time
@@ -120,10 +117,8 @@ module ClientManagement
       # Check last processed record created_at is less than 1 day
       return error_with_data(
           'cm_gto_4',
-          'Test Eth cannot be given before 24 hours from last given.',
-          'Test Eth cannot be given before 24 hours from last given.',
-          GlobalConstant::ErrorAction.default,
-          {}
+          'grant_limit_breached',
+          GlobalConstant::ErrorAction.default
       ) if (Time.now - 1.day).to_i < processed_records.first.created_at.to_i
 
       success
@@ -191,10 +186,8 @@ module ClientManagement
 
       return error_with_data(
         'cm_gto_5',
-        'Ethereum Address not associated.',
-        'Ethereum Address not associated.',
-        GlobalConstant::ErrorAction.default,
-        {}
+        'invalid_client_id',
+        GlobalConstant::ErrorAction.default
       ) if client_address_data.blank? || client_address_data[:ethereum_address_d].blank?
 
       @eth_address = client_address_data[:ethereum_address_d]

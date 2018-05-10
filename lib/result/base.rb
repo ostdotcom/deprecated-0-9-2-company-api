@@ -1,43 +1,26 @@
-# Success Result Usage:
-# > s = Result::Base.success(data: {"k1" => "v1"})
-# => #<Result::Base:0x007ffbff521d38 @error=nil, @error_message=nil, @message=nil, @data={"k1"=>"v1"}>
-# > s.data
-# => {"k1"=>"v1"}
-# > s.success?
-# => true
-# > s.to_json
-# => {:success=>true, :data=>{"k1"=>"v1"}}
-#
-# Error Result Usage:
-# > er = Result::Base.error({error: 'err_1', error_message: 'msg', error_action: 'do nothing', error_display_text: 'qwerty', data: {k1: 'v1'}})
-# => #<Result::Base:0x007fa08a050848 @error="err_1", @error_message="msg", @error_action="do nothing", @error_display_text="qwerty", @message=nil, @http_code=200, @data={:k1=>"v1"}>
-# > er.data
-# => {"k1"=>"v1"}
-# er.success?
-# => false
-# > er.to_json
-# => {:success=>false, :err=>{:code=>"err_1", :msg=>"msg", :action=>"do nothing", :display_text=>"qwerty"}, :data=>{:k1=>"v1"}}
-#
-# Exception Result Usage:
-# > ex = Result::Base.exception(Exception.new("hello"), {error: "er1", error_message: "err_msg", data: {"k1" => "v1"}})
-# => #<Result::Base:0x007fbcccbeb140 @error="er1", @error_message="err_msg", @message=nil, @data={"k1"=>"v1"}>
-# > ex.data
-# => {"k1"=>"v1"}
-# > ex.success?
-# => false
-# > ex.to_json
-# => {:success=>false, :err=>{:code=>"er1", :msg=>"err_msg"}}
-#
 module Result
 
   class Base
 
-    attr_accessor :error,
+    class << self
+
+      def general_error_config
+        @g_e_c ||= YAML.load_file('config/general_error_config.yml')
+      end
+
+      def param_error_config
+        @p_e_c ||= YAML.load_file('config/param_error_config.yml')
+      end
+
+    end
+
+    attr_accessor :internal_id,
                   :error_message,
                   :error_display_text,
                   :error_display_heading,
                   :error_action,
-                  :error_data,
+                  :params_error_identifiers,
+                  :general_error_identifier,
                   :message,
                   :data,
                   :exception,
@@ -55,8 +38,10 @@ module Result
     def initialize(params = {})
       set_error(params)
       set_message(params[:message])
+      set_error_identifiers(params)
       set_http_code(params[:http_code])
       set_go_to(params[:go_to])
+      set_error_data(params[:error_data])
       @data = params[:data] || {}
     end
 
@@ -69,7 +54,14 @@ module Result
     # @param [Integer] h_c is an Integer http_code
     #
     def set_http_code(h_c)
-      @http_code = h_c || GlobalConstant::ErrorCode.ok
+      if h_c.present?
+        @http_code = h_c
+      elsif @general_error_identifier.present?
+        config = self.class.general_error_config[@general_error_identifier] || {}
+        @http_code = config[:http_code] || GlobalConstant::ErrorCode.ok
+      else
+        @http_code = GlobalConstant::ErrorCode.ok
+      end
     end
 
     # Set Go To
@@ -84,6 +76,31 @@ module Result
       @go_to = (go_to.blank? || !go_to.is_a?(Hash)) ? {} : go_to
     end
 
+    # Set formatted error data
+    #
+    # * Author: Puneet
+    # * Date: 19/02/2018
+    # * Reviewed By:
+    #
+    # @param [Array]
+    #
+    def set_error_data(error_data)
+      @error_data = error_data
+    end
+
+    # Set Error Identifiers
+    #
+    # * Author: Puneet
+    # * Date: 05/05/2018
+    # * Reviewed By:
+    #
+    # @param [Hash]
+    #
+    def set_error_identifiers(params)
+      @params_error_identifiers = params[:params_error_identifiers] || []
+      @general_error_identifier = params[:general_error_identifier]
+    end
+
     # Set Error
     #
     # * Author: Kedar
@@ -93,9 +110,9 @@ module Result
     # @param [Hash] params is a Hash
     #
     def set_error(params)
-      @error = params[:error] if params.key?(:error)
+      @internal_id = params[:internal_id] if params.key?(:internal_id)
       @error_message = params[:error_message] if params.key?(:error_message)
-      @error_data = params[:error_data] if params.key?(:error_data)
+      @params_error_identifiers = params[:params_error_identifiers] || []
       @error_action = params[:error_action] if params.key?(:error_action)
       @error_display_text = params[:error_display_text] if params.key?(:error_display_text)
       @error_display_heading = params[:error_display_heading] if params.key?(:error_display_heading)
@@ -155,7 +172,7 @@ module Result
     # * Date: 09/10/2017
     # * Reviewed By: Sunil Khedar
     #
-    [:error?, :errors?, :failed?].each do |name|
+    [:internal_id?, :errors?, :failed?].each do |name|
       define_method(name) { invalid? }
     end
 
@@ -178,9 +195,9 @@ module Result
     # @return [Boolean] returns True / False
     #
     def errors_present?
-      @error.present? ||
+      @internal_id.present? ||
         @error_message.present? ||
-        @error_data.present? ||
+        @params_error_identifiers.present? ||
         @error_display_text.present? ||
         @error_display_heading.present? ||
         @error_action.present? ||
@@ -270,9 +287,9 @@ module Result
     #
     def self.send_notification_mail(e, params)
       ApplicationMailer.notify(
-          body: {exception: {message: e.message, backtrace: e.backtrace, error_data: @error_data}},
+          body: {exception: {message: e.message, backtrace: e.backtrace}},
           data: params,
-          subject: "#{params[:error]} : #{params[:error_message]}"
+          subject: "#{params[:internal_id]} : #{params[:error_message]}"
       ).deliver
     end
 
@@ -286,9 +303,9 @@ module Result
     #
     def self.no_error
       @n_err ||= {
-          error: nil,
+          internal_id: nil,
           error_message: nil,
-          error_data: nil,
+          params_error_identifiers: nil,
           error_action: nil,
           error_display_text: nil,
           error_display_heading: nil
@@ -317,9 +334,8 @@ module Result
     #
     def self.error_fields
       [
-          :error,
+          :internal_id,
           :error_message,
-          :error_data,
           :error_action,
           :error_display_text,
           :error_display_heading
@@ -361,26 +377,42 @@ module Result
     # * Reviewed By: Sunil Khedar
     #
     def to_json
+
       hash = self.to_hash
 
-      if (hash[:error] == nil)
+      if @internal_id.nil?
         h = {
             success: true
         }.merge(hash)
         h
       else
+        general_error_config = self.class.general_error_config[@general_error_identifier] || {}
+        if @error_data.present?
+          error_data = @error_data
+        else
+          error_data = []
+          @params_error_identifiers.each do |params_error_identifier|
+            params_error_config = self.class.param_error_config[params_error_identifier] || {}
+            error_data << {
+                code: params_error_config['code'],
+                msg: params_error_config['message'],
+                parameter: params_error_config['parameter']
+            }
+          end
+        end
         {
             success: false,
             err: {
-                code: hash[:error],
-                msg: hash[:error_message],
+                internal_id: @internal_id,
+                msg: hash[:error_message] || general_error_config['message'],
+                code: general_error_config['code'] || 'INTERNAL_SERVER_ERROR',
                 action: hash[:error_action] || GlobalConstant::ErrorAction.default,
                 display_text: hash[:error_display_text].to_s,
                 display_heading: hash[:error_display_heading].to_s,
-                error_data: hash[:error_data] || {},
+                error_data: error_data,
                 go_to: hash[:go_to] || {}
             },
-            data: hash[:data]
+            data: hash[:data] || {}
         }
       end
 

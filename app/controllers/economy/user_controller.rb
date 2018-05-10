@@ -10,18 +10,24 @@ class Economy::UserController < Economy::BaseController
 
     result = CacheManagement::ClientApiCredentials.new([params[:client_id]]).fetch[params[:client_id]]
     render_api_response(
-        error_with_data(
+        validation_error(
             'uc_cu_1',
-            "Invalid client.",
-            'Something Went Wrong.',
-            GlobalConstant::ErrorAction.default,
-            {}
+            'invalid_api_params',
+            ['invalid_client_id'],
+            GlobalConstant::ErrorAction.default
         )
     ) if result.blank?
 
     # Create OST Sdk Obj
-    credentials = OSTSdk::Util::APICredentials.new(result[:api_key], result[:api_secret])
-    @ost_sdk_obj = OSTSdk::Saas::Users.new(GlobalConstant::Base.sub_env, credentials)
+    ost_sdk = OSTSdk::Saas::Services.new(
+        api_key: result[:api_key],
+        api_secret: result[:api_secret],
+        api_base_url: "#{GlobalConstant::SaasApi.base_url}v1",
+        api_spec: false
+    )
+
+    @ost_sdk_obj = ost_sdk.manifest.users
+
     service_response = @ost_sdk_obj.create({name: params[:name]})
 
     render_api_response(service_response)
@@ -38,19 +44,25 @@ class Economy::UserController < Economy::BaseController
 
     result = CacheManagement::ClientApiCredentials.new([params[:client_id]]).fetch[params[:client_id]]
     render_api_response(
-        error_with_data(
-            'uc_cu_1',
-            "Invalid client.",
-            'Something Went Wrong.',
-            GlobalConstant::ErrorAction.default,
-            {}
+        validation_error(
+            'uc_cu_2',
+            'invalid_api_params',
+            ['invalid_client_id'],
+            GlobalConstant::ErrorAction.default
         )
     ) if result.blank?
 
     # Create OST Sdk Obj
-    credentials = OSTSdk::Util::APICredentials.new(result[:api_key], result[:api_secret])
-    @ost_sdk_obj = OSTSdk::Saas::Users.new(GlobalConstant::Base.sub_env, credentials)
-    service_response = @ost_sdk_obj.edit({name: params[:name], address_uuid: params[:address_uuid]})
+    ost_sdk = OSTSdk::Saas::Services.new(
+        api_key: result[:api_key],
+        api_secret: result[:api_secret],
+        api_base_url: "#{GlobalConstant::SaasApi.base_url}v1",
+        api_spec: false
+    )
+
+    @ost_sdk_obj = ost_sdk.manifest.users
+
+    service_response = @ost_sdk_obj.edit({name: params[:name], id: params[:address_uuid]})
 
     render_api_response(service_response)
 

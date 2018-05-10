@@ -57,15 +57,13 @@ module Economy
         elsif is_client_step_one_complete?
           error_with_go_to(
               'e_tss_sth_1',
-              'Setup Step Two Not Done',
-              'Setup Step Two Not Done',
+              'token_setup_not_complete',
               GlobalConstant::GoTo.economy_planner_step_two
           )
         else
           error_with_go_to(
               'e_tss_sth_2',
-              'Setup Step One Not Done',
-              'Setup Step One Not Done',
+              'token_setup_not_complete',
               GlobalConstant::GoTo.economy_planner_step_one
           )
         end

@@ -113,12 +113,11 @@ module UserManagement
 
       @user = User.where(id: @user_id).first
 
-      return error_with_data(
+      return validation_error(
           'um_dop_3',
-          'Invalid User',
-          'Invalid User',
-          GlobalConstant::ErrorAction.default,
-          {}
+          'invalid_api_params',
+          ['invalid_user_id'],
+          GlobalConstant::ErrorAction.default
       ) if @user.blank? || @user[:status] != GlobalConstant::User.active_status
 
       success
@@ -221,13 +220,12 @@ module UserManagement
     #
     # @return [Result::Base]
     #
-    def unauthorized_access_response(err, display_text = 'Invalid User')
-      error_with_data(
+    def unauthorized_access_response(err)
+      validation_error(
           err,
-          display_text,
-          display_text,
-          GlobalConstant::ErrorAction.default,
-          {}
+          'invalid_api_params',
+          ['invalid_r_t'],
+          GlobalConstant::ErrorAction.default
       )
     end
 
@@ -240,12 +238,11 @@ module UserManagement
     # @return [Result::Base]
     #
     def invalid_url_error(code)
-      error_with_data(
-          code,
-          'Invalid URL',
-          'Invalid URL',
-          GlobalConstant::ErrorAction.default,
-          {}
+      validation_error(
+          err,
+          'invalid_api_params',
+          ['invalid_r_t'],
+          GlobalConstant::ErrorAction.default
       )
     end
 

@@ -69,12 +69,13 @@ module ClientManagement
       return r unless r.success?
 
       @client = CacheManagement::Client.new([@client_id]).fetch[@client_id]
-
-      return error_with_data('cm_gcac_1',
-                             "Invalid client.",
-                             'Something Went Wrong.',
-                             GlobalConstant::ErrorAction.mandatory_params_missing,
-                             {}) unless @client.present?
+      
+      return validation_error(
+          'cm_gcac_1',
+           'invalid_api_params',
+           ['invalid_client_id'],
+           GlobalConstant::ErrorAction.mandatory_params_missing
+      ) unless @client.present?
 
       success
 
@@ -119,12 +120,13 @@ module ClientManagement
     def fetch_api_credentials
 
       @client_api_credentials = ClientApiCredential.where(client_id: @client_id).last
-
-      return error_with_data('cm_gcac_2',
-                             "Invalid client.",
-                             'Something Went Wrong.',
-                             GlobalConstant::ErrorAction.mandatory_params_missing,
-                             {}) unless @client_api_credentials.present?
+      
+      return validation_error(
+          'cm_gcac_2',
+          'invalid_api_params',
+          ['invalid_client_id'],
+          GlobalConstant::ErrorAction.mandatory_params_missing
+      ) unless @client_api_credentials.present?
 
       success
 

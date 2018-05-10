@@ -2,6 +2,8 @@ module CsrfTokenConcern
 
   extend ActiveSupport::Concern
 
+  include Util::ResultHelper
+
   def handle_unverified_request
 
     ApplicationMailer.notify(
@@ -17,18 +19,14 @@ module CsrfTokenConcern
         subject: 'InvalidAuthenticityToken'
     ).deliver
 
-    r = Result::Base.error(
-        {
-            error: 'invalid_authenticity_token',
-            error_message: 'Session has expired. Please refresh your page.',
-            error_data: {},
-            error_action: GlobalConstant::ErrorAction.default,
-            error_display_text: 'Session has expired. Please refresh your page.',
-            error_display_heading: 'Error',
-            data: {}
-        }
+    r = error_with_data(
+      'ctc_1',
+      'invalid_authenticity_token',
+      lobalConstant::ErrorAction.default
     )
+
     render_api_response(r)
+
   end
 
 end

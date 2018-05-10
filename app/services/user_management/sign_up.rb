@@ -93,36 +93,31 @@ module UserManagement
       @token_name = @token_name.to_s.strip
       @token_symbol = @token_symbol.to_s.strip
 
-      validation_errors = {}
-      validation_errors[:email] = 'The email address you entered is not valid.' unless Util::CommonValidator.is_valid_email?(@email)
+      validation_errors = []
+      validation_errors.push('invalid_email') unless Util::CommonValidator.is_valid_email?(@email)
 
-      validation_errors[:email] = 'Access to OST KIT⍺ developer program is not approved for this email address.' unless Util::CommonValidator.is_whitelisted_email?(@email)
+      validation_errors.push('email_not_allowed_for_dev_program') unless Util::CommonValidator.is_whitelisted_email?(@email)
 
-      validation_errors[:password] = 'The password you entered is incorrect. Please try again.' unless Util::CommonValidator.is_valid_password?(@password)
+      validation_errors.push('password_incorrect') unless Util::CommonValidator.is_valid_password?(@password)
 
-      validation_errors[:agreed_terms_of_service] = 'Please read the Term & Conditions  and Polic of Use before registration.' unless @agreed_terms_of_service == 'on'
+      validation_errors.push('invalid_agreed_terms_of_service') unless @agreed_terms_of_service == 'on'
 
-      validation_errors[:token_icon] = "Please select one icon for #{@token_name} for the list" if @token_symbol_icon.blank?
+      validation_errors.push('invalid_token_icon') if @token_symbol_icon.blank?
 
       r = validate_token_creation_params
-      validation_errors.merge!(r.data) unless r.success?
+      validation_errors += (r.data) unless r.success?
 
-      return error_with_data(
+      return validation_error(
         'um_su_1',
-        'Registration Error',
-        '',
-        GlobalConstant::ErrorAction.default,
-        {},
-        validation_errors
+        'invalid_api_params',
+        validation_errors,
+        GlobalConstant::ErrorAction.default
       ) if validation_errors.present?
 
       return error_with_data(
         'um_su_2',
         'Invalid params.',
-        '',
-        GlobalConstant::ErrorAction.default,
-        {},
-        validation_errors
+        GlobalConstant::ErrorAction.default
       ) if !Util::CommonValidator.is_boolean_string?(@is_client_manager) ||
         !Util::CommonValidator.is_boolean_string?(@client_creation_needed) ||
         (@client_creation_needed && !@is_client_manager)
@@ -148,38 +143,37 @@ module UserManagement
     #
     def validate_token_creation_params
 
-      validation_errors = {}
+      validation_errors = []
 
       unless Util::CommonValidator.is_valid_token_symbol?(@token_symbol)
-        validation_errors[:token_symbol] = 'Please enter from 3 to 4 letters or numbers. No special characters allowed. '
+        validation_errors.push('invalid_token_symbol')
       end
 
       unless Util::CommonValidator.is_valid_token_name?(@token_name)
-        validation_errors[:token_name] = 'Only letters, numbers and spaces allowed. (Max 20 characters, 3 words)'
+        validation_errors.push('invalid_token_name')
       end
 
       if Util::CommonValidator.has_stop_words?(@token_name)
-        validation_errors[:token_name] = "Come on, the token name you entered is inappropriate. Please choose a nicer word."
+        validation_errors.push('inappropriate_token_name')
       end
 
       if Util::CommonValidator.has_stop_words?(@token_symbol)
-        validation_errors[:token_symbol] = "Come on, the token symbol you entered is inappropriate. Please choose a nicer word."
+        validation_errors.push('inappropriate_token_symbol')
       end
 
       if ClientToken.where('name = ?', @token_name).first.present?
-        validation_errors[:token_name] = "This token name is already in use. Please try a different one"
+        validation_errors.push('duplicate_token_name')
       end
 
       if ClientToken.where('symbol = ?', @token_symbol).first.present?
-        validation_errors[:token_symbol] = "This token symbol is already in use. Please try a different one"
+        validation_errors.push('duplicate_token_symbol')
       end
 
-      validation_errors.blank? ? success : error_with_data(
-          'e_ct_4',
-          'Token Creation params errors.',
-          'Token Creation params errors.',
-          GlobalConstant::ErrorAction.default,
-          validation_errors
+      validation_errors.blank? ? success : validation_error(
+          'um_su_4',
+          'invalid_api_params',
+          validation_errors,
+          GlobalConstant::ErrorAction.default
       )
 
     end
@@ -193,15 +187,14 @@ module UserManagement
     # @return [Result::Base]
     #
     def find_or_create_user
+
       @user = User.where(email: @email).first
 
-      return error_with_data(
+      return validation_error(
           'um_su_3',
-          'Registration Error',
-          '',
-          GlobalConstant::ErrorAction.default,
-          {},
-          {email: 'This email address is already in use. Please try logging in.'}
+          'invalid_api_params',
+          ['already_registered_email'],
+          GlobalConstant::ErrorAction.default
       ) if @user.present?
 
       r = init_user_obj_if_needed

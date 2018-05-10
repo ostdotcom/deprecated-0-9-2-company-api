@@ -70,12 +70,11 @@ module ClientManagement
 
       @client = CacheManagement::Client.new([@client_id]).fetch[@client_id]
 
-      return error_with_data(
+      return validation_error(
           'cm_sea_1',
-          'Invalid Client.',
-          'Invalid Client.',
-          GlobalConstant::ErrorAction.default,
-          {}
+          'invalid_api_params',
+          ['invalid_client_id'],
+          GlobalConstant::ErrorAction.default
       ) if @client.blank?
 
       @client_address = ClientAddress.where(client_id: @client_id).last
@@ -88,10 +87,8 @@ module ClientManagement
         else
           return error_with_data(
               'cm_sea_2',
-              'Client Already Has ETH address associated',
-              'Client Already Has ETH address associated',
-              GlobalConstant::ErrorAction.default,
-              {}
+              'already_associated',
+              GlobalConstant::ErrorAction.default
           )
         end
       end

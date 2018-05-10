@@ -148,13 +148,11 @@ module UserManagement
     #
     # @return [Result::Base]
     #
-    def unauthorized_access_response(err, display_text = 'Unauthorized access. Please login again.')
+    def unauthorized_access_response(err)
       error_with_data(
           err,
-          display_text,
-          display_text,
-          GlobalConstant::ErrorAction.default,
-          {}
+          'unauthorized_access_response',
+          GlobalConstant::ErrorAction.default
       )
     end
 

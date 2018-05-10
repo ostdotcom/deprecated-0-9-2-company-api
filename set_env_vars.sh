@@ -1,30 +1,30 @@
 #Note this secret has to be same for comapny-web & comapny-api in order to make CSRF work
-export COMPANY_SECRET_KEY_BASE='b1f0ff90cd692556f9740a8e609f88f2f4fc15d9dda9035445a7577c3f94936eaae91a0793c4ad5500314fe5a526a3b3f7c7c71c303f883d903df138783a8225'
+export COMPANY_SECRET_KEY_BASE='2fc2e8b316ceeb04e8675900f3176668d2a836494417e0164a966aefd701430390d3db685f87c224cbb48b332f8a5cf490fa7f034e063ff13a94fc06a409bf0a'
 
 # Database details
 export CA_DEFAULT_DB_HOST=127.0.0.1
-export CA_DEFAULT_DB_USER=root
-export CA_DEFAULT_DB_PASSWORD=root
+export CA_DEFAULT_DB_USER=pepo
+export CA_DEFAULT_DB_PASSWORD=pepo123
 
 export CA_ECONOMY_DB_MYSQL_HOST='127.0.0.1'
-export CA_ECONOMY_DB_MYSQL_USER='root'
-export CA_ECONOMY_DB_MYSQL_PASSWORD='root'
+export CA_ECONOMY_DB_MYSQL_USER='pepo'
+export CA_ECONOMY_DB_MYSQL_PASSWORD='pepo123'
 
 export CA_TRANSACTION_DB_MYSQL_HOST='127.0.0.1'
-export CA_TRANSACTION_DB_MYSQL_USER='root'
-export CA_TRANSACTION_DB_MYSQL_PASSWORD='root'
+export CA_TRANSACTION_DB_MYSQL_USER='pepo'
+export CA_TRANSACTION_DB_MYSQL_PASSWORD='pepo123'
 
 export CA_SUB_ENV_SHARED_DB_HOST=127.0.0.1
-export CA_SUB_ENV_SHARED_DB_USER=root
-export CA_SUB_ENV_SHARED_DB_PASSWORD=root
+export CA_SUB_ENV_SHARED_DB_USER=pepo
+export CA_SUB_ENV_SHARED_DB_PASSWORD=pepo123
 
 export CA_SAAS_DEFAULT_DB_HOST=127.0.0.1
-export CA_SAAS_DEFAULT_DB_USER=root
-export CA_SAAS_DEFAULT_DB_PASSWORD=root
+export CA_SAAS_DEFAULT_DB_USER=pepo
+export CA_SAAS_DEFAULT_DB_PASSWORD=pepo123
 
 export CA_SAAS_SHARED_DB_HOST=127.0.0.1
-export CA_SAAS_SHARED_DB_USER=root
-export CA_SAAS_SHARED_DB_PASSWORD=root
+export CA_SAAS_SHARED_DB_USER=pepo
+export CA_SAAS_SHARED_DB_PASSWORD=pepo123
 
 # Core ENV Details
 export CA_SUB_ENV='sandbox'
@@ -64,7 +64,7 @@ export CA_CAMPAIGN_BASE_URL="https://pepocampaigns.com/"
 export CA_CAMPAIGN_MASTER_LIST="3722"
 
 # Company Restful API (SAAS) details
-export CA_SAAS_API_ENDPOINT='http://api.developmentost.com:7001'
+export CA_SAAS_API_ENDPOINT='http://devcompany.com:7001'
 export CA_SAAS_API_DISPLAY_ONLY_ENDPOINT='https://display.playgroundapi.stagingost.com'
 export CA_SAAS_API_SECRET_KEY='1somethingsarebetterkeptinenvironemntvariables'
 

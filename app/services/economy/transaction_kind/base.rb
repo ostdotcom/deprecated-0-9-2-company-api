@@ -54,18 +54,30 @@ module Economy
       def instantiate_ost_sdk
 
         result = CacheManagement::ClientApiCredentials.new([@client_id]).fetch[@client_id]
-        return error_with_data(
+        return  validation_error(
             'e_tk_b_1',
-            "Invalid client.",
-            'Something Went Wrong.',
-            GlobalConstant::ErrorAction.default,
-            {}
+            'invalid_api_params',
+            ['invalid_client_id'],
+            GlobalConstant::ErrorAction.default
         ) if result.blank?
 
         # Create OST Sdk Obj
-        credentials = OSTSdk::Util::APICredentials.new(result[:api_key], result[:api_secret])
-        @ost_sdk_obj = OSTSdk::Saas::TransactionKind.new(GlobalConstant::Base.sub_env, credentials)
-        @ost_spec_sdk_obj = OSTSdk::Saas::TransactionKind.new(GlobalConstant::Base.sub_env, credentials, true)
+        ost_sdk = OSTSdk::Saas::Services.new(
+            api_key: result[:api_key],
+            api_secret: result[:api_secret],
+            api_base_url: "#{GlobalConstant::SaasApi.base_url}v1",
+            api_spec: false
+        )
+        @ost_sdk_obj = ost_sdk.manifest.actions
+
+        # Create OST Sdk Spec Obj
+        ost_sdk = OSTSdk::Saas::Services.new(
+            api_key: result[:api_key],
+            api_secret: result[:api_secret],
+            api_base_url: "#{GlobalConstant::SaasApi.base_url}v1",
+            api_spec: true
+        )
+        @ost_spec_sdk_obj = ost_sdk.manifest.actions
 
         success
 
@@ -82,6 +94,8 @@ module Economy
       def sanitize_create_edit_params!
 
         @params.delete(:client_id)
+        @params.delete(:commission_percent) if @params[:commission_percent].to_f == 0
+        @params.delete(:amount) if @params[:amount].to_f == 0
 
         success
 

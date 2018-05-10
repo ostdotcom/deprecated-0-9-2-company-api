@@ -34,10 +34,7 @@ class EmailTokenEncryptor
       exception_with_data(
           e,
           'etc_1',
-          "EmailTokenEncryptor could not perform task: #{task}",
-          'Something Went Wrong.',
-          GlobalConstant::ErrorAction.default,
-          {}
+          GlobalConstant::ErrorAction.default
       )
     end
   end
