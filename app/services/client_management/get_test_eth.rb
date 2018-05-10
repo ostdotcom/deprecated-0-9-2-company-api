@@ -121,7 +121,6 @@ module ClientManagement
           GlobalConstant::ErrorAction.default
       ) if (Time.now - 1.day).to_i < processed_records.first.created_at.to_i
 
-
       success
 
     end
