@@ -104,8 +104,8 @@ module UserManagement
 
       validation_errors.push('invalid_token_icon') if @token_symbol_icon.blank?
 
-      r = validate_token_creation_params
-      validation_errors += (r.data) unless r.success?
+      token_creation_errors = validate_token_creation_params
+      validation_errors += token_creation_errors
 
       return validation_error(
         'um_su_1',
@@ -139,7 +139,7 @@ module UserManagement
     # * Date: 02/02/2018
     # * Reviewed By: Sunil
     #
-    # @return [Result::Base]
+    # @return [Array]
     #
     def validate_token_creation_params
 
@@ -169,12 +169,7 @@ module UserManagement
         validation_errors.push('duplicate_token_symbol')
       end
 
-      validation_errors.blank? ? success : validation_error(
-          'um_su_4',
-          'invalid_api_params',
-          validation_errors,
-          GlobalConstant::ErrorAction.default
-      )
+      validation_errors
 
     end
 
