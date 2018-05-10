@@ -43,7 +43,7 @@ module Recaptcha
             )
         end
       rescue => e
-        return return error_with_data(
+        return error_with_data(
             'rv_3',
             'something_went_wrong',
             GlobalConstant::ErrorAction.default
