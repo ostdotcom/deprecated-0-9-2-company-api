@@ -3,28 +3,29 @@ export COMPANY_SECRET_KEY_BASE='2fc2e8b316ceeb04e8675900f3176668d2a836494417e016
 
 # Database details
 export CA_DEFAULT_DB_HOST=127.0.0.1
-export CA_DEFAULT_DB_USER=pepo
-export CA_DEFAULT_DB_PASSWORD=pepo123
+
+export CA_DEFAULT_DB_USER=root
+export CA_DEFAULT_DB_PASSWORD=
 
 export CA_ECONOMY_DB_MYSQL_HOST='127.0.0.1'
-export CA_ECONOMY_DB_MYSQL_USER='pepo'
-export CA_ECONOMY_DB_MYSQL_PASSWORD='pepo123'
+export CA_ECONOMY_DB_MYSQL_USER='root'
+export CA_ECONOMY_DB_MYSQL_PASSWORD=''
 
 export CA_TRANSACTION_DB_MYSQL_HOST='127.0.0.1'
-export CA_TRANSACTION_DB_MYSQL_USER='pepo'
-export CA_TRANSACTION_DB_MYSQL_PASSWORD='pepo123'
+export CA_TRANSACTION_DB_MYSQL_USER='root'
+export CA_TRANSACTION_DB_MYSQL_PASSWORD=''
 
 export CA_SUB_ENV_SHARED_DB_HOST=127.0.0.1
-export CA_SUB_ENV_SHARED_DB_USER=pepo
-export CA_SUB_ENV_SHARED_DB_PASSWORD=pepo123
+export CA_SUB_ENV_SHARED_DB_USER=root
+export CA_SUB_ENV_SHARED_DB_PASSWORD=
 
 export CA_SAAS_DEFAULT_DB_HOST=127.0.0.1
-export CA_SAAS_DEFAULT_DB_USER=pepo
-export CA_SAAS_DEFAULT_DB_PASSWORD=pepo123
+export CA_SAAS_DEFAULT_DB_USER=root
+export CA_SAAS_DEFAULT_DB_PASSWORD=
 
 export CA_SAAS_SHARED_DB_HOST=127.0.0.1
-export CA_SAAS_SHARED_DB_USER=pepo
-export CA_SAAS_SHARED_DB_PASSWORD=pepo123
+export CA_SAAS_SHARED_DB_USER=root
+export CA_SAAS_SHARED_DB_PASSWORD=
 
 # Core ENV Details
 export CA_SUB_ENV='sandbox'
@@ -64,7 +65,9 @@ export CA_CAMPAIGN_BASE_URL="https://pepocampaigns.com/"
 export CA_CAMPAIGN_MASTER_LIST="3722"
 
 # Company Restful API (SAAS) details
-export CA_SAAS_API_ENDPOINT='http://devcompany.com:7001'
+
+export CA_SAAS_API_ENDPOINT='http://developmentost.com:7001'
+>>>>>>> Added migration for making commission percent allow null
 export CA_SAAS_API_DISPLAY_ONLY_ENDPOINT='https://display.playgroundapi.stagingost.com'
 export CA_SAAS_API_SECRET_KEY='1somethingsarebetterkeptinenvironemntvariables'
 
