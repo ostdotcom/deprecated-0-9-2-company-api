@@ -153,11 +153,11 @@
     - :client_id
     - :client_token_id
     - :arbitrary_amount
-    - :arbitrary_commission
     - :name
     - :kind
     - :currency
   :optional:
+    - :arbitrary_commission
     - :amount
     - :commission_percent
 
