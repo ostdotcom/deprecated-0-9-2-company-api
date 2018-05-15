@@ -93,9 +93,9 @@ module Economy
       #
       def sanitize_create_edit_params!
 
-        @params.delete(:client_id)
-        @params.delete(:commission_percent) if @params[:commission_percent].to_f == 0
-        @params.delete(:amount) if @params[:amount].to_f == 0
+        # @params.delete(:client_id)
+        # @params.delete(:commission_percent) if @params[:commission_percent].to_f == 0
+        # @params.delete(:amount) if @params[:amount].to_f == 0
 
         success
 
