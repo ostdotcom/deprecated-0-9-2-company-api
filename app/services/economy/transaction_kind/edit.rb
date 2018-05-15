@@ -59,7 +59,7 @@ module Economy
       # @return [Result::Base]
       #
       def execute
-puts @params
+        puts @params
         @ost_sdk_obj.edit(@params.to_hash)
 
       end

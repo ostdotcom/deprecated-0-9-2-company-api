@@ -165,14 +165,14 @@
   :mandatory:
     - :client_id
     - :id
-    - :arbitrary_amount
-    - :arbitrary_commission
   :optional:
     - :name
     - :kind
     - :currency
     - :amount
     - :commission_percent
+    - :arbitrary_amount
+    - :arbitrary_commission
 
 'Economy::TransactionKind::BulkCreateEdit':
   :mandatory:
