@@ -73,8 +73,7 @@ module Economy
         return r unless r.success?
 
         if is_xhr_request?
-
-          r = @ost_sdk_obj.list({})
+          r = @ost_sdk_obj.list(@params.to_hash)
           return r unless r.success?
 
           @api_response_data = r.data
