@@ -187,6 +187,16 @@
     - :user_id
     - :is_xhr
   :optional:
+    - :id
+    - :name
+    - :kind
+    - :currency
+    - :arbitrary_amount
+    - :arbitrary_commission
+    - :page_no
+    - :order_by
+    - :order
+    - :limit
 
 'Economy::Transaction::FetchHistory':
   :mandatory:
