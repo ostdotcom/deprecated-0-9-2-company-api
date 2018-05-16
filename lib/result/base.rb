@@ -391,8 +391,9 @@ module Result
           error_data = @error_data
         else
           error_data = []
+          params_error_config_hash = self.class.param_error_config
           @params_error_identifiers.each do |params_error_identifier|
-            params_error_config = self.class.param_error_config[params_error_identifier] || {}
+            params_error_config = params_error_config_hash[params_error_identifier] || {}
             error_data << {
                 code: params_error_config['code'],
                 msg: params_error_config['message'],
