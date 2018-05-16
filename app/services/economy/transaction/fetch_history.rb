@@ -83,6 +83,8 @@ module Economy
 
         @page_no ||= 1
 
+        @page_no = @page_no.to_i
+
         success
 
       end
