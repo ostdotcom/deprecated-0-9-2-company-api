@@ -26,7 +26,7 @@ class Economy::UserController < Economy::BaseController
         api_spec: false
     )
 
-    @ost_sdk_obj = ost_sdk.manifest.users
+    @ost_sdk_obj = ost_sdk.services.users
 
     service_response = @ost_sdk_obj.create({name: params[:name]})
 
@@ -60,7 +60,7 @@ class Economy::UserController < Economy::BaseController
         api_spec: false
     )
 
-    @ost_sdk_obj = ost_sdk.manifest.users
+    @ost_sdk_obj = ost_sdk.services.users
 
     service_response = @ost_sdk_obj.edit({name: params[:name], id: params[:address_uuid]})
 

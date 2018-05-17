@@ -111,7 +111,7 @@ module Economy
             api_base_url: "#{GlobalConstant::SaasApi.base_url}v1",
             api_spec: true
         )
-        @ost_spec_sdk_obj = ost_sdk.manifest.transactions
+        @ost_spec_sdk_obj = ost_sdk.services.transactions
 
         api_spec_service_response = @ost_spec_sdk_obj.execute(api_spec_params)
 

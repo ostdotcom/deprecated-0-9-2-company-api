@@ -68,7 +68,7 @@ module Economy
             api_base_url: "#{GlobalConstant::SaasApi.base_url}v1",
             api_spec: false
         )
-        @ost_sdk_obj = ost_sdk.manifest.actions
+        @ost_sdk_obj = ost_sdk.services.actions
 
         # Create OST Sdk Spec Obj
         ost_sdk = OSTSdk::Saas::Services.new(
@@ -77,7 +77,7 @@ module Economy
             api_base_url: "#{GlobalConstant::SaasApi.base_url}v1",
             api_spec: true
         )
-        @ost_spec_sdk_obj = ost_sdk.manifest.actions
+        @ost_spec_sdk_obj = ost_sdk.services.actions
 
         success
 

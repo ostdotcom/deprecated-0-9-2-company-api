@@ -130,7 +130,7 @@ module Economy
             api_spec: true
         )
 
-        @ost_spec_sdk_obj = ost_sdk.manifest.actions
+        @ost_spec_sdk_obj = ost_sdk.services.actions
 
         api_spec_service_response = @ost_spec_sdk_obj.create(api_spec_params)
 

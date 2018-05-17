@@ -163,7 +163,7 @@ module ClientUsersManagement
             api_spec: false
         )
 
-        @ost_sdk_obj = ost_sdk.manifest.users
+        @ost_sdk_obj = ost_sdk.services.users
 
         list_params = {}
         list_params[:page_no] = @page_no unless @page_no.nil?
@@ -186,7 +186,7 @@ module ClientUsersManagement
             api_spec: true
         )
 
-        @ost_spec_sdk_obj = ost_sdk.manifest.users
+        @ost_spec_sdk_obj = ost_sdk.services.users
         api_spec_service_response = @ost_spec_sdk_obj.create({name: "{{uri_encoded name}}"})
 
         return api_spec_service_response unless api_spec_service_response.success?

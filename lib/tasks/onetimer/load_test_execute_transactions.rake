@@ -22,9 +22,9 @@ namespace :one_timers do
           api_spec: false
       )
 
-      @user_sdk_obj = ost_sdk.manifest.users
-      @tx_kind_sdk_obj = ost_sdk.manifest.actions
-      @transactions_sdk_obj = ost_sdk.manifest.transactions
+      @user_sdk_obj = ost_sdk.services.users
+      @tx_kind_sdk_obj = ost_sdk.services.actions
+      @transactions_sdk_obj = ost_sdk.services.transactions
 
     end
 
