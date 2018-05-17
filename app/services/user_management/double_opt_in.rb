@@ -13,7 +13,7 @@ module UserManagement
     # @return [UserManagement::DoubleOptIn]
     #
     def initialize(params)
-      
+
       super
 
       @r_t = @params[:r_t]
@@ -23,7 +23,7 @@ module UserManagement
       @user_validation_hash_id = nil
       @user_validation_hash_obj = nil
       @user = nil
-      
+
     end
 
     # Perform
@@ -96,9 +96,9 @@ module UserManagement
       @user_validation_hash_id = splited_reset_token[0].to_i
 
       @user_id = @user_id.to_i
-      
+
       success
-      
+
     end
 
     # Fetch logged in User
@@ -114,10 +114,10 @@ module UserManagement
       @user = User.where(id: @user_id).first
 
       return validation_error(
-          'um_dop_3',
-          'invalid_api_params',
-          ['invalid_user_id'],
-          GlobalConstant::ErrorAction.default
+        'um_dop_3',
+        'invalid_api_params',
+        ['invalid_user_id'],
+        GlobalConstant::ErrorAction.default
       ) if @user.blank? || @user[:status] != GlobalConstant::User.active_status
 
       success
@@ -170,13 +170,13 @@ module UserManagement
     #
     def create_update_contact_email_service_hook
       Email::HookCreator::UpdateContact.new(
-          email: @user.email,
-          custom_attributes: {
-              GlobalConstant::PepoCampaigns.double_optin_done_attribute => GlobalConstant::PepoCampaigns.double_optin_done_value
-          },
-          user_settings: {
-              GlobalConstant::PepoCampaigns.double_opt_in_status_user_setting => GlobalConstant::PepoCampaigns.verified_value
-          }
+        email: @user.email,
+        custom_attributes: {
+          GlobalConstant::PepoCampaigns.double_optin_done_attribute => GlobalConstant::PepoCampaigns.double_optin_done_value
+        },
+        user_settings: {
+          GlobalConstant::PepoCampaigns.double_opt_in_status_user_setting => GlobalConstant::PepoCampaigns.verified_value
+        }
       ).perform
     end
 
@@ -203,11 +203,11 @@ module UserManagement
       @user_validation_hash_obj.save!
 
       UserValidationHash.where(
-          user_id: @user_id,
-          kind: GlobalConstant::UserValidationHash.double_optin,
-          status: GlobalConstant::UserValidationHash.active_status
+        user_id: @user_id,
+        kind: GlobalConstant::UserValidationHash.double_optin,
+        status: GlobalConstant::UserValidationHash.active_status
       ).update_all(
-          status: GlobalConstant::UserValidationHash.inactive_status
+        status: GlobalConstant::UserValidationHash.inactive_status
       )
       success
     end
@@ -222,10 +222,10 @@ module UserManagement
     #
     def unauthorized_access_response(err)
       validation_error(
-          err,
-          'invalid_api_params',
-          ['invalid_r_t'],
-          GlobalConstant::ErrorAction.default
+        err,
+        'invalid_api_params',
+        ['invalid_r_t'],
+        GlobalConstant::ErrorAction.default
       )
     end
 
@@ -239,10 +239,10 @@ module UserManagement
     #
     def invalid_url_error(code)
       validation_error(
-          err,
-          'invalid_api_params',
-          ['invalid_r_t'],
-          GlobalConstant::ErrorAction.default
+        code,
+        'invalid_api_params',
+        ['invalid_r_t'],
+        GlobalConstant::ErrorAction.default
       )
     end
 
