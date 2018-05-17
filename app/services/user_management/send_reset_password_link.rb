@@ -73,9 +73,9 @@ module UserManagement
       return validation_error(
           'um_srpl_1',
           'invalid_api_params',
-          ['error_key'],
+          [error_key],
           GlobalConstant::ErrorAction.default
-      ) if error.present?
+      ) if error_key.present?
 
       success
 
