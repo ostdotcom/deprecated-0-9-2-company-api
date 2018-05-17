@@ -136,7 +136,7 @@ module Economy
 
         return api_spec_service_response unless api_spec_service_response.success?
 
-        api_spec_service_response.data[:request_uri] = GlobalConstant::SaasApi.display_only_base_url
+        api_spec_service_response.data[:request_uri].gsub!(GlobalConstant::SaasApi.base_url, GlobalConstant::SaasApi.display_only_base_url)
 
         @api_response_data[:api_console_data] = {
             transaction_kind: {
