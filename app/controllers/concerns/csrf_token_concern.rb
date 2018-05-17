@@ -22,7 +22,7 @@ module CsrfTokenConcern
     r = error_with_data(
       'ctc_1',
       'invalid_authenticity_token',
-      lobalConstant::ErrorAction.default
+      GlobalConstant::ErrorAction.default
     )
 
     render_api_response(r)
