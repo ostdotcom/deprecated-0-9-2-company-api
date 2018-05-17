@@ -88,12 +88,11 @@ module Email
         if Util::CommonValidator.is_valid_email?(@email) && Util::CommonValidator.is_email_send_allowed?(@email)
           success
         else
-          error_with_data(
-            'e_hc_b_3',
-            'Invalid Email',
-            'Invalid Email',
-            GlobalConstant::ErrorAction.default,
-            {}
+          validation_error(
+              'e_hc_b_3',
+              'invalid_api_params',
+              ['invalid_email'],
+              GlobalConstant::ErrorAction.default
           )
         end
 
@@ -116,10 +115,9 @@ module Email
         unsupported_keys.blank? ? success :
             error_with_data(
                 'e_hc_b_2',
-                'unsupported attributes',
-                "unsupported attributes: #{unsupported_keys}",
+                'something_went_wrong',
                 GlobalConstant::ErrorAction.default,
-                {}
+                {unsupported_keys: unsupported_keys}
             )
 
       end

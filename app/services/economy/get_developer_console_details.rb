@@ -64,12 +64,12 @@ module Economy
     def fetch_client_token
 
       @client_token = CacheManagement::ClientToken.new([@client_token_id]).fetch[@client_token_id]
-      return error_with_data(
+
+      return validation_error(
           'e_gtss_1',
-          'Token not found.',
-          'Token not found.',
-          GlobalConstant::ErrorAction.default,
-          {}
+          'invalid_api_params',
+          ['invalid_client_token_id'],
+          GlobalConstant::ErrorAction.default
       ) if @client_token.blank?
 
       success
@@ -86,12 +86,11 @@ module Economy
     def fetch_client_token_secure
       @client_token_secure = CacheManagement::ClientTokenSecure.new([@client_token_id]).fetch[@client_token_id]
 
-      return error_with_data(
-          'e_gtss_fcts_1',
-          'Token not found.',
-          'Token not found.',
-          GlobalConstant::ErrorAction.default,
-          {}
+      returnvalidation_error(
+          'e_gtss_2',
+          'invalid_api_params',
+          ['invalid_client_token_id'],
+          GlobalConstant::ErrorAction.default
       ) if @client_token_secure.blank?
 
       @api_response_data[:client_bt_addresses] = {

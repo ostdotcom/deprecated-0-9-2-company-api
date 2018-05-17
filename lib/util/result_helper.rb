@@ -55,26 +55,65 @@ module Util
     # * Date: 09/10/2017
     # * Reviewed By: Sunil Khedar
     #
-    # @param [String] code (mandatory) - error code
-    # @param [String] message (mandatory) - error message
-    # @param [String] display_heading (optional) - display heading
-    # @param [String] display_text (mandatory) - error display text
+    # @param [String] internal_id (mandatory) - internal_id
+    # @param [String] general_error_identifier (mandatory) - key which is used to look up error config file
     # @param [String] action (mandatory) - error action
-    # @param [Hash] data (mandatory) - data
-    # @param [Hash] error_data (mandatory) - error data
+    # @param [Hash] data (optional) - data
     #
     # @return [Result::Base]
     #
-    def error_with_data(code, message, display_text, action, data, error_data = {}, display_heading = 'Error')
+    def error_with_data(internal_id, general_error_identifier, action, data = {})
       Result::Base.error(
           {
-              error: code,
-              error_message: message,
-              error_data: error_data,
+              internal_id: internal_id,
+              general_error_identifier: general_error_identifier,
               error_action: action,
-              error_display_text: display_text,
-              error_display_heading: display_heading,
               data: data
+          }
+      )
+    end
+
+    # Error with Formatted Error Data
+    #
+    # * Author: Kedar
+    # * Date: 09/10/2017
+    # * Reviewed By: Sunil Khedar
+    #
+    # @param [String] internal_id (mandatory) - internal_id
+    # @param [String] error_message (mandatory) - message string
+    # @param [Hash] error_data (mandatory) - formatted data
+    #
+    # @return [Result::Base]
+    #
+    def error_with_formatted_error_data(internal_id, error_message, error_data)
+      Result::Base.error(
+          {
+              internal_id: internal_id,
+              error_message: error_message,
+              error_action: GlobalConstant::ErrorAction.default,
+              error_data: error_data
+          }
+      )
+    end
+
+    # Error with Validation
+    #
+    # * Author: Puneet
+    # * Date: 08/05/2018
+    # * Reviewed By:
+    #
+    # @param [String] internal_id (mandatory) - internal_id
+    # @param [Array] params_error_identifiers (mandatory) - keys for param errors
+    #
+    # @return [Result::Base]
+    #
+    def validation_error(internal_id, general_error_identifier, params_error_identifiers, action)
+      Result::Base.error(
+          {
+              internal_id: internal_id,
+              general_error_identifier: general_error_identifier,
+              params_error_identifiers: params_error_identifiers,
+              error_action: action
           }
       )
     end
@@ -86,23 +125,18 @@ module Util
     # * Reviewed By: Sunil Khedar
     #
     # @param [Exception] e (mandatory) - Exception object
-    # @param [String] code (mandatory) - error code
-    # @param [String] message (mandatory) - error message
-    # @param [String] display_text (mandatory) - display text
+    # @param [String] internal_id (mandatory) - internal_id
     # @param [String] action (mandatory) - action
     # @param [Hash] data (mandatory) - error data
-    # @param [String] display_heading (Optional) - display heading
     #
     # @return [Result::Base]
     #
-    def exception_with_data(e, code, message, display_text, action, data, display_heading = 'Error')
+    def exception_with_data(e, internal_id, action, data = {})
       Result::Base.exception(
         e, {
-        error: code,
-        error_message: message,
+        internal_id: internal_id,
+        general_error_identifier: 'something_went_wrong',
         error_action: action,
-        error_display_text: display_text,
-        error_display_heading: display_heading,
         data: data
       })
     end
@@ -113,19 +147,17 @@ module Util
     # * Date: 19/02/2018
     # * Reviewed By:
     #
-    # @param [String] code (mandatory) - error code
-    # @param [String] message (mandatory) - error message
-    # @param [String] display_text (mandatory) - display heading
+    # @param [String] internal_id (mandatory) - internal code
+    # @param [String] general_error_identifier (mandatory) - key which is used to look up error config file
     # @param [Hash] go_to (mandatory) - go_to to be sent in the response
     #
     # @return [Result::Base]
     #
-    def error_with_go_to(code, message, display_text, go_to)
+    def error_with_go_to(internal_id, general_error_identifier, go_to)
       Result::Base.error(
           {
-              error: code,
-              error_message: message,
-              error_display_text: display_text,
+              internal_id: internal_id,
+              general_error_identifier: general_error_identifier,
               go_to: go_to
           }
       )

@@ -65,45 +65,35 @@ class FetchClientBalances
 
           return error_with_data(
               'fcb_4',
-              'missing address_uuid',
-              'Something Went Wrong.',
-              GlobalConstant::ErrorAction.default,
-              {}
+              'invalid_api_params',
+              GlobalConstant::ErrorAction.default
           ) if data[:address_uuid].blank?
 
           return error_with_data(
               'fcb_5',
-              'invalid balance types',
-              'Something Went Wrong.',
-              GlobalConstant::ErrorAction.default,
-              {}
+              'invalid_api_params',
+              GlobalConstant::ErrorAction.default
           ) if data[:balance_types].blank?
 
         when GlobalConstant::CriticalChainInteractions.value_chain_type
 
           return error_with_data(
               'fcb_6',
-              'missing address',
-              'Something Went Wrong.',
-              GlobalConstant::ErrorAction.default,
-              {}
+              'invalid_api_params',
+              GlobalConstant::ErrorAction.default
           ) if data[:address].blank?
 
           return error_with_data(
-              'fcb_9',
-              'invalid balance types',
-              'Something Went Wrong.',
-              GlobalConstant::ErrorAction.default,
-              {}
+              'fcb_7',
+              'invalid_api_params',
+              GlobalConstant::ErrorAction.default
           ) if data[:balance_types].blank?
 
         else
           return error_with_data(
-              'fcb_8',
-              "invalid chain_type : #{chain_type}",
-              'Something Went Wrong.',
-              GlobalConstant::ErrorAction.default,
-              {}
+              'fcb_7',
+              'invalid_api_params',
+              GlobalConstant::ErrorAction.default
           )
       end
 

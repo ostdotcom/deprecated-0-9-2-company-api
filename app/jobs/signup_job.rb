@@ -72,16 +72,27 @@ class SignupJob < ApplicationJob
   # @return [Result]
   #
   def validate
-    @user = User.where(id: @user_id).first
-    return error_with_data("j_sj_1", "Invalid user", "Invalid user",
-                           "", {}, {}) if @user.blank?
 
-    return error_with_data("j_sj_2", "Invalid client", "Invalid client",
-                           "", {}, {}) if @user.default_client_id != @client_id
+    @user = User.where(id: @user_id).first
+
+    return error_with_data(
+        'j_sj_1',
+        "Invalid user",
+        GlobalConstant::ErrorAction.default
+    ) if @user.blank?
+
+    return error_with_data(
+        'j_sj_2',
+        'unauthorized_for_other_client',
+        GlobalConstant::ErrorAction.default
+    ) if @user.default_client_id != @client_id
 
     @client_token = ClientToken.where(id: @client_token_id).first
-    return error_with_data("j_sj_3", "Invalid client Token", "Invalid client Token",
-                           "", {}, {}) if @client_token.client_id != @client_id
+    return error_with_data(
+        'j_sj_3',
+        'unauthorized_for_other_client',
+        GlobalConstant::ErrorAction.default
+    ) if @client_token.client_id != @client_id
 
     success
 

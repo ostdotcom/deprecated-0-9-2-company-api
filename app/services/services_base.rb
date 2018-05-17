@@ -37,22 +37,25 @@ class ServicesBase
   private
 
   def validate
+
     # perform presence related validations here
     # result object is returned
     service_params_list = ServicesBase.get_service_params(self.class.to_s)
-    missing_mandatory_params = []
+    missing_mandatory_params_errors = []
 
     service_params_list[:mandatory].each do |mandatory_param|
-      missing_mandatory_params << mandatory_param if @params[mandatory_param].to_s.blank?
+      missing_mandatory_params_errors << "missing_#{mandatory_param}" if @params[mandatory_param].to_s.blank?
     end if service_params_list[:mandatory].present?
 
-    return error_with_data('sb_1',
-                                      "Mandatory parameter(s) #{missing_mandatory_params.join(", ")} missing.",
-                                      'Something Went Wrong.',
-                                      GlobalConstant::ErrorAction.mandatory_params_missing,
-                                      {}) if missing_mandatory_params.any?
+    return validation_error(
+        'sb_1',
+        'invalid_api_params',
+        missing_mandatory_params_errors,
+        GlobalConstant::ErrorAction.mandatory_params_missing
+    ) if missing_mandatory_params_errors.any?
 
     success
+
   end
 
 end

@@ -65,26 +65,34 @@ module UserManagement
     #
     def fetch_user
 
-      return unauthorized_access_response(
+      return validation_error(
           'um_l_fu_4',
-          'Access to OST KIT⍺ developer program is not approved for this email address.'
+          'invalid_api_params',
+          ['email_not_allowed_for_dev_program'],
+          GlobalConstant::ErrorAction.default
       ) unless Util::CommonValidator.is_whitelisted_email?(@email)
 
       @user = User.where(email: @email).first
 
-      return unauthorized_access_response(
+      return validation_error(
           'um_l_fu_1',
-          'The email address you provided is not associated with an OST KIT⍺ account. Please sign up.'
+          'invalid_api_params',
+          ['email_not_registered'],
+          GlobalConstant::ErrorAction.default
       ) if !@user.present? || !@user.password.present? || !@user.login_salt.present?
 
-      return unauthorized_access_response(
+      return validation_error(
           'um_l_fu_2',
-          "Your password has been reset. Please use Forgot Password to access your account."
+          'invalid_api_params',
+          ['email_auto_blocked'],
+          GlobalConstant::ErrorAction.default
       ) if @user.status == GlobalConstant::User.auto_blocked_status
 
-      return unauthorized_access_response(
-          'um_l_fu_3',
-          'Your account has been locked. please use forgot password to unblock account'
+      return validation_error(
+          'um_l_fu_2',
+          'invalid_api_params',
+          ['email_inactive'],
+          GlobalConstant::ErrorAction.default
       ) if (@user.status != GlobalConstant::User.active_status)
 
       success
@@ -128,7 +136,12 @@ module UserManagement
         user.failed_login_attempt_count = user.failed_login_attempt_count + 1
         user.status = GlobalConstant::User.auto_blocked_status if user.failed_login_attempt_count >= 5
         user.save
-        return unauthorized_access_response('um_l_2', 'The password you entered is incorrect. Please try again.')
+        return validation_error(
+            'um_l_fu_2',
+            'invalid_api_params',
+            ['password_incorrect'],
+            GlobalConstant::ErrorAction.default
+        )
       end
 
       success
@@ -147,24 +160,6 @@ module UserManagement
       cookie_value = User.get_cookie_value(@user.id, @user.default_client_id, @user.password, @browser_user_agent)
 
       success_with_data(cookie_value: cookie_value)
-    end
-
-    # Unauthorized access response
-    #
-    # * Author: Alpesh
-    # * Date: 15/01/2018
-    # * Reviewed By:
-    #
-    # @return [Result::Base]
-    #
-    def unauthorized_access_response(err, display_text = 'Incorrect login details.')
-      error_with_data(
-        err,
-        display_text,
-        display_text,
-        GlobalConstant::ErrorAction.default,
-        {}
-      )
     end
 
   end

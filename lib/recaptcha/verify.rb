@@ -30,24 +30,24 @@ module Recaptcha
               return success_with_data(response: parsed_response)
             else
               return error_with_data('rv_1',
-                                     "Error in API call: #{parsed_response}",
-                                     'Recaptcha validation failed.',
+                                     'something_went_wrong',
                                      GlobalConstant::ErrorAction.default,
                                      parsed_response)
             end
           else
-            return error_with_data('rv_2',
-                                              "Error in API call: #{response.status}",
-                                              'Recaptcha validation failed.',
-                                              GlobalConstant::ErrorAction.default,
-                                              {})
+            return error_with_data(
+                'rv_2',
+                'something_went_wrong',
+                GlobalConstant::ErrorAction.default,
+                {status: response.status}
+            )
         end
       rescue => e
-        return error_with_data('rv_3',
-                                          "Exception in API call: #{e.message}",
-                                          'Recaptcha validation has failed.',
-                                          GlobalConstant::ErrorAction.default,
-                                          {})
+        return error_with_data(
+            'rv_3',
+            'something_went_wrong',
+            GlobalConstant::ErrorAction.default
+        )
       end
     end
 

@@ -54,8 +54,7 @@ module Economy
 
         return error_with_go_to(
             'e_tss_st_1',
-            'Setup Step One Not Done',
-            'Setup Step One Not Done',
+            'token_setup_not_complete',
             GlobalConstant::GoTo.economy_planner_step_one
         ) unless is_client_step_one_complete?
 
@@ -67,8 +66,7 @@ module Economy
 
           return error_with_go_to(
               'e_tss_st_3',
-              'OST Not Granted Yet',
-              'OST Not Granted Yet',
+              'token_setup_not_complete',
               GlobalConstant::GoTo.economy_planner_step_one
           ) unless r.success?
 
@@ -117,29 +115,28 @@ module Economy
       def fetch_api_console_data
 
         result = CacheManagement::ClientApiCredentials.new([@client_id]).fetch[@client_id]
-        return error_with_data(
-            'e_tss_st_4',
-            "Invalid client",
-            'Something Went Wrong.',
-            GlobalConstant::ErrorAction.default,
-            {}
-        ) if result.blank?
+        return validation_error(
+            'e_tss_tw_2',
+            'invalid_api_params',
+            ['invalid_client_id'],
+            GlobalConstant::ErrorAction.default
+        )  if result.blank?
 
         # Create OST Sdk Obj
-        credentials = OSTSdk::Util::APICredentials.new(result[:api_key], result[:api_secret])
-        @ost_spec_sdk_obj = OSTSdk::Saas::TransactionKind.new(GlobalConstant::Base.sub_env, credentials, true)
+        ost_sdk = OSTSdk::Saas::Services.new(
+            api_key: result[:api_key],
+            api_secret: result[:api_secret],
+            api_base_url: "#{GlobalConstant::SaasApi.base_url}v1",
+            api_spec: true
+        )
+
+        @ost_spec_sdk_obj = ost_sdk.services.actions
 
         api_spec_service_response = @ost_spec_sdk_obj.create(api_spec_params)
 
-        return error_with_data(
-            'e_tss_st_5',
-            "Coundn't fetch api spec for transaction kind create",
-            'Something Went Wrong.',
-            GlobalConstant::ErrorAction.default,
-            {}
-        ) unless api_spec_service_response.success?
+        return api_spec_service_response unless api_spec_service_response.success?
 
-        api_spec_service_response.data[:request_uri] = GlobalConstant::SaasApi.display_only_base_url
+        api_spec_service_response.data[:request_uri].gsub!(GlobalConstant::SaasApi.base_url, GlobalConstant::SaasApi.display_only_base_url)
 
         @api_response_data[:api_console_data] = {
             transaction_kind: {

@@ -78,10 +78,9 @@ module Email
       def validate_template_name
         GlobalConstant::PepoCampaigns.supported_templates.include?(@template_name) ? success : error_with_data(
           'e_hc_stm_3',
-          "un supported template: #{@template_name}",
-          "un supported template: #{@template_name}",
+          'something_went_wrong',
           GlobalConstant::ErrorAction.default,
-          {}
+          {template_name: @template_name}
         )
       end
 
@@ -99,20 +98,16 @@ module Email
 
           return error_with_data(
             'e_hc_stm_4',
-            'mandatory template var double_opt_in_token missing',
-            'mandatory template var double_opt_in_token missing',
-            GlobalConstant::ErrorAction.default,
-            {}
+            'something_went_wrong',
+            GlobalConstant::ErrorAction.default
           ) if @template_vars[:double_opt_in_token].blank?
 
         elsif GlobalConstant::PepoCampaigns.is_forgot_password_template?(@template_name)
 
           return error_with_data(
               'e_hc_stm_5',
-              'mandatory template var reset_password_token missing',
-              'mandatory template var reset_password_token missing',
-              GlobalConstant::ErrorAction.default,
-              {}
+              'something_went_wrong',
+              GlobalConstant::ErrorAction.default
           ) if @template_vars[:reset_password_token].blank?
 
         end

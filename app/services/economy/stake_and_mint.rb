@@ -101,10 +101,8 @@ module Economy
 
       return error_with_data(
         'e_sam_1',
-        'Invalid stake and mint parameters.',
-        'Invalid stake and mint parameters.',
-        GlobalConstant::ErrorAction.default,
-        {}
+        'invalid_api_params',
+        GlobalConstant::ErrorAction.default
       ) if @transaction_hash.blank? || (@bt_to_mint <= 0 && @st_prime_to_mint <= 0)
 
       r = validate_user
@@ -138,18 +136,16 @@ module Economy
       cache_data = CacheManagement::User.new([@user_id]).fetch
       @user = cache_data[@user_id]
 
-      return error_with_data(
+      return validation_error(
           'e_sam_2',
-          'Invalid User Id',
-          'Invalid User Id',
-          GlobalConstant::ErrorAction.default,
-          {}
+          'invalid_api_params',
+          ['invalid_user_id'],
+          GlobalConstant::ErrorAction.default
       ) if @user.blank?
 
       return error_with_data(
           'e_sam_3',
-          'User Not Verified',
-          'User Not Verified',
+          'user_not_verified',
           GlobalConstant::ErrorAction.default,
           {}
       ) if @user[:properties].exclude?(GlobalConstant::User.is_user_verified_property)
@@ -172,12 +168,11 @@ module Economy
 
       @client = CacheManagement::Client.new([@client_id]).fetch[@client_id]
 
-      return error_with_data(
-        'pbj_',
-        'Invalid Client.',
-        'Invalid Client.',
-        GlobalConstant::ErrorAction.default,
-        {}
+      return validation_error(
+          'e_sam_4',
+          'invalid_api_params',
+          ['invalid_client_id'],
+          GlobalConstant::ErrorAction.default
       ) if @client.blank? || @client[:status] != GlobalConstant::Client.active_status
 
       r = fetch_client_eth_address
@@ -203,30 +198,27 @@ module Economy
         id: @client_token_id
       ).first
 
-      return error_with_data(
-        'e_sam_4',
-        'Token not found.',
-        'Token not found.',
-        GlobalConstant::ErrorAction.default,
-        {}
+      return validation_error(
+          'e_sam_5',
+          'invalid_api_params',
+          ['invalid_client_token_id'],
+          GlobalConstant::ErrorAction.default
       ) if @client_token.blank? || @client_token.status != GlobalConstant::ClientToken.active_status
 
-      return error_with_data(
-        'e_sam_5',
-        'Economy not planned.',
-        'Economy not planned.',
-        GlobalConstant::ErrorAction.default,
-        {}
+      return validation_error(
+          'e_sam_6',
+          'invalid_api_params',
+          ['invalid_client_token_id'],
+          GlobalConstant::ErrorAction.default
       ) if @client_token.name.blank? || @client_token.symbol.blank? || @client_token.reserve_uuid.blank?
 
       # if propose was started but registeration not done yet we can not proceed
       if @client_token.propose_initiated? && !@client_token.registration_done?
-        return error_with_data(
-          'e_sam_6',
-          'Propose was initiated but was not completed.',
-          'Propose was initiated but was not completed.',
-          GlobalConstant::ErrorAction.default,
-          {}
+        return validation_error(
+            'e_sam_7',
+            'invalid_api_params',
+            ['invalid_client_token_id'],
+            GlobalConstant::ErrorAction.default
         )
       end
 
@@ -238,10 +230,8 @@ module Economy
 
         return error_with_data(
             'e_sam_7',
-            'Pending Transaction Is Being Processed. Please try again later.',
-            'Pending Transaction Is Being Processed. Please try again later.',
-            GlobalConstant::ErrorAction.default,
-            {}
+            'pending_grant_requests',
+            GlobalConstant::ErrorAction.default
         )
 
       end
@@ -268,10 +258,8 @@ module Economy
 
       return error_with_data(
           'e_sam_8',
-          'Invalid registeration parameters.',
-          'Invalid registeration parameters.',
-          GlobalConstant::ErrorAction.default,
-          {}
+          'invalid_api_params',
+          GlobalConstant::ErrorAction.default
       ) if @ost_to_bt.blank? || @bt_to_mint < 0 || @number_of_users < 0 ||
           @airdrop_amount.blank? || @airdrop_amount < 0 || @airdrop_user_list_type.blank?
 
@@ -293,12 +281,11 @@ module Economy
 
       client_address_data = CacheManagement::ClientAddress.new([@client_id]).fetch[@client_id]
 
-      return error_with_data(
+      return validation_error(
           'e_sam_10',
-          'Ethereum Address not associated.',
-          'Ethereum Address not associated.',
-          GlobalConstant::ErrorAction.default,
-          {}
+          'invalid_api_params',
+          ['invalid_client_id'],
+          GlobalConstant::ErrorAction.default
       ) if client_address_data.blank? || client_address_data[:ethereum_address_d].blank?
 
       @client_eth_address = get_encrypted_eth_address(client_address_data[:ethereum_address_d])
@@ -433,149 +420,6 @@ module Economy
       success
 
     end
-
-    ############################################### CODE TO BE REMOVED ###########################################
-
-    # # Enqueue propose branded token job
-    # #
-    # # * Author: Puneet
-    # # * Date: 29/01/2018
-    # # * Reviewed By: Sunil
-    # #
-    # # Sets @stake_and_mint_init_chain_id, @propose_critical_log_obj
-    # # Updates @client_token
-    # #
-    # # @return [Result::Base]
-    # #
-    # def enqueue_propose_job
-    #
-    #   return success if @client_token.propose_initiated? || @client_token.registration_done?
-    #
-    #   @parent_tx_activity_type = GlobalConstant::CriticalChainInteractions.propose_bt_activity_type
-    #
-    #   @propose_critical_log_obj = CriticalChainInteractionLog.create!(
-    #     {
-    #       client_id: @client_id,
-    #       client_token_id: @client_token_id,
-    #       activity_type: GlobalConstant::CriticalChainInteractions.propose_bt_activity_type,
-    #       chain_type: GlobalConstant::CriticalChainInteractions.utility_chain_type,
-    #       request_params: {
-    #         token_symbol: @client_token.symbol,
-    #         token_name: @client_token.name,
-    #         bt_to_mint: @bt_to_mint,
-    #         st_prime_to_mint: @st_prime_to_mint,
-    #         amount: @airdrop_amount,
-    #         airdrop_user_list_type: @airdrop_user_list_type
-    #       },
-    #       status: GlobalConstant::CriticalChainInteractions.queued_status
-    #     }
-    #   )
-    #
-    #   @stake_and_mint_init_chain_id ||= @propose_critical_log_obj.id
-    #
-    #   @client_token.send("set_#{GlobalConstant::ClientToken.propose_initiated_setup_step}")
-    #   @client_token.save!
-    #
-    #   BgJob.enqueue(
-    #     ::ProposeBrandedToken::StartProposeJob,
-    #     {
-    #       critical_log_id: @propose_critical_log_obj.id,
-    #       parent_id: @stake_and_mint_init_chain_id
-    #     }
-    #   )
-    #
-    #   success
-    #
-    # end
-    #
-    # # Enqueue stake and mint job
-    # #
-    # # * Author: Puneet
-    # # * Date: 29/01/2018
-    # # * Reviewed By: Sunil
-    # #
-    # # Sets @user
-    # #
-    # # @return [Result::Base]
-    # #
-    # def enqueue_stake_and_mint_job
-    #
-    #   return success if @bt_to_mint.to_f <= 0 && @st_prime_to_mint.to_f <= 0
-    #
-    #   @parent_tx_activity_type ||= GlobalConstant::CriticalChainInteractions.staker_initial_transfer_activity_type
-    #
-    #   critical_log_obj = nil
-    #
-    #   begin
-    #
-    #     critical_log_obj = CriticalChainInteractionLog.create!(
-    #         {
-    #             client_id: @client_id,
-    #             client_token_id: @client_token_id,
-    #             parent_id: @stake_and_mint_init_chain_id,
-    #             activity_type: GlobalConstant::CriticalChainInteractions.staker_initial_transfer_activity_type,
-    #             chain_type: GlobalConstant::CriticalChainInteractions.value_chain_type,
-    #             transaction_hash: @transaction_hash,
-    #             request_params: {
-    #               bt_to_mint: @bt_to_mint,
-    #               st_prime_to_mint: @st_prime_to_mint
-    #             },
-    #             status: GlobalConstant::CriticalChainInteractions.queued_status
-    #         }
-    #     )
-    #
-    #   rescue ActiveRecord::RecordNotUnique => e
-    #
-    #     r = error_with_data(
-    #         'e_sam_9',
-    #         "Duplicate Tx Hash : #{@transaction_hash}",
-    #         "Duplicate Tx Hash : #{@transaction_hash}",
-    #         GlobalConstant::ErrorAction.default,
-    #         {}
-    #     )
-    #
-    #     return r
-    #
-    #   end
-    #
-    #   @stake_and_mint_init_chain_id ||= critical_log_obj.id
-    #
-    #   BgJob.enqueue(
-    #     ::StakeAndMint::GetTransferToStakerStatusJob,
-    #     {
-    #       critical_log_id: critical_log_obj.id,
-    #       parent_id: @stake_and_mint_init_chain_id
-    #     }
-    #   )
-    #
-    #   success
-    #
-    # end
-    #
-    # # Enqueue Initiate Airdrop tokens job if required
-    # #
-    # # * Author: Pankaj
-    # # * Date: 26/02/2018
-    # # * Reviewed By:
-    # #
-    # def enqueue_airdrop_tokens_job
-    #   if @airdrop_amount.present? && @airdrop_user_list_type.present?
-    #     BgJob.enqueue(
-    #         Airdrop::InitiateAirdropTokensJob,
-    #         {
-    #             parent_critical_log_id: @stake_and_mint_init_chain_id,
-    #             client_token_id: @client_token_id,
-    #             client_id: @client_id,
-    #             amount: @airdrop_amount,
-    #             airdrop_list_type: @airdrop_user_list_type
-    #         },
-    #         {
-    #             wait: 10.seconds
-    #         }
-    #     )
-    #   end
-    #
-    # end
 
   end
 

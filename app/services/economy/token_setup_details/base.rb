@@ -69,12 +69,11 @@ module Economy
       def fetch_client_token
 
         @client_token = CacheManagement::ClientToken.new([@client_token_id]).fetch[@client_token_id]
-        return error_with_data(
+        return validation_error(
             'e_tss_b_1',
-            'Token not found.',
-            'Token not found.',
-            GlobalConstant::ErrorAction.default,
-            {}
+            'invalid_api_params',
+            ['invalid_client_token_id'],
+            GlobalConstant::ErrorAction.default
         ) if @client_token.blank?
 
         @client_id = @client_token[:client_id]
@@ -99,8 +98,7 @@ module Economy
           pending_critical_interactions[GlobalConstant::CriticalChainInteractions.propose_bt_activity_type] || has_zero_bt? ?
               success : error_with_go_to(
               'e_tss_b_2',
-              'Setup Complete',
-              'Setup Complete',
+              'token_setup_complete',
               GlobalConstant::GoTo.economy_dashboard
           )
 
@@ -213,8 +211,7 @@ module Economy
 
           r = fail_if_addr_not_setup ? error_with_go_to(
               'e_tss_b_2',
-              'Client Address not found.',
-              'Client Address not found.',
+              'token_setup_not_complete',
               GlobalConstant::GoTo.economy_planner_step_one
           ) : success
 
@@ -246,8 +243,7 @@ module Economy
 
         return error_with_go_to(
             'e_tss_b_2',
-            "Couldn't Fetch Balances",
-            "Couldn't Fetch Balances",
+            'token_setup_not_complete',
             GlobalConstant::GoTo.economy_planner_step_one
         ) unless r.success?
 
@@ -260,8 +256,7 @@ module Economy
         if ost_balance.blank? || ost_balance == 0
           return error_with_go_to(
               'e_tss_b_3',
-              "OST Grant Not Completed Yet",
-              "OST Grant Not Completed Yet",
+              'token_setup_not_complete',
               GlobalConstant::GoTo.economy_planner_step_one
           )
         end
@@ -271,8 +266,7 @@ module Economy
         if eth_balance.blank? || eth_balance == 0
           return error_with_go_to(
               'e_tss_b_3',
-              "Ether Grant Not Completed Yet",
-              "Ether Grant Not Completed Yet",
+              'token_setup_not_complete',
               GlobalConstant::GoTo.economy_planner_step_one
           )
         end

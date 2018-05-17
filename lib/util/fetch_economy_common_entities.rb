@@ -71,10 +71,8 @@ module Util
 
       return error_with_data(
           'u_fece_1',
-          "Invalid User Id.",
-          "Invalid User Id.",
-          GlobalConstant::ErrorAction.mandatory_params_missing,
-          {}
+          'something_went_wrong',
+          GlobalConstant::ErrorAction.default
       ) if @user_id.blank?
 
       @user = CacheManagement::User.new([@user_id]).fetch[@user_id]
@@ -101,10 +99,8 @@ module Util
 
       return error_with_data(
           'u_fece_2',
-          "Invalid Client Token Id.",
-          "Invalid Client Token Id.",
-          GlobalConstant::ErrorAction.mandatory_params_missing,
-          {}
+          'something_went_wrong',
+          GlobalConstant::ErrorAction.mandatory_params_missing
       ) if @client_token_id.blank?
 
       @client_token = CacheManagement::ClientToken.new([@client_token_id]).fetch[@client_token_id]
@@ -132,8 +128,7 @@ module Util
 
       return error_with_go_to(
           'fece_1',
-          'Client Address not found.',
-          'Client Address not found.',
+          'token_setup_not_complete',
           GlobalConstant::GoTo.economy_planner_step_one
       ) if client_address_data.blank? || client_address_data[:ethereum_address_d].blank?
 
@@ -141,8 +136,7 @@ module Util
 
       return error_with_go_to(
           'fece_2',
-          'Client Token not deployed.',
-          'Client Token not deployed.',
+          'token_setup_not_complete',
           GlobalConstant::GoTo.economy_planner_step_three
       ) if client_token_s.blank? || client_token_s[:reserve_uuid].blank?
 
@@ -167,8 +161,7 @@ module Util
 
       return error_with_go_to(
           'fece_3',
-          "Couldn't Fetch Balances",
-          "Couldn't Fetch Balances",
+          'token_setup_not_complete',
           GlobalConstant::GoTo.economy_planner_step_one
       ) unless r.success?
 

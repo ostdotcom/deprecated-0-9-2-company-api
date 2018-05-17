@@ -62,16 +62,15 @@ module UserManagement
     def fetch_user
       @user = User.where(email: @email).first
 
-      return error_with_data(
+      return validation_error(
           'um_srpl_1',
-          'User not present',
-          '',
-          GlobalConstant::ErrorAction.default,
-          {},
-          {email: 'This user is not registered or is blocked'}
+          'invalid_api_params',
+          ['unrecognized_email'],
+          GlobalConstant::ErrorAction.default
       ) unless @user.present? && (@user.status == GlobalConstant::User.active_status)
 
       success
+
     end
 
     # Create Double Opt In Token

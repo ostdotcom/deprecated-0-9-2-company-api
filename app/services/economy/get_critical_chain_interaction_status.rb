@@ -58,12 +58,11 @@ module Economy
       r = validate
       return r unless r.success?
 
-      return error_with_data(
-          'e_gtss_1',
-          'Invalid id.',
-          'Invalid id.',
-          GlobalConstant::ErrorAction.default,
-          {}
+      return validation_error(
+          'cm_vea_2',
+          'invalid_api_params',
+          ['invalid_critical_chain_interaction_log_id'],
+          GlobalConstant::ErrorAction.default
       ) unless Util::CommonValidator.is_numeric?(@critical_chain_interaction_log_id)
 
       @critical_chain_interaction_log_id = @critical_chain_interaction_log_id.to_i

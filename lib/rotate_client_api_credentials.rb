@@ -58,10 +58,8 @@ class RotateClientApiCredentials
 
     return error_with_data(
         'r_c_a_c_1',
-        'missing @client_id',
-        'Something Went Wrong.',
-        GlobalConstant::ErrorAction.default,
-        {}
+        'invalid_api_params',
+        GlobalConstant::ErrorAction.default
     ) if @client_id.blank?
 
     @client = CacheManagement::Client.new([@client_id]).fetch[@client_id]

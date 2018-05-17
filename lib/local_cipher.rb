@@ -26,10 +26,7 @@ class LocalCipher
     rescue Exception => e
       exception_with_data(
           e,'lc_1',
-          "LocalCipher could not encrypt text with message => #{e.message}",
-          'Something Went Wrong.',
-          GlobalConstant::ErrorAction.default,
-          {}
+          GlobalConstant::ErrorAction.default
       )
     end
   end
@@ -54,10 +51,7 @@ class LocalCipher
     rescue Exception => e
       exception_with_data(
           e, 'lc_2',
-          "LocalCipher could not decrypt cipher with message => #{e.message}",
-          'Something Went Wrong.',
-          GlobalConstant::ErrorAction.default,
-          {}
+          GlobalConstant::ErrorAction.default
       )
     end
   end

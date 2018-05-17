@@ -63,8 +63,7 @@ module Email
         if update_contact_response['error'].present?
           error_with_data(
             'e_hp_ac_1',
-            'API Call to Email Service Failed',
-            'API Call to Email Service Failed',
+            'something_went_wrong',
             GlobalConstant::ErrorAction.default,
             update_contact_response
           )

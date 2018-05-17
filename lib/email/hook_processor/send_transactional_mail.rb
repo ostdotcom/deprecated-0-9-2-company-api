@@ -65,9 +65,8 @@ module Email
         if send_mail_response['error'].present?
           error_with_data(
             'e_hp_stm_1',
-            'API Call to Send Email Failed',
-            'e_hp_stm_1',
-            'API Call to Send Email Failed',
+            'something_went_wrong',
+            GlobalConstant::ErrorAction.default,
             send_mail_response
           )
         else

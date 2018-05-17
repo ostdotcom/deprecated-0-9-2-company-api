@@ -53,11 +53,12 @@ module ExplorerApi
             response = HTTP.timeout(@timeouts)
                          .post(request_path, json: parameterized_token, ssl_context: ssl_context)
           else
-            return error_with_data('l_ea_b_1',
-                                   "Request type not implemented: #{request_type}",
-                                   'Something Went Wrong.',
-                                   GlobalConstant::ErrorAction.default,
-                                   {})
+            return error_with_data(
+                'l_ea_b_1',
+                 'something_went_wrong',
+                 GlobalConstant::ErrorAction.default,
+                {request_type: request_type}
+            )
         end
 
         case response.status
@@ -68,25 +69,27 @@ module ExplorerApi
             else
               # web3_js_error = true is required because when API is down or any exception is raised or response is not 200
               # front end doesn't need to see invalid ethereum address
-              return error_with_data(parsed_response['err']['code']+':st(l_ea_b_2)',
-                                     "Error in API call: #{response.status} - #{parsed_response['err']['msg']}",
-                                     'Something Went Wrong.',
-                                     GlobalConstant::ErrorAction.default,
-                                     {web3_js_error: true})
+              return error_with_data(
+                  parsed_response['err']['code']+':st(l_ea_b_2)',
+                 'something_went_wrong',
+                 GlobalConstant::ErrorAction.default,
+                 {web3_js_error: true, status: response.status, msg: parsed_response['err']['msg']}
+              )
             end
           else
-            return error_with_data('l_ea_b_3',
-                                   "Error in API call: #{response.status}",
-                                   'Something Went Wrong.',
-                                   GlobalConstant::ErrorAction.default,
-                                   {})
+            return error_with_data(
+                'l_ea_b_3',
+                'something_went_wrong',
+                GlobalConstant::ErrorAction.default
+            )
         end
       rescue => e
-        return error_with_data('l_ea_b_4',
-                               "Exception in API call: #{e.message}",
-                               'Something Went Wrong.',
-                               GlobalConstant::ErrorAction.default,
-                               {})
+        return error_with_data(
+            'l_ea_b_4',
+            'something_went_wrong',
+            GlobalConstant::ErrorAction.default,
+            {message: e.message}
+        )
       end
     end
 

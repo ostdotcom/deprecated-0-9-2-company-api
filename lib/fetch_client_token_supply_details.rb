@@ -25,18 +25,15 @@ class FetchClientTokenSupplyDetails
     r = SaasApi::StakeAndMint::FetchStakedAmount.new.perform(client_id: @client_id, token_symbol: @token_symbol)
     return error_with_go_to(
         'l_fctsd_1',
-        'Staker Contract Not Deployed',
-        'Staker Contract Not Deployed',
+        'token_setup_not_complete',
         GlobalConstant::GoTo.economy_planner_step_three
     ) unless r.success?
 
     ost_staked = r.data['allTimeStakedAmount']
     return error_with_data(
         'l_fctsd_2',
-        'Invalid allTimeStakedAmount.',
-        'Invalid allTimeStakedAmount.',
-        GlobalConstant::ErrorAction.default,
-        {}
+        'something_went_wrong',
+        GlobalConstant::ErrorAction.default
     ) if ost_staked.blank?
 
     ost_staked = BigDecimal.new(ost_staked)

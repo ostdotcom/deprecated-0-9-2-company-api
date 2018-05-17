@@ -6,6 +6,7 @@ class ApplicationController < ActionController::API
   # Sanitize URL params
   include Sanitizer
   include CookieConcern
+  include Util::ResultHelper
 
   before_action :sanitize_params
   before_action :check_service_statuses
@@ -13,12 +14,17 @@ class ApplicationController < ActionController::API
   after_action :set_response_headers
 
   def not_found
-    r = Result::Base.error({
-                               error: 'ac_1',
-                               error_message: 'Resource not found',
-                               http_code: GlobalConstant::ErrorCode.not_found
-                           })
+
+    r = Result::Base.error(
+        {
+            internal_id: 'ac_1',
+            general_error_identifier: 'resource_not_found',
+            http_code: GlobalConstant::ErrorCode.not_found
+        }
+    )
+
     render_api_response(r)
+
   end
 
   private
@@ -37,8 +43,8 @@ class ApplicationController < ActionController::API
 
     if r.success? && r.data.present? && (r.data[:saas_api_available] != 1 || r.data[:company_api_available] != 1)
       r = Result::Base.error(
-        error: 'ac_2',
-        error_message: 'Service Temporarily Unavailable',
+        internal_id: 'ac_2',
+        general_error_identifier: 'api_under_maintenance',
         http_code: GlobalConstant::ErrorCode.under_maintenance,
         go_to: GlobalConstant::GoTo.service_unavailable
       )
@@ -115,8 +121,11 @@ class ApplicationController < ActionController::API
   # * Reviewed By: Aman
   #
   def handle_exceptions_gracefully
+
     begin
+
       yield
+
     rescue => se
       Rails.logger.error("Exception in API: #{se.message}")
       ApplicationMailer.notify(
@@ -128,14 +137,14 @@ class ApplicationController < ActionController::API
       ).deliver
 
       r = Result::Base.error(
-          {
-              error: 'swr',
-              error_message: 'Something Went Wrong',
-              http_code: GlobalConstant::ErrorCode.ok
-          }
+          internal_id: 'ac_3',
+          general_error_identifier: 'something_went_wrong'
       )
+
       render_api_response(r)
+
     end
+
   end
 
 end

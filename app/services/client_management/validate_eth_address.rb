@@ -63,22 +63,20 @@ module ClientManagement
       #TODO: Do we need to convert this to checksum ETH Address
       @eth_address = @eth_address.to_s.strip
 
-      return error_with_data(
+      return validation_error(
           'cm_vea_1',
-          'Invalid Eth Address.',
-          'Invalid Eth Address.',
-          GlobalConstant::ErrorAction.default,
-          {}
+          'invalid_api_params',
+          ['invalid_eth_address'],
+          GlobalConstant::ErrorAction.default
       ) unless Util::CommonValidator.is_ethereum_address?(@eth_address)
 
       @client = CacheManagement::Client.new([@client_id]).fetch[@client_id]
 
-      return error_with_data(
+      return validation_error(
           'cm_vea_2',
-          'Invalid Client.',
-          'Invalid Client.',
-          GlobalConstant::ErrorAction.default,
-          {}
+          'invalid_api_params',
+          ['invalid_client_id'],
+          GlobalConstant::ErrorAction.default
       ) if @client.blank? || @client[:status] != GlobalConstant::Client.active_status
 
       @client_id = @client_id.to_i
@@ -99,22 +97,20 @@ module ClientManagement
 
       # check if this client already has an eth address associated
       client_address = ClientAddress.where(client_id: @client_id).last
-      return error_with_data(
+      return validation_error(
           'cm_vea_4',
-          'Invalid ETH Address.', # do we have to reveal in this message that eth address was associated with someone else
-          'Invalid ETH Address.',
-          GlobalConstant::ErrorAction.default,
-          {}
+          'invalid_api_params',
+          ['invalid_eth_address'],
+          GlobalConstant::ErrorAction.default
       ) if client_address.present? && client_address.hashed_ethereum_address != @hashed_eth_address
 
       # check if this eth address is associted by any other address
       client_address = ClientAddress.where(hashed_ethereum_address: @hashed_eth_address).last
-      return error_with_data(
+      return validation_error(
           'cm_vea_5',
-          'Invalid ETH Address.', # do we have to reveal in this message that eth address was associated with someone else
-          'Invalid ETH Address.',
-          GlobalConstant::ErrorAction.default,
-          {}
+          'invalid_api_params',
+          ['invalid_eth_address'],
+          GlobalConstant::ErrorAction.default
       ) if client_address.present? && client_address.client_id != @client_id
       
       success

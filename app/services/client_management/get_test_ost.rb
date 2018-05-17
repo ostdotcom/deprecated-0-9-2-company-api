@@ -78,22 +78,20 @@ module ClientManagement
 
       @client = @client = CacheManagement::Client.new([@client_id]).fetch[@client_id]
 
-      return error_with_data(
+      return validation_error(
           'cm_gto_1',
-          'Invalid Client.',
-          'Invalid Client.',
-          GlobalConstant::ErrorAction.default,
-          {}
+          'invalid_api_params',
+          ['invalid_client_id'],
+          GlobalConstant::ErrorAction.default
       ) if @client.blank?
 
       @client_token = ClientToken.where(id: @client_token_id).first
 
-      return error_with_data(
-          'cm_gto_2',
-          'Invalid Client Token.',
-          'Invalid Client Token.',
-          GlobalConstant::ErrorAction.default,
-          {}
+      return validation_error(
+          'cm_gto_1',
+          'invalid_api_params',
+          ['invalid_client_id'],
+          GlobalConstant::ErrorAction.default
       ) if @client_token.blank? or @client_token.client_id != @client_id
 
       success
@@ -122,10 +120,8 @@ module ClientManagement
       # Pending requests present then send error
       return error_with_data(
           'cm_gto_3',
-          'OSTα grant request is pending execution. Please wait for sometime.',
-          'OSTα grant request is pending execution. Please wait for sometime.',
-          GlobalConstant::ErrorAction.default,
-          {}
+          'pending_grant_requests',
+          GlobalConstant::ErrorAction.default
       ) if client_chain_interactions.keys.include?(GlobalConstant::CriticalChainInteractions.pending_status)
 
       # If client had requested before we would give him lesser OST
@@ -138,10 +134,8 @@ module ClientManagement
       # Check last processed record created_at is less than 1 day
       return error_with_data(
           'cm_gto_4',
-          'OSTα can only be requested once every 24 hours. Please try again later.',
-          'OSTα can only be requested once every 24 hours. Please try again later.',
-          GlobalConstant::ErrorAction.default,
-          {}
+          'grant_limit_breached',
+          GlobalConstant::ErrorAction.default
       ) if (Time.now - 1.day).to_i < processed_records.first.created_at.to_i
 
       success
@@ -215,10 +209,8 @@ module ClientManagement
 
       return error_with_data(
           'cm_gto_5',
-          'Ethereum Address not associated.',
-          'Ethereum Address not associated.',
-          GlobalConstant::ErrorAction.default,
-          {}
+          'invalid_client_id',
+          GlobalConstant::ErrorAction.default
       ) if client_address_data.blank? || client_address_data[:ethereum_address_d].blank?
 
       @eth_address = client_address_data[:ethereum_address_d]

@@ -73,32 +73,29 @@ module Economy
 
       @conversion_factor = BigDecimal.new(@conversion_factor)
 
-      return error_with_data(
+      return validation_error(
           'e_sup_1',
-          'Should be greater than 0',
-          'Should be greater than 0',
-          GlobalConstant::ErrorAction.default,
-          {}
+          'invalid_api_params',
+          ['invalid_conversion_factor'],
+          GlobalConstant::ErrorAction.default
       ) if @conversion_factor <= 0
 
       @initial_number_of_users = @initial_number_of_users.to_i
 
-      return error_with_data(
+      return validation_error(
           'e_sup_2',
-          'Initial number of users should be greater than 0.',
-          'Initial number of users should be greater than 0.',
-          GlobalConstant::ErrorAction.default,
-          {}
+          'invalid_api_params',
+          ['invalid_initial_number_of_users'],
+          GlobalConstant::ErrorAction.default
       ) if @initial_number_of_users <= 0
 
       @airdrop_bt_per_user = @airdrop_bt_per_user.to_i
 
-      return error_with_data(
+      return validation_error(
           'e_sup_3',
-          'Airdrop branded token per user should be greater than 0.',
-          'Airdrop branded token per user should be greater than 0.',
-          GlobalConstant::ErrorAction.default,
-          {}
+          'invalid_api_params',
+          ['invalid_airdrop_bt_per_user'],
+          GlobalConstant::ErrorAction.default
       ) if @airdrop_bt_per_user <= 0
 
       success
@@ -122,21 +119,18 @@ module Economy
           status: GlobalConstant::ClientToken.active_status
       ).first
 
-      return error_with_data(
+      return validation_error(
           'e_sup_4',
-          'No token found.',
-          'No token found.',
-          GlobalConstant::ErrorAction.default,
-          {}
+          'invalid_api_params',
+          ['invalid_client_token_id'],
+          GlobalConstant::ErrorAction.default
       ) unless @client_token.present?
 
       if @client_token.registration_done? && @client_token.conversion_factor != @conversion_factor
         return error_with_data(
             'e_sup_5',
-            'Conversion Rate Can Not be changed after Registering BT.',
-            'Conversion Rate Can Not be changed after Registering BT.',
-            GlobalConstant::ErrorAction.default,
-            {}
+            'already_associated',
+            GlobalConstant::ErrorAction.default
         )
       end
 

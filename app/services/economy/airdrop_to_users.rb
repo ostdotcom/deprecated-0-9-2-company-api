@@ -11,7 +11,7 @@ module Economy
     # @params [Integer] client_id (mandatory) - client id
     # @params [Integer] client_token_id (mandatory) - client token id
     # @params [Integer] amount (mandatory) - Amount to airdrop in Branded token base unit.
-    # @params [String] airdrop_list_type (mandatory) - List type of users to airdrop eg: all or new
+    # @params [String] airdropped (Optional) - List type of users to airdrop eg: all or new
     # @params [Integer] parent_critical_log_id (Optional) - Parent critical log id, if it starts from stake and mint
     #
     # @return [Economy::AirdropToUsers]
@@ -23,7 +23,7 @@ module Economy
       @client_token_id = @params[:client_token_id]
       @client_id = @params[:client_id]
       @amount = @params[:amount]
-      @airdrop_list_type = @params[:airdrop_list_type]
+      @airdropped = @params[:airdropped]
       @parent_critical_log_id = @params[:parent_critical_log_id]
 
       @chain_interaction = nil
@@ -85,45 +85,39 @@ module Economy
     #
     def validate_and_sanitize
 
-      validation_errors = {}
-
       if @amount.present?
-        @amount = BigDecimal.new(@amount)
-        validation_errors[:amount] = 'Airdrop amount should be > 0' if @amount <=0
-      else
-        validation_errors[:amount] = 'Airdrop amount can not be blank'
-      end
 
-      return error_with_data(
-          'e_adu_1',
-          'Params Error',
-          '',
-          GlobalConstant::ErrorAction.default,
-          {},
-          validation_errors
-      ) if validation_errors.present?
+        @amount = BigDecimal.new(@amount)
+
+        if @amount <=0
+          return validation_error(
+              'e_adu_1',
+              'invalid_api_params',
+              ['invalid_amount'],
+              GlobalConstant::ErrorAction.default
+          )
+        end
+
+      end
 
       r = validate
       return r unless r.success?
 
       @client = @client = CacheManagement::Client.new([@client_id]).fetch[@client_id]
 
-      return error_with_data(
+      return validation_error(
           'e_adu_2',
-          'Invalid Client.',
-          'Invalid Client.',
-          GlobalConstant::ErrorAction.default,
-          {}
+          'invalid_api_params',
+          ['invalid_client_id'],
+          GlobalConstant::ErrorAction.default
       ) if @client.blank?
 
       @client_token = CacheManagement::ClientToken.new([@client_token_id]).fetch[@client_token_id]
 
       return error_with_data(
           'e_adu_3',
-          'Invalid Client Token.',
-          'Invalid Client Token.',
-          GlobalConstant::ErrorAction.default,
-          {}
+          'unauthorized_for_other_client',
+          GlobalConstant::ErrorAction.default
       ) if @client_token.blank? or @client_token[:client_id] != @client_id
 
       success
@@ -149,10 +143,8 @@ module Economy
       # Pending requests present then send error
       return error_with_data(
           'e_adu_3',
-          'Pending AirDrop requests.',
-          'Pending AirDrop requests.',
-          GlobalConstant::ErrorAction.default,
-          {}
+          'pending_grant_requests',
+          GlobalConstant::ErrorAction.default
       ) if (client_chain_interactions.keys & [GlobalConstant::CriticalChainInteractions.queued_status,
                                               GlobalConstant::CriticalChainInteractions.pending_status]).present?
 
@@ -161,31 +153,6 @@ module Economy
       success
 
     end
-
-    # Create new record
-    #
-    # * Author: Pankaj
-    # * Date: 23/02/2018
-    # * Reviewed By:
-    #
-    # Sets @chain_interaction
-    #
-    # @return [Result::Base]
-    #
-    # def insert_initial_db_record
-    #   @chain_interaction = CriticalChainInteractionLog.create!(client_id: @client_id,
-    #                                                            client_token_id: @client_token_id,
-    #                                                            activity_type: GlobalConstant::CriticalChainInteractions.airdrop_users_activity_type,
-    #                                                            chain_type: GlobalConstant::CriticalChainInteractions.utility_chain_type,
-    #                                                            status: GlobalConstant::CriticalChainInteractions.queued_status,
-    #                                                            request_params: {
-    #                                                                amount: @amount,
-    #                                                                token_symbol: @client_token[:symbol],
-    #                                                                users_list_to_airdrop: @airdrop_list_type
-    #                                                            },
-    #                                                            parent_id: @parent_critical_log_id
-    #   )
-    # end
 
     # Make Saas Api call
     #
@@ -198,50 +165,23 @@ module Economy
     #
     def make_saas_call
 
-      service_response = SaasApi::KitStartAirdrop.new.perform(
-        {
+      s_params = {
           client_id: @client_id,
           token_symbol: @client_token[:symbol],
           amount: @amount,
-          list_type: @airdrop_list_type,
           client_token_id: @client_token_id
-        }
-      )
+      }
 
-      return error_with_data(
-          'e_adu_5',
-           service_response.error_message,
-          'Something Went Wrong.',
-          GlobalConstant::ErrorAction.default,
-          {},
-          service_response.error_data || {}
-      ) unless service_response.success?
+      s_params[:airdropped] = @airdropped if @airdropped.present? && @airdropped != 'all'
+      service_response = SaasApi::KitStartAirdrop.new.perform(s_params)
+
+      return service_response unless service_response.success?
 
       @api_response_data = service_response.data
 
       success
 
     end
-
-    # Enqueue job
-    #
-    # * Author: Pankaj
-    # * Date: 22/02/2018
-    # * Reviewed By:
-    #
-    # def enqueue_job
-    #
-    #   BgJob.enqueue(
-    #       Airdrop::GetAirdropTransactionStatusJob,
-    #       {
-    #           critical_log_id: @chain_interaction.id
-    #       },
-    #       {
-    #           wait: 10.seconds
-    #       }
-    #   )
-    #
-    # end
 
   end
 
