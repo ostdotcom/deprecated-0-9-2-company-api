@@ -40,15 +40,6 @@ Rails.application.routes.draw do
     match 'graph/top-users' => :top_users_graph, via: :GET
   end
 
-  #TODO: To Be depricated as these routes are taken under api/economy/action as below.
-  scope 'api/economy/transaction/kind', controller: 'economy/transaction_kind' do
-    match 'create' => :create, via: :POST
-    match 'edit' => :edit, via: :POST
-    match 'bulk-create-edit' => :bulk_create_edit, via: :POST
-    match 'list' => :list, via: :GET
-  end
-
-  #TODO: same as api/economy/transaction/kind
   scope 'api/economy/action', controller: 'economy/transaction_kind' do
     match 'create' => :create, via: :POST
     match 'edit' => :edit, via: :POST
