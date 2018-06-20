@@ -31,6 +31,11 @@
 > mysql.server start
 ```
 
+* Set root password for MySQL to root
+```bash
+ALTER USER 'root'@'localhost' IDENTIFIED BY 'root';
+```
+
 * Start Memcached
 ```bash
 > memcached -p 11211 -d
