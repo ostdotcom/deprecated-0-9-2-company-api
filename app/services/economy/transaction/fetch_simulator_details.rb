@@ -108,7 +108,7 @@ module Economy
         ost_sdk = OSTSdk::Saas::Services.new(
             api_key: result[:api_key],
             api_secret: result[:api_secret],
-            api_base_url: "#{GlobalConstant::SaasApi.base_url}v1",
+            api_base_url: GlobalConstant::SaasApi.v1dot1_base_url,
             api_spec: true
         )
         @ost_spec_sdk_obj = ost_sdk.services.transactions

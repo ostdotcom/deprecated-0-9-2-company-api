@@ -22,7 +22,7 @@ class Economy::UserController < Economy::BaseController
     ost_sdk = OSTSdk::Saas::Services.new(
         api_key: result[:api_key],
         api_secret: result[:api_secret],
-        api_base_url: "#{GlobalConstant::SaasApi.base_url}v1",
+        api_base_url: GlobalConstant::SaasApi.v1dot1_base_url,
         api_spec: false
     )
 
@@ -56,7 +56,7 @@ class Economy::UserController < Economy::BaseController
     ost_sdk = OSTSdk::Saas::Services.new(
         api_key: result[:api_key],
         api_secret: result[:api_secret],
-        api_base_url: "#{GlobalConstant::SaasApi.base_url}v1",
+        api_base_url: GlobalConstant::SaasApi.v1dot1_base_url,
         api_spec: false
     )
 
