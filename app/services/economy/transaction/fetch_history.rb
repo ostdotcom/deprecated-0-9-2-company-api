@@ -141,6 +141,7 @@ module Economy
       def fetch_transaction_data_from_saas
 
         params = {
+            client_id: @client_token[:client_id],
             token_symbol: @client_token[:symbol],
             transaction_uuids: @transaction_uuids
         }

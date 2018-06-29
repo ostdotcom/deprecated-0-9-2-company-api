@@ -1,42 +1,51 @@
 # Pre Setup
 
-* Setup Company Web. Instrunctions are published: https://github.com/OpenSTFoundation/company-web/blob/master/README.md
+* Setup Company Web. Instructions are published at:
 
-* Install Mysql
-```bash
-> brew install mysql
-```
+  https://github.com/OpenSTFoundation/company-web/blob/master/README.md
 
-* Create root user and set Password as root in Mysql
+* Install Mysql.
+  ```bash
+  > brew install mysql
+  ```
 
-* Install redis
-```main
-> brew install redis
-```
+* Create root user and set password as "root" in Mysql.
+  ```bash
+  ALTER USER 'root'@'localhost' IDENTIFIED BY 'root';
+  ```
+  * Sometimes you might face a client authentication error in Mysql. Run the following command to mitigate the issue:
+    ```bash
+    ALTER USER 'root'@'localhost' IDENTIFIED WITH mysql_native_password BY 'root';
+    ```
 
-* Install Memcache
-```main
-> brew install memcached
-```
+* Install Redis.
+  ```main
+  > brew install redis
+  ```
+
+* Install Memcached.
+  ```main
+  > brew install memcached
+  ```
 
 # Start Services
 
-* Start redis
+* Start Redis.
 ```main
 > sudo redis-server --port 6379 --requirepass 'st123'
 ```
 
-* Start MySQL
+* Start MySQL.
 ```bash
 > mysql.server start
 ```
 
-* Start Memcached
+* Start Memcached.
 ```bash
 > memcached -p 11211 -d
 ```
 
-* Run migration or install new packages
+* Run migration or install new packages.
 ```bash
 > cd company-api
 > source set_env_vars.sh
@@ -45,14 +54,23 @@
 > rake db:migrate
 ```
 
-* Start SideKiq
+* Start SideKiq.
 ```bash
 > cd company-api
 > source set_env_vars.sh
 > sidekiq -C ./config/sidekiq.yml -q sk_api_high_task  -q sk_api_med_task -q sk_api_default
 ```
 
-* Start server in New Terminal
+  * Sometimes you might face an issue stating that sidekiq.pid file is not found.
+    * In that case, remove the following line from config/sidekiq.yml:
+    ```bash
+    :pidfile: ./tmp/pids/sidekiq.yml
+    ```
+    * Start sidekiq.
+
+* Populate "whitelisted_domains" table in Mysql with appropriate entries. Delete entire cache after this step.
+
+* Start server in new terminal.
 ```bash
 > cd company-api
 > source set_env_vars.sh
@@ -64,4 +82,3 @@
 # Every one minute
 > rake RAILS_ENV=development cron_task:continuous:process_email_service_api_call_hooks lock_key_suffix=1
 ```
-

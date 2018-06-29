@@ -43,6 +43,7 @@ constants:
 
   company_restful_api:
     endpoint: '<%= ENV['CA_SAAS_API_ENDPOINT'] %>/'
+    v1dot1_endpoint: '<%= ENV['CA_SAAS_API_ENDPOINT'] %>/v1.1/'
     secret_key: <%= ENV['CA_SAAS_API_SECRET_KEY'] %>
     display_endpoint: '<%= ENV['CA_SAAS_API_DISPLAY_ONLY_ENDPOINT'] %>/'
 
