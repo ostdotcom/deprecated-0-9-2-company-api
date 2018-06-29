@@ -96,9 +96,12 @@ class ApplicationController < ActionController::API
         err[:error_data].delete(:trace) if err[:error_data].is_a?(Hash)
       end
 
+      display_text = err[:display_text].blank? ? err[:msg].to_s : err[:display_text].to_s
+      display_heading = err[:display_heading].blank? ? err[:msg].to_s : err[:display_heading].to_s
+
       response_hash[:err] = {
-          display_text: (err[:display_text].to_s),
-          display_heading: (err[:display_heading].to_s),
+          display_text: display_text,
+          display_heading: display_heading,
           error_data: (err[:error_data] || {})
       }
 
