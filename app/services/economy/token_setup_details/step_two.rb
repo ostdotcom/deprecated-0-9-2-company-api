@@ -152,9 +152,11 @@ module Economy
         {
             name: '{{uri_encoded name}}',
             kind: '{{kind}}',
-            currency_type: '{{currency_type}}',
-            currency_value: '{{currency_value}}',
-            commission_percent: '{{commission_percent}}'
+            currency: '{{currency}}',
+            amount: '{{amount}}',
+            commission_percent: '{{commission_percent}}',
+            arbitrary_amount: '{{arbitrary_amount}}',
+            arbitrary_commission: '{{arbitrary_commission}}'
         }
       end
 
