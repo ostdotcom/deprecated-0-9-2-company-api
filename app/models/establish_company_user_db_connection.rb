@@ -8,7 +8,8 @@ class EstablishCompanyUserDbConnection < ApplicationRecord
 
   def self.applicable_sub_environments
     [
-        GlobalConstant::Environment.sandbox_sub_env
+      GlobalConstant::Environment.main_sub_environment,
+      GlobalConstant::Environment.sandbox_sub_env # TEMp change - remove this when deployment of both sandbox and main is done everytime.
     ]
   end
 
