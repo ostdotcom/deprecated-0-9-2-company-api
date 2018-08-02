@@ -131,12 +131,15 @@ module ClientManagement
       processed_records = client_chain_interactions[GlobalConstant::CriticalChainInteractions.processed_status]
       return success if processed_records.blank?
 
-      # Check last processed record created_at is less than 1 day
+      # Check last processed record created_at
+
+      grant_again_after = (Rails.env.production? && GlobalConstant::Base.sub_env == 'main') ? 10.year : 1.day
+
       return error_with_data(
           'cm_gto_4',
           'grant_limit_breached',
           GlobalConstant::ErrorAction.default
-      ) if (Time.now - 1.day).to_i < processed_records.first.created_at.to_i
+      ) if (Time.now - grant_again_after).to_i < processed_records.first.created_at.to_i
 
       success
 

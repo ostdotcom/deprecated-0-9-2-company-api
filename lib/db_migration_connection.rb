@@ -2,7 +2,7 @@ class DbMigrationConnection < ActiveRecord::Migration[5.1]
 
   def run_migration_for_db(model_klass, &block)
 
-    raise "Reverse the following condition when we launch 'MAIN' sub environment" if GlobalConstant::Base.sub_env == 'main'
+    #raise "Reverse the following condition when we launch 'MAIN' sub environment" if GlobalConstant::Base.sub_env == 'main'
     # NOTE: Reverse the following condition when we launch main sub environment
     return unless model_klass.applicable_sub_environments.include?(GlobalConstant::Base.sub_env)
 
