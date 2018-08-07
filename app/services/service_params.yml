@@ -258,3 +258,9 @@
   :optional:
     - :parent_critical_log_id
     - :airdropped
+
+'Economy::FetchBalances':
+  :mandatory:
+    - :client_id
+    - :address
+  :optional:
