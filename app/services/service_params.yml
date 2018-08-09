@@ -93,10 +93,10 @@
 'Economy::SetUpEconomy':
   :mandatory:
     - :client_token_id
-    - :initial_number_of_users
     - :conversion_factor
-    - :airdrop_bt_per_user
   :optional:
+    - :airdrop_bt_per_user
+    - :initial_number_of_users
 
 'Economy::GetCriticalChainInteractionStatus':
   :mandatory:

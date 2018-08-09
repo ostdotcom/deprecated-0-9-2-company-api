@@ -11,6 +11,14 @@ module GlobalConstant
       @sub_env ||= fetch_config.fetch('sub_env')
     end
 
+    def self.main_sub_environment?
+      sub_env =='main'
+    end
+
+    def self.sandbox_sub_environment?
+      sub_env =='sandbox'
+    end
+
     def self.environment_name_short
       Rails.env[0,2]
     end
