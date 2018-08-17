@@ -12,15 +12,18 @@ module CacheManagement
     #
     # @return [Result::Base]
     #
-    def fetch_from_db(cache_miss_ids)
+    def fetch_from_db(cache_miss_uc_chain_ids)
 
       data_to_cache = {}
 
-      record = CurrencyConversionRate.where(["status = ? AND quote_currency = ?", 1, 1]).order('timestamp desc').first
-
-      data_to_cache[1] = {}
-      data_to_cache[1][record.base_currency] = {}
-      data_to_cache[1][record.base_currency][record.quote_currency] = record.conversion_rate.to_s
+      cache_miss_uc_chain_ids.each do |cache_miss_uc_chain_id|
+        record = CurrencyConversionRate.
+            where(["chain_id = ? AND status = ? AND quote_currency = ?", cache_miss_uc_chain_id, 1, 1]).
+            order('timestamp desc').first
+        data_to_cache[cache_miss_uc_chain_id] = {}
+        data_to_cache[cache_miss_uc_chain_id][record.base_currency] = {}
+        data_to_cache[cache_miss_uc_chain_id][record.base_currency][record.quote_currency] = record.conversion_rate.to_s
+      end
 
       Rails.logger.info(data_to_cache)
 
@@ -47,9 +50,9 @@ module CacheManagement
     #
     # @return [String]
     #
-    def get_cache_key(id)
+    def get_cache_key(chain_id)
       # It uses shared cache key between company api and saas.
-      memcache_key_object.key_template % @options.merge(id: id)
+      memcache_key_object.key_template % @options.merge(chain_id: chain_id)
     end
 
     # Fetch cache expiry (in seconds)

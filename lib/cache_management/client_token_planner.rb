@@ -19,7 +19,9 @@ module CacheManagement
 
       data_from_cache = data_from_cache.deep_dup ## Deep DUP is important here
 
-      ost_to_fiat = BigDecimal.new(FetchOraclePricePoints.perform[GlobalConstant::ConversionRates.ost_currency][GlobalConstant::ConversionRates.usd_currency])
+      price_points = CacheManagement::OSTPricePoints.new([@options[:utility_chain_id]]).fetch[@options[:utility_chain_id]]
+
+      ost_to_fiat = BigDecimal.new(price_points[GlobalConstant::ConversionRates.ost_currency][GlobalConstant::ConversionRates.usd_currency])
       default_first_time_ost_grant_amount = GlobalConstant::ClientAddress.default_first_time_ost_grant_amount
       default_initial_users = GlobalConstant::Client.default_initial_users
       max_initial_bt_airdrop_amount = GlobalConstant::Client.max_initial_bt_airdrop_amount

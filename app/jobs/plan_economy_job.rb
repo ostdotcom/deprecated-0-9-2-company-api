@@ -33,7 +33,6 @@ class PlanEconomyJob < ApplicationJob
     @is_first_time_set = params[:is_first_time_set]
     @is_sync_in_saas_needed = params[:is_sync_in_saas_needed]
     @client_token = CacheManagement::ClientToken.new([@client_token_id]).fetch[@client_token_id]
-    @client_token_planner_details = CacheManagement::ClientTokenPlanner.new([@client_token_id]).fetch[@client_token_id]
     @failed_logs = {}
   end
 
@@ -48,9 +47,11 @@ class PlanEconomyJob < ApplicationJob
 
     return unless @is_first_time_set
 
+    ctp = ClientTokenPlanner.where(client_token_id: @client_token_id).first
+
     r = SaasApi::OnBoarding::CreateDummyUsers.new.perform(
       client_id: @client_token[:client_id],
-      number_of_users: @client_token_planner_details[:initial_no_of_users] || 25
+      number_of_users: ctp.initial_no_of_users || 25
     )
 
     unless r.success?

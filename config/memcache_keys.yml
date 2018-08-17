@@ -40,6 +40,9 @@ client:
   address:
     key_template: 'c_addr_%{id}'
     expiry_in_seconds: 86400
+  prioritize_tx_flag:
+    key_template: 'c_prtt_tx_flg_%{id}'
+    expiry_in_seconds: 86400
 
 system:
   services_statuses:
@@ -49,5 +52,5 @@ system:
 mics:
   ost_fiat_conversion_factors:
     used_in_shared_env: 1
-    key_template: 'c_ost_pp_%{id}'
+    key_template: 'c_ost_pp_%{chain_id}'
     expiry_in_seconds: 600

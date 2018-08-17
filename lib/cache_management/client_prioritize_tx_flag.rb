@@ -43,7 +43,7 @@ module CacheManagement
     # @return [MemcacheKey]
     #
     def memcache_key_object
-      @m_k_o ||= MemcacheKey.new('mics.ost_fiat_conversion_factors')
+      @m_k_o ||= MemcacheKey.new('client.prioritize_tx_flag')
     end
 
     # Fetch cache key
@@ -55,7 +55,6 @@ module CacheManagement
     # @return [String]
     #
     def get_cache_key(id)
-      # It uses shared cache key between company api and saas.
       memcache_key_object.key_template % @options.merge(id: id)
     end
 

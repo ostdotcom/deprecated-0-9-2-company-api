@@ -25,6 +25,7 @@ module ClientManagement
       @client = nil
       @client_token = nil
       @client_chain_interaction = nil
+      @chain_interaction_params = nil
 
     end
 
@@ -52,6 +53,9 @@ module ClientManagement
 
       # Validate, whether OST can be given or not
       r = validate_ost_given
+      return r unless r.success?
+
+      r = fetch_chain_interaction_params
       return r unless r.success?
 
       insert_db
@@ -142,6 +146,23 @@ module ClientManagement
 
     end
 
+    # Fetch chain interaction params
+    #
+    # * Author: Puneet
+    # * Date: 12/08/2018
+    # * Reviewed By:
+    #
+    # Sets @chain_interaction_params
+    #
+    # @return [Result::Base]
+    #
+    def fetch_chain_interaction_params
+      r = SaasApi::OnBoarding::FetchChainInteractionParams.new.perform({client_id: @client_id})
+      return r unless r.success?
+      @chain_interaction_params = r.data
+      r
+    end
+
     # Create new record
     #
     # * Author: Pankaj
@@ -153,11 +174,13 @@ module ClientManagement
     # @return [Result::Base]
     #
     def insert_db
-      @chain_interaction = CriticalChainInteractionLog.create!(client_id: @client_id, client_token_id: @client_token_id,
-                                    activity_type: GlobalConstant::CriticalChainInteractions.request_ost_activity_type,
-                                    chain_type: GlobalConstant::CriticalChainInteractions.value_chain_type,
-                                    status: GlobalConstant::CriticalChainInteractions.pending_status,
-                                    request_params: {amount: @amount}
+      @chain_interaction = CriticalChainInteractionLog.create!(
+          client_id: @client_id, client_token_id: @client_token_id,
+          chain_id: @chain_interaction_params['value_chain_id'],
+          activity_type: GlobalConstant::CriticalChainInteractions.request_ost_activity_type,
+          chain_type: GlobalConstant::CriticalChainInteractions.value_chain_type,
+          status: GlobalConstant::CriticalChainInteractions.pending_status,
+          request_params: {amount: @amount}
       )
     end
 
