@@ -33,6 +33,10 @@ module GlobalConstant
         config[:list_ids][:master_list]
       end
 
+      def main_master_list_id
+        config[:list_ids][:main_master_list]
+      end
+
       ########### User Custom Attributes #########
 
 

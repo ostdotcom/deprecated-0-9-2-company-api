@@ -62,6 +62,7 @@ export CA_CAMPAIGN_CLIENT_KEY="f395013cc8715f72ecef978248d933e6"
 export CA_CAMPAIGN_CLIENT_SECRET="818506e0d00c33f84099744461b41ac5"
 export CA_CAMPAIGN_BASE_URL="https://pepocampaigns.com/"
 export CA_CAMPAIGN_MASTER_LIST="3722"
+export CA_CAMPAIGN_MAIN_MASTER_LIST="4764"
 
 # Company Restful API (SAAS) details
 export CA_SAAS_API_ENDPOINT='http://developmentost.com:7001'

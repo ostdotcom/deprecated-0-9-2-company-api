@@ -40,6 +40,7 @@ constants:
       version: 'v2'
     list_ids:
       master_list: <%= ENV['CA_CAMPAIGN_MASTER_LIST']%>
+      main_master_list: <%= ENV['CA_CAMPAIGN_MAIN_MASTER_LIST']%>
 
   company_restful_api:
     endpoint: '<%= ENV['CA_SAAS_API_ENDPOINT'] %>/'

@@ -63,6 +63,20 @@ module Email
         fail 'sub class to implement'
       end
 
+      # decides the list id for Pepo Campaigns
+      #
+      # * Author: Shlok
+      # * Date: 20/08/2018
+      # * Reviewed By:
+      #
+      # @return String
+      #
+      def list_id
+        GlobalConstant::Base.main_sub_environment? ?
+          GlobalConstant::PepoCampaigns.main_master_list_id :
+          GlobalConstant::PepoCampaigns.master_list_id
+      end
+
       # builds params which go into API call to Email Service
       #
       # * Author: Pankaj
@@ -73,7 +87,7 @@ module Email
       #
       def add_update_contact_params
         [
-          GlobalConstant::PepoCampaigns.master_list_id,
+          list_id,
           @hook.email,
           attributes_hash,
           user_settings_hash
