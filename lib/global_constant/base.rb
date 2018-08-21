@@ -19,6 +19,14 @@ module GlobalConstant
       sub_env =='sandbox'
     end
 
+    def self.ost_currency_symbol
+      if(GlobalConstant::Base.main_sub_environment?)
+        "OST"
+      else
+        "OST⍺"
+      end
+    end
+
     def self.environment_name_short
       Rails.env[0,2]
     end
