@@ -96,6 +96,7 @@ module Economy
       r = validate
       return r unless r.success?
 
+      @bt_to_mint = @bt_to_mint || 0
       @bt_to_mint = BigDecimal.new(@bt_to_mint)
       @st_prime_to_mint = BigDecimal.new(@st_prime_to_mint)
 
