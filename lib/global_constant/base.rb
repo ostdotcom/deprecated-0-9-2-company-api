@@ -11,6 +11,10 @@ module GlobalConstant
       @sub_env ||= fetch_config.fetch('sub_env')
     end
 
+    def self.env_identifier
+      @env_identifier ||= fetch_config.fetch('env_identifier')
+    end
+
     def self.main_sub_environment?
       sub_env =='main'
     end
