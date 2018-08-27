@@ -29,7 +29,7 @@ export CA_SAAS_SHARED_DB_PASSWORD=root
 # Core ENV Details
 export CA_SUB_ENV='main'
 export CA_POSTMAN_TESTING='0'
-export ENV_IDENTIFIER='mainnet_launch'
+export ENV_IDENTIFIER='internal'
 
 # Redis Details
 export CA_REDIS_ENDPOINT='redis://ca:st123@127.0.0.1:6379'
