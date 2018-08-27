@@ -17,6 +17,7 @@ Rails.application.routes.draw do
     match 'fetch-api-credentials' => :fetch_api_credentials, via: :GET
     match 'get-ost' => :get_test_ost, via: :POST
     match 'get-eth' => :get_test_eth, via: :POST
+    match 'setup-eth-address' => :setup_eth_address, via: :POST
   end
 
   scope 'api/economy/users', controller: 'economy/user' do
@@ -24,6 +25,7 @@ Rails.application.routes.draw do
     match 'edit' => :edit_user, via: :POST
     match 'list' => :list_users, via: :GET
     match 'airdrop' => :airdrop_users, via: :POST
+    match 'fetch-balances' => :fetch_balances, via: :GET
   end
 
   scope 'api/economy/token', controller: 'economy/token' do

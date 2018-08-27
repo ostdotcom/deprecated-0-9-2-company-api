@@ -159,6 +159,9 @@ module Email
       #
       def send_transactional_email(email, template, email_vars)
         endpoint = "/api/#{@version}/send/"
+        email_vars['sub_environment'] = GlobalConstant::Base.main_sub_environment? ?
+                                          GlobalConstant::Environment.mainnet_environment :
+                                          GlobalConstant::Environment.testnet_environment
         custom_params = {
           "email" => email,
           "template" => template,

@@ -96,6 +96,7 @@ module Economy
       r = validate
       return r unless r.success?
 
+      @bt_to_mint = @bt_to_mint || 0
       @bt_to_mint = BigDecimal.new(@bt_to_mint)
       @st_prime_to_mint = BigDecimal.new(@st_prime_to_mint)
 
@@ -260,8 +261,14 @@ module Economy
           'e_sam_8',
           'invalid_api_params',
           GlobalConstant::ErrorAction.default
-      ) if @ost_to_bt.blank? || @bt_to_mint < 0 || @number_of_users < 0 ||
-          @airdrop_amount.blank? || @airdrop_amount < 0 || @airdrop_user_list_type.blank?
+      ) if @ost_to_bt.blank? || @bt_to_mint < 0
+
+      return error_with_data(
+        'e_sam_11',
+        'invalid_api_params',
+        GlobalConstant::ErrorAction.default
+      ) if GlobalConstant::Base.sandbox_sub_environment? &&
+        (@number_of_users < 0 || @airdrop_amount.blank? || @airdrop_amount < 0 || @airdrop_user_list_type.blank?)
 
       success
 

@@ -227,16 +227,16 @@ module CacheManagement
         when GlobalConstant::CriticalChainInteractions.stake_bt_started_activity_type
           case db_object.status
             when GlobalConstant::CriticalChainInteractions.processed_status
-              "OSTα successfully staked for minting #{client_token[:symbol]}"
+              "#{GlobalConstant::Base.ost_currency_symbol} successfully staked for minting #{client_token[:symbol]}"
             else
-              "Staking OSTα to mint #{client_token[:symbol]}"
+              "Staking #{GlobalConstant::Base.ost_currency_symbol} to mint #{client_token[:symbol]}"
           end
         when GlobalConstant::CriticalChainInteractions.stake_st_prime_started_activity_type
           case db_object.status
             when GlobalConstant::CriticalChainInteractions.processed_status
-              'OSTα successfully staked as reserve for gas'
+              "#{GlobalConstant::Base.ost_currency_symbol} successfully staked as reserve for gas"
             else
-              'Staking OSTα as reserve for gas'
+              "Staking #{GlobalConstant::Base.ost_currency_symbol} as reserve for gas"
           end
         when GlobalConstant::CriticalChainInteractions.airdrop_users_activity_type
           if db_object.is_failed?
@@ -289,9 +289,9 @@ module CacheManagement
         when GlobalConstant::CriticalChainInteractions.set_price_oracle_activity_type
           "Registering $USD Price Oracle for #{client_token[:symbol]}"
         when GlobalConstant::CriticalChainInteractions.stake_bt_started_activity_type
-          "Staking OSTα to mint #{client_token[:symbol]}"
+          "Staking #{GlobalConstant::Base.ost_currency_symbol} to mint #{client_token[:symbol]}"
         when GlobalConstant::CriticalChainInteractions.stake_st_prime_started_activity_type
-          'Staking OSTα as reserve for gas'
+          "Staking #{GlobalConstant::Base.ost_currency_symbol} as reserve for gas"
         when GlobalConstant::CriticalChainInteractions.airdrop_users_activity_type
           'Airdrop in process'
         when GlobalConstant::CriticalChainInteractions.staker_initial_transfer_activity_type
