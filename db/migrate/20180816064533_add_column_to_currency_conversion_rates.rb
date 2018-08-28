@@ -2,20 +2,28 @@ class AddColumnToCurrencyConversionRates < DbMigrationConnection
   def up
 
     client = Client.first
-    client_id = client.id
+    if client.blank?
 
-    r = SaasApi::OnBoarding::FetchChainInteractionParams.new.perform({client_id: client_id})
-    fail 'chain id not found' unless r.success?
+      addChainIdWithoutDefaultValue
 
-    utility_chain_id = r.data['utility_chain_id']
+    else
 
-    run_migration_for_db(EstablishCompanySaasSharedDbConnection) do
+      client_id = client.id
 
-      add_column :currency_conversion_rates, :chain_id, :integer, after: :id, null: false, default: utility_chain_id
+      r = SaasApi::OnBoarding::FetchChainInteractionParams.new.perform({client_id: client_id})
 
+      if !r.success? || r.data['utility_chain_id'].blank?
+
+        addChainIdWithoutDefaultValue
+
+      else
+
+        addChainIdWithDefaultValue(r.data['utility_chain_id'])
+
+      end
     end
-
   end
+
 
   def down
 
@@ -25,6 +33,18 @@ class AddColumnToCurrencyConversionRates < DbMigrationConnection
 
     end
 
+  end
+
+  def addChainIdWithDefaultValue(defaultChainIdValue)
+    run_migration_for_db(EstablishCompanySaasSharedDbConnection) do
+      add_column :currency_conversion_rates, :chain_id, :integer, after: :id, null: false, default: defaultChainIdValue
+    end
+  end
+
+  def addChainIdWithoutDefaultValue
+    run_migration_for_db(EstablishCompanySaasSharedDbConnection) do
+      add_column :currency_conversion_rates, :chain_id, :integer, after: :id, null: false
+    end
   end
 
 end
