@@ -22,7 +22,7 @@ module GlobalConstant
       end
 
       def subject_prefix
-        "CA [#{GlobalConstant::Base.env_identifier}] #{Rails.env}"
+        "[#{GlobalConstant::Base.env_identifier}] company-api :: #{Rails.env} - #{GlobalConstant::Base.sub_env} :: "
       end
 
     end
