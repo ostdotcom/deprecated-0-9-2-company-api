@@ -65,4 +65,18 @@ class Client::SetupController < Client::BaseController
 
   end
 
+  # Associate ethereum address
+  #
+  # * Author: Santhosh
+  # * Date: 07/08/2018
+  # * Reviewed By:
+  #
+  def setup_eth_address
+
+    service_response = ClientManagement::SetupEthAddress.new(params).perform
+
+    render_api_response(service_response)
+
+  end
+
 end

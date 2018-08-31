@@ -18,15 +18,42 @@ module GlobalConstant
       ### Status End ###
 
       def default_first_time_ost_grant_amount
-        10000
+        if Rails.env.production?
+          if GlobalConstant::Base.sub_env == 'main'
+            #TODO - ask Junisha
+            return 10
+          else
+            return 10000
+          end
+        else
+          return 10000
+        end
       end
 
       def default_recurring_ost_grant_amount
-        10000
+        if Rails.env.production?
+          if GlobalConstant::Base.sub_env == 'main'
+            #TODO - ask Junisha
+            return 10
+          else
+            return 10000
+          end
+        else
+          return 10000
+        end
       end
 
       def default_eth_grant_amount
-        Rails.env.production? ? 1 : 0.1
+        if Rails.env.production?
+          if GlobalConstant::Base.sub_env == 'main'
+            #TODO - ask Junisha
+            return 0.0006
+          else
+            return 1
+          end
+        else
+          return 0.1
+        end
       end
 
     end

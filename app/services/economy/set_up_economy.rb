@@ -81,22 +81,7 @@ module Economy
       ) if @conversion_factor <= 0
 
       @initial_number_of_users = @initial_number_of_users.to_i
-
-      return validation_error(
-          'e_sup_2',
-          'invalid_api_params',
-          ['invalid_initial_number_of_users'],
-          GlobalConstant::ErrorAction.default
-      ) if @initial_number_of_users <= 0
-
       @airdrop_bt_per_user = @airdrop_bt_per_user.to_i
-
-      return validation_error(
-          'e_sup_3',
-          'invalid_api_params',
-          ['invalid_airdrop_bt_per_user'],
-          GlobalConstant::ErrorAction.default
-      ) if @airdrop_bt_per_user <= 0
 
       success
 
@@ -173,8 +158,6 @@ module Economy
           conversion_factor: @conversion_factor,
           client_id: @client_token[:client_id]
       )
-
-      success
 
     end
 

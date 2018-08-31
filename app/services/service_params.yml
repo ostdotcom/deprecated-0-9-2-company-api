@@ -93,10 +93,10 @@
 'Economy::SetUpEconomy':
   :mandatory:
     - :client_token_id
-    - :initial_number_of_users
     - :conversion_factor
-    - :airdrop_bt_per_user
   :optional:
+    - :airdrop_bt_per_user
+    - :initial_number_of_users
 
 'Economy::GetCriticalChainInteractionStatus':
   :mandatory:
@@ -109,10 +109,10 @@
     - :client_id
     - :user_id
     - :client_token_id
-    - :bt_to_mint
     - :st_prime_to_mint
     - :transaction_hash
   :optional:
+    - :bt_to_mint
     - :ost_to_bt
     - :number_of_users
     - :amount
@@ -258,3 +258,9 @@
   :optional:
     - :parent_critical_log_id
     - :airdropped
+
+'Economy::FetchBalances':
+  :mandatory:
+    - :client_id
+    - :address
+  :optional:

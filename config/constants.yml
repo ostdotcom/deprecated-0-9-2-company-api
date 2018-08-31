@@ -1,6 +1,7 @@
 constants:
   sub_env: <%= ENV['CA_SUB_ENV']%>
   postman_testing: <%= ENV['CA_POSTMAN_TESTING'] %>
+  env_identifier: <%= ENV['ENV_IDENTIFIER'] %>
 
   redis:
     url: <%= ENV['CA_REDIS_ENDPOINT'] %>

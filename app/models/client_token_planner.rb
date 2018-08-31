@@ -21,7 +21,7 @@ class ClientTokenPlanner < EstablishCompanyClientEconomyDbConnection
   end
 
   def self.max_allowed_token_worth_in_usd
-    10
+    GlobalConstant::Base.main_sub_environment? ? 1 : 10
   end
 
 end

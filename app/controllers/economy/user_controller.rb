@@ -97,4 +97,18 @@ class Economy::UserController < Economy::BaseController
 
   end
 
+  # Fetch balances for Address
+  #
+  # * Author: Santhosh Reddy
+  # * Date: 07/08/2018
+  # * Reviewed By: Kedar
+  #
+  def fetch_balances
+
+    service_response = Economy::FetchBalances.new(params).perform
+
+    render_api_response(service_response)
+
+  end
+
 end

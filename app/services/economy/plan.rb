@@ -40,7 +40,9 @@ module Economy
       r = update
       return r unless r.success?
 
-      enqueue_job
+      if GlobalConstant::Base.sandbox_sub_environment?
+        enqueue_job
+      end
 
       success
 
