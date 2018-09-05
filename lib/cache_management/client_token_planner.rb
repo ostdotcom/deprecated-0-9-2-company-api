@@ -19,12 +19,12 @@ module CacheManagement
 
       data_from_cache = data_from_cache.deep_dup ## Deep DUP is important here
 
-      price_points = CacheManagement::OSTPricePoints.new([@options[:utility_chain_id]]).fetch[@options[:utility_chain_id]]
+      # price_points = CacheManagement::OSTPricePoints.new([@options[:utility_chain_id]]).fetch[@options[:utility_chain_id]]
 
-      ost_to_fiat = BigDecimal.new(price_points[GlobalConstant::ConversionRates.ost_currency][GlobalConstant::ConversionRates.usd_currency])
-      default_first_time_ost_grant_amount = GlobalConstant::ClientAddress.default_first_time_ost_grant_amount
+      # ost_to_fiat = BigDecimal.new(price_points[GlobalConstant::ConversionRates.ost_currency][GlobalConstant::ConversionRates.usd_currency])
+      # default_first_time_ost_grant_amount = GlobalConstant::ClientAddress.default_first_time_ost_grant_amount
       default_initial_users = GlobalConstant::Client.default_initial_users
-      max_initial_bt_airdrop_amount = GlobalConstant::Client.max_initial_bt_airdrop_amount
+      # max_initial_bt_airdrop_amount = GlobalConstant::Client.max_initial_bt_airdrop_amount
       buffer_mint_factor_over_airdrop = GlobalConstant::Client.buffer_mint_factor_over_airdrop
 
       data_from_cache.each do |client_token_id, token_planner_data|
