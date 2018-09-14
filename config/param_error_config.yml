@@ -78,6 +78,11 @@ missing_kind:
   code: 'missing'
   message: 'kind missing'
 
+invalid_email_domain:
+  parameter: 'domain'
+  code: 'invalid'
+  message: 'The email domain you entered is not valid.'
+
 invalid_email:
   parameter: 'email'
   code: 'invalid'
