@@ -14,8 +14,13 @@ class Admin::BaseController < WebController
     }
     
     admin_secrets = [
-      'YFbDp6RgqMvNTKHk8z8BxYJ9QSYQErf2FjMW8Env', # PDP
-      'DjJRQWA8bNdd84xceSNCqjydpf78suLZDYpvPcV7'  # Junisha
+      'YFbDp6RgqMvNTKHk8z8BxYJ9QSYQErf2FjMW8Env', # Frankie
+      'DjJRQWA8bNdd84xceSNCqjydpf78suLZDYpvPcV7',  # Junisha
+      'nVXe6BABW8Bb3n8h43XP8W5nTWm3HgJK2sMPaScH', # PDP
+      'rpkYwd3GM2N7dXEkxtRLBwHvhZnVc88R5K8fbKD5', # Jorden
+      'Cx74W6GV5fT9drz47kjDvYMqjGaAJxXrjatbwJ3y', # Ignas
+      'dF56K5DBC7ZL4CK6gdcQM7gUJPNauAyQwhDfAuAW', # Kevin
+      'UzHArPR5C4CbCXZVHMFDbjPuwG2BL4gbrfsThsQE' # Jean
     ]
   
     authenticate_or_request_with_http_basic do |username, password|
