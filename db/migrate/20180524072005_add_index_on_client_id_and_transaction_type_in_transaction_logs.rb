@@ -3,7 +3,7 @@ class AddIndexOnClientIdAndTransactionTypeInTransactionLogs < DbMigrationConnect
   def up
 
     run_migration_for_db(EstablishSaasTransactionDbConnection) do
-      add_index :transaction_logs, [:client_id, :transaction_type], name: 'client_id_transaction_type', unique: true
+      add_index :transaction_logs, [:client_id, :transaction_type], name: 'client_id_transaction_type', unique: false
     end
 
   end
