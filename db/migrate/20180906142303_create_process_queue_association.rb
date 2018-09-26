@@ -5,12 +5,12 @@ class CreateProcessQueueAssociation < DbMigrationConnection
       create_table :process_queue_association do |t|
         t.column :process_id, :integer, null: false
         t.column :rmq_config_id, :integer, null: false
-        t.column :topic_name, :string, null:false
+        t.column :queue_name_suffix, :string, null:false
         t.column :status, :integer, null: false
         t.timestamps
       end
 
-      add_index :process_queue_association, [:process_id, :topic_name], name: 'process_queue_index', unique: true
+      add_index :process_queue_association, [:process_id, :queue_name_suffix], name: 'process_queue_index', unique: true
     end
   end
 
