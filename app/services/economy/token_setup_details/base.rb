@@ -121,10 +121,12 @@ module Economy
       #
       def fetch_supporting_data
 
+        utility_chain_id = @api_response_data[:chain_interaction_params][:utility_chain_id]
+
         @api_response_data.merge!(
             user: CacheManagement::User.new([@user_id]).fetch[@user_id],
             client_token: @client_token,
-            oracle_price_points: FetchOraclePricePoints.perform,
+            oracle_price_points: CacheManagement::OSTPricePoints.new([utility_chain_id]).fetch[utility_chain_id],
             pending_critical_interactions: pending_critical_interactions
         )
 
@@ -185,9 +187,12 @@ module Economy
 
         r = SaasApi::OnBoarding::FetchChainInteractionParams.new.perform({client_id: @client_id})
         return r unless r.success?
-
-        @api_response_data[:client_token_planner] = CacheManagement::ClientTokenPlanner.new([@client_token_id]).fetch[@client_token_id]
         @api_response_data[:chain_interaction_params] = r.data.with_indifferent_access
+
+        @api_response_data[:client_token_planner] = CacheManagement::ClientTokenPlanner.new(
+            [@client_token_id],
+            {utility_chain_id: @api_response_data[:chain_interaction_params][:utility_chain_id]}
+        ).fetch[@client_token_id]
 
         success
 

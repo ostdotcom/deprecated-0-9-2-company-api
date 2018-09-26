@@ -67,6 +67,9 @@ module UserManagement
 
       set_cookie_value
 
+      r = assign_strategies
+      return r unless r.success?
+
       clear_cache
 
       enqueue_job
@@ -327,6 +330,20 @@ module UserManagement
       @login_salt_hash = r.data
 
       success
+    end
+
+    # Assign Strategies
+    #
+    # * Author: Puneet
+    # * Date: 17/08/2018
+    # * Reviewed By:
+    #
+    # @return [Result::Base]
+    #
+    def assign_strategies
+      SaasApi::OnBoarding::AssignStrategies.new.perform(
+        client_id: @client_id
+      )
     end
 
     # Clear cache

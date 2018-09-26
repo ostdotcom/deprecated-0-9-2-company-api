@@ -68,6 +68,10 @@ company_user_<%= Rails.env%>:
   <<: *sub_env_shared_db
   database: company_user_<%= Rails.env%>
 
+saas_config_<%= GlobalConstant::Base.sub_env%>_<%= Rails.env%>:
+  <<: *sub_env_shared_db
+  database: saas_config_<%= GlobalConstant::Base.sub_env%>_<%= Rails.env%>
+
 # NOTE: Database shared between saas and company api
 company_saas_shared_<%= GlobalConstant::Base.sub_env%>_<%= Rails.env%>:
   <<: *saas_and_api_shared_db

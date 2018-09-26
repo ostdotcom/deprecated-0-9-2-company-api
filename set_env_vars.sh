@@ -27,9 +27,9 @@ export CA_SAAS_SHARED_DB_USER=root
 export CA_SAAS_SHARED_DB_PASSWORD=root
 
 # Core ENV Details
-export CA_SUB_ENV='main'
+export CA_SUB_ENV='sandbox'
 export CA_POSTMAN_TESTING='0'
-export ENV_IDENTIFIER='mainnet_launch'
+export ENV_IDENTIFIER='internal'
 
 # Admin basic auth
 export CA_ADMIN_BASIC_AUTH_USERNAME='ostAdmin'
