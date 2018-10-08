@@ -1,8 +1,9 @@
 module Util
 
   class CommonValidator
-
+    
     REGEX_EMAIL = /\A[A-Z0-9]+[A-Z0-9_%+-]*(\.[A-Z0-9_%+-]{1,})*@(?:[A-Z0-9](?:[A-Z0-9-]*[A-Z0-9])?\.)+[A-Z]{2,24}\Z/mi
+    REGEX_EMAIL_DOMAIN = /\A@(?:[A-Z0-9](?:[A-Z0-9-]*[A-Z0-9])?\.)+[A-Z]{2,24}\Z/mi
 
     # Check for numeric-ness of an input
     #
@@ -87,6 +88,18 @@ module Util
     #
     def self.is_valid_email?(email)
       email =~ REGEX_EMAIL
+    end
+
+    # Is the Email Domain valid
+    #
+    # * Author: Dhananjay
+    # * Date: 14/09/2018
+    # * Reviewed By: Sunil Khedar
+    #
+    # @return [Boolean] returns a boolean
+    #
+    def self.is_valid_email_domain?(domain)
+      domain =~ REGEX_EMAIL_DOMAIN
     end
 
     # Is the Email a Valid Email
@@ -190,7 +203,7 @@ module Util
     # @return [Boolean] returns a boolean
     #
     def self.is_ethereum_address?(addr)
-      !(/^(0x|0X)?[a-fA-F0-9]{40}$/.match(addr.to_s)).nil?
+      !(/\A(0x|0X)?[a-fA-F0-9]{40}\z/.match(addr.to_s)).nil?
     end
 
     # Sanitize Ethereum Address
@@ -239,7 +252,7 @@ module Util
     def self.is_valid_token_symbol?(str)
       length = str.length
       return false if length > 4 || length < 3
-      (str =~ /^[a-z][0-9a-z]*$/i).present?
+      (str =~ /\A[a-z][0-9a-z]*\z/i).present?
     end
 
     # check if string is a valid Token name
@@ -253,7 +266,7 @@ module Util
     def self.is_valid_token_name?(str)
       length = str.length
       return false if length > 20 || length < 3
-      (str =~ /^[a-z][a-z0-9]*[\s]*[0-9a-z]*[\s]*[0-9a-z]*$/i).present?
+      (str =~ /\A[a-z][a-z0-9]*[\s]*[0-9a-z]*[\s]*[0-9a-z]*\z/i).present?
     end
 
   end

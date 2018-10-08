@@ -1,3 +1,13 @@
+'UserManagement::Whitelist::Domain':
+  :mandatory:
+    - :email_domain
+  :optional:
+
+'UserManagement::Whitelist::Email':
+  :mandatory:
+    - :email
+  :optional:
+
 'UserManagement::SignUp':
   :mandatory:
     - :email
