@@ -49,7 +49,7 @@ module GlobalConstant
             #TODO - ask Junisha
             return 0.0006
           else
-            return 1
+            return 0.1
           end
         else
           return 0.1
