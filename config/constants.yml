@@ -52,6 +52,9 @@ constants:
     secret_key: <%= ENV['CA_SAAS_API_SECRET_KEY'] %>
     display_endpoint: '<%= ENV['CA_SAAS_API_DISPLAY_ONLY_ENDPOINT'] %>/'
 
+  company_web:
+    domain: <%= ENV['CA_CW_DOMAIN'] %>
+
   ost_explorer:
     base_url: <%= ENV['CA_EXPLORER_BASE_URL']%>
     secret: <%= ENV['CA_EXPLORER_SECRET_KEY']%>
