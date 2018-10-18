@@ -98,7 +98,7 @@ module Email
             'e_hc_stm_6',
             'something_went_wrong',
             GlobalConstant::ErrorAction.default
-        ) if @template_vars[:company_web_root_url].blank?
+        ) if @template_vars[:company_web_domain].blank?
 
         if GlobalConstant::PepoCampaigns.is_double_opt_in_related_template?(@template_name)
 

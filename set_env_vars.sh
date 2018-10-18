@@ -74,7 +74,7 @@ export CA_SAAS_API_DISPLAY_ONLY_ENDPOINT='https://display.playgroundapi.stagingo
 export CA_SAAS_API_SECRET_KEY='1somethingsarebetterkeptinenvironemntvariables'
 
 # Company Web Details
-export CA_CW_ROOT_URL='http://developmentost.com:8080'
+export CA_CW_DOMAIN='developmentost.com'
 
 # OST Explorer Apis
 export CA_EXPLORER_BASE_URL='http://view.developmentost.com:7000/'
