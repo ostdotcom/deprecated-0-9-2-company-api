@@ -94,6 +94,12 @@ module Email
       #
       def validate_template_vars
 
+        return error_with_data(
+            'e_hc_stm_6',
+            'something_went_wrong',
+            GlobalConstant::ErrorAction.default
+        ) if @template_vars[:company_web_root_url].blank?
+
         if GlobalConstant::PepoCampaigns.is_double_opt_in_related_template?(@template_name)
 
           return error_with_data(

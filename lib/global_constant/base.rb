@@ -83,6 +83,10 @@ module GlobalConstant
       @basic_auth_config ||= fetch_config.fetch('basic_auth', {}).with_indifferent_access
     end
 
+    def self.company_web_config
+      @company_web_config ||= fetch_config.fetch('company_web', {}).with_indifferent_access
+    end
+
     private
 
     def self.fetch_config
