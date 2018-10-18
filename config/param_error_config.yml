@@ -36,7 +36,7 @@ invalid_airdrop_bt_per_user:
 invalid_r_t:
   parameter: 'r_t'
   code: 'invalid'
-  message: 'Invalid r_t'
+  message: 'The reset password link has expired. Please use Forgot Password to generate a new one.'
 
 invalid_amount:
   parameter: 'amount'
