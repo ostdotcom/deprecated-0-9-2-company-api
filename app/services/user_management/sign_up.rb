@@ -127,6 +127,7 @@ module UserManagement
 
       @is_client_manager = (@is_client_manager.to_i==1)
       @client_creation_needed = (@client_creation_needed.to_i==1)
+      @signup_at = Time.now.to_i
 
       # NOTE: To be on safe side, check for generic errors as well
       r = validate
@@ -224,7 +225,8 @@ module UserManagement
         email: @email,
         password: password_e,
         login_salt: @login_salt_hash[:ciphertext_blob],
-        status: GlobalConstant::User.active_status
+        status: GlobalConstant::User.active_status,
+        last_logged_in_at: @signup_at
       )
 
       @user.save! if @user.new_record? || @user.changed?
@@ -308,7 +310,7 @@ module UserManagement
     # Sets @cookie_value
     #
     def set_cookie_value
-      @cookie_value = User.get_cookie_value(@user.id, @user.default_client_id, @user.password, @browser_user_agent)
+      @cookie_value = User.get_cookie_value(@user.id, @user.default_client_id, @user.password, @browser_user_agent, @signup_at)
 
       success
     end

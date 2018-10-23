@@ -28,6 +28,12 @@
     - :browser_user_agent
   :optional:
 
+'UserManagement::Logout':
+  :mandatory:
+    - :cookie_value
+    - :browser_user_agent
+  :optional:
+
 'UserManagement::VerifyCookie':
   :mandatory:
     - :cookie_value

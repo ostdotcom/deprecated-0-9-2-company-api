@@ -23,6 +23,7 @@ module UserManagement
 
       @user = nil
       @login_salt_d = nil
+      @logged_in_at = Time.now.to_i
     end
 
     # Perform
@@ -45,6 +46,9 @@ module UserManagement
       return r unless r.success?
 
       r = validate_password
+      return r unless r.success?
+
+      r = mark_user_logged_in
       return r unless r.success?
 
       set_cookie_value
@@ -148,6 +152,21 @@ module UserManagement
 
     end
 
+    # mark user's last logged in
+    #
+    # * Author: Anagha
+    # * Date: 23/10/2018
+    # * Reviewed By:
+    #
+    # @return [Result::Base]
+    #
+    def mark_user_logged_in
+      User.where(['id = ?', @user.id]).update_all(['last_logged_in_at = ?', @logged_in_at])
+      CacheManagement::User.new([@user.id]).clear
+
+      success
+    end
+
     # Set cookie value
     #
     # * Author: Alpesh
@@ -157,7 +176,7 @@ module UserManagement
     # @return [Result::Base]
     #
     def set_cookie_value
-      cookie_value = User.get_cookie_value(@user.id, @user.default_client_id, @user.password, @browser_user_agent)
+      cookie_value = User.get_cookie_value(@user.id, @user.default_client_id, @user.password, @browser_user_agent, @logged_in_at)
 
       success_with_data(cookie_value: cookie_value)
     end

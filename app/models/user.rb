@@ -36,6 +36,7 @@ class User < EstablishCompanyUserDbConnection
         email: email,
         status: status,
         default_client_id: default_client_id,
+        last_logged_in_at: last_logged_in_at,
         properties: properties.present? ? User.get_bits_set_for_properties(properties) : []
     }
   end
@@ -95,8 +96,8 @@ class User < EstablishCompanyUserDbConnection
   #
   # @return [String]
   #
-  def self.get_cookie_value(user_id, default_client_id, password, browser_user_agent)
-    current_ts = Time.now.to_i
+  def self.get_cookie_value(user_id, default_client_id, password, browser_user_agent, current_ts)
+    current_ts ||= Time.now.to_i
     token_e = get_cookie_token(user_id, default_client_id, password, browser_user_agent, current_ts)
     "#{user_id}:#{default_client_id}:#{current_ts}:#{token_e}"
   end

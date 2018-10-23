@@ -80,7 +80,12 @@ class Client::LoginController < Client::BaseController
   # * Reviewed By:
   #
   def logout
-    #TODO: add extra logic if required
+
+    UserManagement::Logout.new(
+      cookie_value: cookies[GlobalConstant::Cookie.user_cookie_name.to_sym],
+      browser_user_agent: http_user_agent
+    ).perform
+
     delete_cookie(GlobalConstant::Cookie.user_cookie_name)
     render_api_response(Result::Base.success({}))
   end

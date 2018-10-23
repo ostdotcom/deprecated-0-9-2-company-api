@@ -104,8 +104,8 @@ module UserManagement
 
       @user = CacheManagement::User.new([@user_id]).fetch[@user_id]
 
-      return unauthorized_access_response('um_vc_5') unless @user.present? &&
-          @user[:status] == GlobalConstant::User.active_status
+      return unauthorized_access_response('um_vc_5') if @user.blank? ||
+          @user[:status] != GlobalConstant::User.active_status || @user[:last_logged_in_at].blank?
 
       @user_s = CacheManagement::UserSecure.new([@user_id]).fetch[@user_id]
 
@@ -134,7 +134,7 @@ module UserManagement
     #
     def set_extended_cookie_value
       #return if (@created_ts + 29.days.to_i) >= Time.now.to_i
-      @extended_cookie_value = User.get_cookie_value(@user_id, @client_id, @user_s[:password], @browser_user_agent)
+      @extended_cookie_value = User.get_cookie_value(@user_id, @client_id, @user_s[:password], @browser_user_agent, nil)
     end
 
     # Unauthorized access response
