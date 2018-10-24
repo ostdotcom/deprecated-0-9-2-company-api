@@ -1,18 +1,16 @@
 class TxMetaRestructureErrorHandling < DbMigrationConnection
   def up
-    completed_status = 0
-    default_retry_count = 0
-    default_next_retry_timestamp = 0
-    run_migration_for_db(EstablishSaasTransactionDbConnection) do
-      add_column :transaction_meta, :status, :integer, after: :client_id, :null => false, default:completed_status
-      add_column :transaction_meta, :retry_count, :tinyint, after: :kind, :null => false, default: default_retry_count
-      add_column :transaction_meta, :next_retry_timestamp, :integer, after: :retry_count, :null => false, default: default_next_retry_timestamp
-      add_column :transaction_meta, :lock_id, :decimal, after: :next_retry_timestamp, :null => true, precision: 20, scale: 5
-      add_index :transaction_meta, [:transaction_uuid], name: 'uk_tx_uuid', unique: true
-      add_index :transaction_meta, [:lock_id], name: 'idx_lock_id'
-      change_column_null :transaction_meta, :transaction_hash, null: true
+
+    EstablishSaasTransactionDbConnection.connection.execute "
+    ALTER TABLE transaction_meta
+    ADD COLUMN status INT NOT NULL DEFAULT 0 AFTER client_id,
+    ADD COLUMN retry_count TINYINT NOT NULL DEFAULT 0 after kind,
+    ADD COLUMN next_action_at INT after retry_count,
+    ADD COLUMN lock_id DECIMAL(20,5) after next_action_at,
+    ADD UNIQUE uk_tx_uuid (transaction_uuid),
+    ADD INDEX idx_lock_id (lock_id),
+    MODIFY COLUMN transaction_hash VARCHAR(255)"
     end
-  end
 
   def down
     run_migration_for_db(EstablishSaasTransactionDbConnection) do
@@ -20,7 +18,7 @@ class TxMetaRestructureErrorHandling < DbMigrationConnection
       remove_index :transaction_meta, name: 'idx_lock_id'
       remove_index :transaction_meta, name: 'uk_tx_uuid'
       remove_column :transaction_meta, :lock_id
-      remove_column :transaction_meta, :next_retry_timestamp
+      remove_column :transaction_meta, :next_action_at
       remove_column :transaction_meta, :retry_count
       remove_column :transaction_meta, :status
     end
