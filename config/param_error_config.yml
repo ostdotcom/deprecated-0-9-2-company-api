@@ -46,7 +46,7 @@ invalid_amount:
 email_not_allowed_for_dev_program:
   parameter: 'email'
   code: 'invalid'
-  message: 'Access to OST KIT⍺ developer program is not approved for this email address.'
+  message: 'In order to access OST KIT, please send an email to support@ost.com'
 
 email_not_registered:
   parameter: 'email'
