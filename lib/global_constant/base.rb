@@ -79,6 +79,14 @@ module GlobalConstant
       @explorer_api ||= fetch_config.fetch('ost_explorer', {}).with_indifferent_access
     end
 
+    def self.basic_auth_config
+      @basic_auth_config ||= fetch_config.fetch('basic_auth', {}).with_indifferent_access
+    end
+
+    def self.company_web_config
+      @company_web_config ||= fetch_config.fetch('company_web', {}).with_indifferent_access
+    end
+
     private
 
     def self.fetch_config

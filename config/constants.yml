@@ -3,6 +3,10 @@ constants:
   postman_testing: <%= ENV['CA_POSTMAN_TESTING'] %>
   env_identifier: <%= ENV['ENV_IDENTIFIER'] %>
 
+  basic_auth:
+    admin_username: <%= ENV['CA_ADMIN_BASIC_AUTH_USERNAME'] %>
+    admin_password: <%= ENV['CA_ADMIN_BASIC_AUTH_PASSWORD'] %>
+
   redis:
     url: <%= ENV['CA_REDIS_ENDPOINT'] %>
 
@@ -47,6 +51,9 @@ constants:
     v1dot1_endpoint: '<%= ENV['CA_SAAS_API_ENDPOINT'] %>/v1.1/'
     secret_key: <%= ENV['CA_SAAS_API_SECRET_KEY'] %>
     display_endpoint: '<%= ENV['CA_SAAS_API_DISPLAY_ONLY_ENDPOINT'] %>/'
+
+  company_web:
+    domain: <%= ENV['CA_CW_DOMAIN'] %>
 
   ost_explorer:
     base_url: <%= ENV['CA_EXPLORER_BASE_URL']%>

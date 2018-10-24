@@ -6,8 +6,8 @@ namespace :one_timers do
 
     def init_variables
 
-      @txs_to_execute = 5
-      @no_of_concurrrent_txs = 1
+      @txs_to_execute = 400
+      @no_of_concurrrent_txs = 50
 
       @action_ids = []
 
@@ -16,9 +16,9 @@ namespace :one_timers do
       # credentials = OSTSdk::Util::APICredentials.new(result[:api_key], result[:api_secret])
 
       ost_sdk = OSTSdk::Saas::Services.new(
-          api_key: '0e3f57471d4d0947c28b',
-          api_secret: '8182a1aca9d9a89637e88a92e61eb7e0ef86392ea9197af2ef29f9c7af0de502',
-          api_base_url: 'https://playgroundapi.stagingost.com/v1',
+          api_key: 'ed2cff5c35481d9a8ec7',
+          api_secret: 'bab467fb26e3c17ed3a47344987d5031402d88911895227485bd07f6a8edb3f3',
+          api_base_url: 'https://sandboxapi.stagingost.com/v1',
           api_spec: false
       )
 
@@ -31,7 +31,7 @@ namespace :one_timers do
     def create_dummy_users
       i = 0
       while true
-        SaasApi::OnBoarding::CreateDummyUsers.new.perform(client_id: 1172, number_of_users: 2)
+        SaasApi::OnBoarding::CreateDummyUsers.new.perform(client_id: 1229, number_of_users: 2)
         i = i + 1
         break if i == 1
       end
@@ -48,7 +48,7 @@ namespace :one_timers do
 
       @action_ids = @action_ids.shuffle
 
-      puts @action_ids.inspect
+      #puts @action_ids.inspect
 
     end
 
@@ -68,7 +68,7 @@ namespace :one_timers do
         end
       end
 
-      puts @uuids
+      #puts @uuids
     end
 
     def execute_transactions
@@ -104,7 +104,7 @@ namespace :one_timers do
         puts procs_length
         break if procs_length >= @txs_to_execute
       end
-      puts @no_of_concurrrent_txs
+      #puts @no_of_concurrrent_txs
       parallelProcessed = ParallelProcessor.new(@no_of_concurrrent_txs, procs).perform
       # puts parallelProcessed.data
     end
@@ -114,7 +114,10 @@ namespace :one_timers do
       # create_dummy_users
       fetch_tx_names
       fetch_user_uuids
-      execute_transactions
+
+      while true
+        execute_transactions
+      end
     end
 
     perform

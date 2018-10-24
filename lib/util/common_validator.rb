@@ -1,8 +1,9 @@
 module Util
 
   class CommonValidator
-
+    
     REGEX_EMAIL = /\A[A-Z0-9]+[A-Z0-9_%+-]*(\.[A-Z0-9_%+-]{1,})*@(?:[A-Z0-9](?:[A-Z0-9-]*[A-Z0-9])?\.)+[A-Z]{2,24}\Z/mi
+    REGEX_EMAIL_DOMAIN = /\A@(?:[A-Z0-9](?:[A-Z0-9-]*[A-Z0-9])?\.)+[A-Z]{2,24}\Z/mi
 
     # Check for numeric-ness of an input
     #
@@ -87,6 +88,18 @@ module Util
     #
     def self.is_valid_email?(email)
       email =~ REGEX_EMAIL
+    end
+
+    # Is the Email Domain valid
+    #
+    # * Author: Dhananjay
+    # * Date: 14/09/2018
+    # * Reviewed By: Sunil Khedar
+    #
+    # @return [Boolean] returns a boolean
+    #
+    def self.is_valid_email_domain?(domain)
+      domain =~ REGEX_EMAIL_DOMAIN
     end
 
     # Is the Email a Valid Email

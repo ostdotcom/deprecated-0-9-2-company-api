@@ -31,6 +31,10 @@ export CA_SUB_ENV='sandbox'
 export CA_POSTMAN_TESTING='0'
 export ENV_IDENTIFIER='internal'
 
+# Admin basic auth
+export CA_ADMIN_BASIC_AUTH_USERNAME='ostAdmin'
+export CA_ADMIN_BASIC_AUTH_PASSWORD='dAss$14nflkn!'
+
 # Redis Details
 export CA_REDIS_ENDPOINT='redis://ca:st123@127.0.0.1:6379'
 
@@ -68,6 +72,9 @@ export CA_CAMPAIGN_MASTER_LIST="3722"
 export CA_SAAS_API_ENDPOINT='http://developmentost.com:7001'
 export CA_SAAS_API_DISPLAY_ONLY_ENDPOINT='https://display.playgroundapi.stagingost.com'
 export CA_SAAS_API_SECRET_KEY='1somethingsarebetterkeptinenvironemntvariables'
+
+# Company Web Details
+export CA_CW_DOMAIN='developmentost.com'
 
 # OST Explorer Apis
 export CA_EXPLORER_BASE_URL='http://view.developmentost.com:7000/'

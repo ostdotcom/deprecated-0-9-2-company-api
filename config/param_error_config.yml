@@ -36,7 +36,7 @@ invalid_airdrop_bt_per_user:
 invalid_r_t:
   parameter: 'r_t'
   code: 'invalid'
-  message: 'Invalid r_t'
+  message: 'The reset password link has expired. Please use Forgot Password to generate a new one.'
 
 invalid_amount:
   parameter: 'amount'
@@ -77,6 +77,11 @@ missing_kind:
   parameter: 'kind'
   code: 'missing'
   message: 'kind missing'
+
+invalid_email_domain:
+  parameter: 'domain'
+  code: 'invalid'
+  message: 'The email domain you entered is not valid.'
 
 invalid_email:
   parameter: 'email'

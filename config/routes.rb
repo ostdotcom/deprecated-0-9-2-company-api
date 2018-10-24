@@ -1,5 +1,10 @@
 Rails.application.routes.draw do
   # For details on the DSL available within this file, see http://guides.rubyonrails.org/routing.html
+  
+  scope 'api/admin', controller: 'admin/whitelist' do
+    match 'whitelist/domain' => :whitelist_domain, via: :GET
+    match 'whitelist/email' => :whitelist_email, via: :GET
+  end
 
   scope 'api/client', controller: 'client/login' do
     match 'verify-cookie' => :verify_cookie, via: :GET
