@@ -73,6 +73,9 @@ export CA_SAAS_API_ENDPOINT='http://developmentost.com:7001'
 export CA_SAAS_API_DISPLAY_ONLY_ENDPOINT='https://display.playgroundapi.stagingost.com'
 export CA_SAAS_API_SECRET_KEY='1somethingsarebetterkeptinenvironemntvariables'
 
+# Company Web Details
+export CA_CW_DOMAIN='developmentost.com'
+
 # OST Explorer Apis
 export CA_EXPLORER_BASE_URL='http://view.developmentost.com:7000/'
 export CA_EXPLORER_SECRET_KEY='6p5BkI0uGHI1JPrAKP3eB1Zm88KZ84a9Th9o4syhwZhxlv0oe0'

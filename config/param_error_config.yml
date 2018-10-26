@@ -36,7 +36,7 @@ invalid_airdrop_bt_per_user:
 invalid_r_t:
   parameter: 'r_t'
   code: 'invalid'
-  message: 'Invalid r_t'
+  message: 'The reset password link has expired. Please use Forgot Password to generate a new one.'
 
 invalid_amount:
   parameter: 'amount'
@@ -46,7 +46,7 @@ invalid_amount:
 email_not_allowed_for_dev_program:
   parameter: 'email'
   code: 'invalid'
-  message: 'Access to OST KIT⍺ developer program is not approved for this email address.'
+  message: 'In order to access OST KIT, please send an email to support@ost.com'
 
 email_not_registered:
   parameter: 'email'

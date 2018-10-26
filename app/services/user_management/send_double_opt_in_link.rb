@@ -109,7 +109,8 @@ module UserManagement
           email: @user.email,
           template_name: GlobalConstant::PepoCampaigns.double_opt_in_template,
           template_vars: {
-              double_opt_in_token: CGI.escape(@double_optin_token)
+              double_opt_in_token: CGI.escape(@double_optin_token),
+              company_web_domain: GlobalConstant::CompanyWeb.domain
           }
       ).perform
     end
