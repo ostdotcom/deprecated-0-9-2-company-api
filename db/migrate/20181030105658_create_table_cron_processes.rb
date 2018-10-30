@@ -6,8 +6,8 @@ class CreateTableCronProcesses < DbMigrationConnection
         t.column :ip_address, :string, limit: 255, null: false
         t.column :params, :text, null: true
         t.column :status, :tinyint, limit: 1, null: false
-        t.column :last_start_time, :integer, null: false
-        t.column :last_end_time, :integer, null: false
+        t.column :last_start_time, :integer, null: true
+        t.column :last_end_time, :integer, null: true
         t.timestamps
       end
     end
