@@ -55,7 +55,9 @@ module UserManagement
       def validate_and_sanitize
         r = validate
         return r unless r.success?
-  
+
+        @email_domain = @email_domain.to_s.downcase.strip
+        
         unless Util::CommonValidator.is_valid_email_domain?(@email_domain)
           return validation_error(
             'um_w_d_1',
