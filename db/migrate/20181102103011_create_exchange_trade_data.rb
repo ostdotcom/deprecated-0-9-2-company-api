@@ -1,4 +1,4 @@
-class CreateExachangeTradesData < DbMigrationConnection
+class CreateExchangeTradeData < DbMigrationConnection
   def up
     run_migration_for_db(EstablishSaasAnalyticsDbConnection) do
       create_table :exchange_trade_data do |t|
