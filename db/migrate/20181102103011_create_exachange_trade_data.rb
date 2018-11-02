@@ -1,7 +1,7 @@
 class CreateExachangeTradesData < DbMigrationConnection
   def up
     run_migration_for_db(EstablishSaasAnalyticsDbConnection) do
-      create_table :exchange_trades_data do |t|
+      create_table :exchange_trade_data do |t|
         t.column :exchange, :tinyint, null: false
         t.column :trading_pair, :tinyint, null: false
         t.column :timestamp, :integer, null: false
@@ -15,7 +15,7 @@ class CreateExachangeTradesData < DbMigrationConnection
   
   def down
     run_migration_for_db(EstablishSaasAnalyticsDbConnection) do
-      drop_table :exchange_trades_data
+      drop_table :exchange_trade_data
     end
   end
 end
