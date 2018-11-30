@@ -203,7 +203,7 @@ module Util
     # @return [Boolean] returns a boolean
     #
     def self.is_ethereum_address?(addr)
-      !(/^(0x|0X)?[a-fA-F0-9]{40}$/.match(addr.to_s)).nil?
+      !(/\A(0x|0X)?[a-fA-F0-9]{40}\z/.match(addr.to_s)).nil?
     end
 
     # Sanitize Ethereum Address
@@ -252,7 +252,7 @@ module Util
     def self.is_valid_token_symbol?(str)
       length = str.length
       return false if length > 4 || length < 3
-      (str =~ /^[a-z][0-9a-z]*$/i).present?
+      (str =~ /\A[a-z][0-9a-z]*\z/i).present?
     end
 
     # check if string is a valid Token name
@@ -266,7 +266,7 @@ module Util
     def self.is_valid_token_name?(str)
       length = str.length
       return false if length > 20 || length < 3
-      (str =~ /^[a-z][a-z0-9]*[\s]*[0-9a-z]*[\s]*[0-9a-z]*$/i).present?
+      (str =~ /\A[a-z][a-z0-9]*[\s]*[0-9a-z]*[\s]*[0-9a-z]*\z/i).present?
     end
 
   end
