@@ -42,6 +42,12 @@ saas_default_db_identifier: &saas_default_db
   username: <%= ENV['CA_SAAS_DEFAULT_DB_USER']%>
   password: <%= ENV['CA_SAAS_DEFAULT_DB_PASSWORD']%>
 
+saas_analytics_db_identifier: &saas_analytics_db
+  <<: *default
+  host: <%= ENV['CA_SAAS_ANALYTICS_DB_HOST']%>
+  username: <%= ENV['CA_SAAS_ANALYTICS_DB_USER']%>
+  password: <%= ENV['CA_SAAS_ANALYTICS_DB_PASSWORD']%>
+
 # NOTE: Sub env specific databases
 <%= Rails.env%>:
   <<: *default_db
@@ -67,6 +73,10 @@ company_client_<%= Rails.env%>:
 company_user_<%= Rails.env%>:
   <<: *sub_env_shared_db
   database: company_user_<%= Rails.env%>
+
+saas_analytics_<%= Rails.env%>:
+  <<: *saas_default_db
+  database: saas_analytics_<%= Rails.env%>
 
 saas_config_<%= GlobalConstant::Base.sub_env%>_<%= Rails.env%>:
   <<: *economy_db
