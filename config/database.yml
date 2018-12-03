@@ -75,7 +75,7 @@ company_user_<%= Rails.env%>:
   database: company_user_<%= Rails.env%>
 
 saas_analytics_<%= Rails.env%>:
-  <<: *saas_default_db
+  <<: *economy_db
   database: saas_analytics_<%= Rails.env%>
 
 saas_config_<%= GlobalConstant::Base.sub_env%>_<%= Rails.env%>:
