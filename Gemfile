@@ -26,6 +26,7 @@ gem 'redis-namespace', '1.6.0'
 gem 'listen', '3.1.5'
 
 gem 'http', '3.0.0'
+gem 'net-http2', '0.18.2'
 
 gem 'jwt', '2.1.0'
 
