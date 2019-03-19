@@ -7,7 +7,7 @@ end
 
 
 # Bundle edge Rails instead: gem 'rails', github: 'rails/rails'
-gem 'rails', '~> 5.1.4'
+gem 'rails', '5.2.2.1'
 gem 'mysql2', '0.4.9'
 gem 'oj', '3.3.8'
 gem 'rake', '12.3.0'
@@ -23,7 +23,7 @@ gem 'aws-sdk-s3', '1.8.0'
 gem 'sidekiq', '5.0.5'
 gem 'redis-namespace', '1.6.0'
 
-gem 'listen', '>= 3.0.5', '< 3.2'
+gem 'listen', '3.1.5'
 
 gem 'http', '3.0.0'
 

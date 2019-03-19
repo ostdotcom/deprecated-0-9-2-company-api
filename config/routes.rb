@@ -1,12 +1,12 @@
 Rails.application.routes.draw do
   # For details on the DSL available within this file, see http://guides.rubyonrails.org/routing.html
   
-  scope 'api/admin', controller: 'admin/whitelist' do
+  scope 'api/admin', controller: 'admin/whitelist', :format => false do
     match 'whitelist/domain' => :whitelist_domain, via: :GET
     match 'whitelist/email' => :whitelist_email, via: :GET
   end
 
-  scope 'api/client', controller: 'client/login' do
+  scope 'api/client', controller: 'client/login', :format => false do
     match 'verify-cookie' => :verify_cookie, via: :GET
     match 'sign-up' => :sign_up, via: :POST
     match 'login' => :login, via: :POST
@@ -17,7 +17,7 @@ Rails.application.routes.draw do
     match 'send-verify-email-link' => :send_verify_email_link, via: :POST
   end
 
-  scope 'api/client', controller: 'client/setup' do
+  scope 'api/client', controller: 'client/setup', :format => false do
     match 'validate-eth-address' => :validate_eth_address, via: :GET
     match 'fetch-api-credentials' => :fetch_api_credentials, via: :GET
     match 'get-ost' => :get_test_ost, via: :POST
@@ -25,7 +25,7 @@ Rails.application.routes.draw do
     match 'setup-eth-address' => :setup_eth_address, via: :POST
   end
 
-  scope 'api/economy/users', controller: 'economy/user' do
+  scope 'api/economy/users', controller: 'economy/user', :format => false do
     match 'create' => :create_user, via: :POST
     match 'edit' => :edit_user, via: :POST
     match 'list' => :list_users, via: :GET
@@ -33,7 +33,7 @@ Rails.application.routes.draw do
     match 'fetch-balances' => :fetch_balances, via: :GET
   end
 
-  scope 'api/economy/token', controller: 'economy/token' do
+  scope 'api/economy/token', controller: 'economy/token', :format => false do
     match 'get-step-one-details' => :get_step_one_details, via: :GET
     match 'get-step-two-details' => :get_step_two_details, via: :GET
     match 'get-step-three-details' => :get_step_three_details, via: :GET
@@ -47,21 +47,21 @@ Rails.application.routes.draw do
     match 'graph/top-users' => :top_users_graph, via: :GET
   end
 
-  scope 'api/economy/action', controller: 'economy/transaction_kind' do
+  scope 'api/economy/action', controller: 'economy/transaction_kind', :format => false do
     match 'create' => :create, via: :POST
     match 'edit' => :edit, via: :POST
     match 'bulk-create-edit' => :bulk_create_edit, via: :POST
     match 'list' => :list, via: :GET
   end
 
-  scope 'api/economy/transaction', controller: 'economy/transaction' do
+  scope 'api/economy/transaction', controller: 'economy/transaction', :format => false do
     match 'execute' => :simulate, via: :POST
     match 'history' => :fetch_history, via: :GET
     match 'fetch-detail' => :fetch_detail, via: :GET
     match 'fetch-simulator-details' => :fetch_simulator_details, via: :GET
   end
 
-  scope 'api/economy/developer-api-console', controller: 'economy/developer_api_console' do
+  scope 'api/economy/developer-api-console', controller: 'economy/developer_api_console', :format => false do
     match '' => :fetch, via: :GET
   end
 
